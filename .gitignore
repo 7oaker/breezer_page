@@ -1,0 +1,24 @@
+# Node.js dependencies
+node_modules/
+
+# Build directory
+build/
+
+# macOS system files
+__MACOSX/
+
+# Log files
+*.log
+
+# Environment files
+.env
+
+# OS-specific files
+Thumbs.db
+Desktop.ini
+
+# IDE-specific files (for VS Code)
+.vscode/
+
+# Temporary files
+*.swp
