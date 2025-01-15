@@ -9,7 +9,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
-  "homepage": "https://7oaker.github.io/breezer_page",
+  "homepage": "https://7oaker.github.io",
   "keywords": [],
   "author": "",
   "license": "ISC",
