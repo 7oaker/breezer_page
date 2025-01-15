@@ -1046,6 +1046,9 @@ body{
 .mt-\[30px\]{
   margin-top: 30px;
 }
+.mt-6{
+  margin-top: 1.5rem;
+}
 .mb-12{
   margin-bottom: 3rem;
 }
@@ -1467,6 +1470,9 @@ body{
   -o-object-position: center;
      object-position: center;
 }
+.p-6{
+  padding: 1.5rem;
+}
 .p-\[3px\]{
   padding: 3px;
 }
@@ -1607,6 +1613,12 @@ body{
 .pb-\[70px\]{
   padding-bottom: 70px;
 }
+.pt-\[100px\]{
+  padding-top: 100px;
+}
+.pl-6{
+  padding-left: 1.5rem;
+}
 .pt-\[165px\]{
   padding-top: 165px;
 }
@@ -1627,9 +1639,6 @@ body{
 }
 .pb-6{
   padding-bottom: 1.5rem;
-}
-.pt-\[100px\]{
-  padding-top: 100px;
 }
 .pb-5{
   padding-bottom: 1.25rem;
@@ -1685,13 +1694,17 @@ body{
   font-size: 0.875rem;
   line-height: 1.25rem;
 }
-.text-lg{
-  font-size: 1.125rem;
-  line-height: 1.75rem;
-}
 .text-3xl{
   font-size: 1.875rem;
   line-height: 2.25rem;
+}
+.text-2xl{
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+.text-lg{
+  font-size: 1.125rem;
+  line-height: 1.75rem;
 }
 .text-\[40px\]{
   font-size: 40px;
@@ -1699,10 +1712,6 @@ body{
 .text-xs{
   font-size: 0.75rem;
   line-height: 1rem;
-}
-.text-2xl{
-  font-size: 1.5rem;
-  line-height: 2rem;
 }
 .font-bold{
   font-weight: 700;
