@@ -2,6 +2,11 @@ const path = require('path');
 const glob = require('glob');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const dotenv = require('dotenv');
+const webpack = require('webpack'); // Import DefinePlugin
+
+// Load environment variables from a .env file
+dotenv.config();
 
 const INCLUDE_PATTERN = /<include src="(.+)"\s*\/?>(?:<\/include>)?/gi;
 const processNestedHtml = (content, loaderContext, dir = null) =>
@@ -19,20 +24,21 @@ const processNestedHtml = (content, loaderContext, dir = null) =>
 
 // HTML generation
 const paths = [];
-const generateHTMLPlugins = () => glob.sync('./src/*.html').map((dir) => {
-  const filename = path.basename(dir);
+const generateHTMLPlugins = () =>
+  glob.sync('./src/*.html').map((dir) => {
+    const filename = path.basename(dir);
 
-  if (filename !== '404.html') {
-    paths.push(filename);
-  }
+    if (filename !== '404.html') {
+      paths.push(filename);
+    }
 
-  return new HtmlWebpackPlugin({
-    filename,
-    template: `./src/${filename}`,
-    favicon: `./src/images/favicon.ico`,
-    inject: 'body',
+    return new HtmlWebpackPlugin({
+      filename,
+      template: `./src/${filename}`,
+      favicon: `./src/images/favicon.ico`,
+      inject: 'body',
+    });
   });
-});
 
 module.exports = {
   mode: 'development',
@@ -82,6 +88,10 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: 'style.css',
       chunkFilename: 'style.css',
+    }),
+    // Use DefinePlugin to inject environment variables
+    new webpack.DefinePlugin({
+      'process.env.REACT_APP_WEBHOOK_URL': JSON.stringify(process.env.REACT_APP_WEBHOOK_URL), // Inject the environment variable
     }),
   ],
   output: {
