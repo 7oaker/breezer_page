@@ -3970,44 +3970,7 @@
 
     <!-- ======= JS Files ======= -->
     <script>
-      //WEBHOOK 
-      document.querySelector('form').addEventListener('submit', function (e) {
-    e.preventDefault(); // Prevent form submission
-    const webhookUrl = process.env.REACT_APP_WEBHOOK_URL;
-    const formData = new FormData(this);
-    const data = {
-      name: formData.get('name'),
-      company: formData.get('company'),
-      email: formData.get('email'),
-      phone: formData.get('phone'),
-      message: formData.get('message'),
-    };
-    console.log("weburl", webhookUrl);
-    console.log("data", data); // Log the data being sent
-
-    fetch(process.env.REACT_APP_WEBHOOK_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json', // Sending JSON data
-      },
-      body: JSON.stringify(data), // Stringify the data to JSON
-    })
-    .then(response => {
-      if (response.ok) { // Check if response status is OK (2xx)
-        return response.text(); // If OK, return the response as text
-      } else {
-        throw new Error('Something went wrong'); // Throw an error if response is not OK
-      }
-    })
-    .then(responseText => {
-      console.log('Response from webhook:', responseText); // Log the raw response (e.g., "Accepted")
-      alert('Thank you for reaching out! We will get back to you soon.'); // Show "Thank You" message
-    })
-    .catch((error) => {
-      console.error('Error:', error); // Log any error that occurs
-      alert('Something went wrong. Please try again later.'); // Show error message
-    });
-  });
+    
   //WEBHOOK CLOSE
       // ==== pricing plan toggler
       //let togglePlan = document.querySelector("#togglePlan");
