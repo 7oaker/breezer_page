@@ -3,8 +3,9 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import '../css/animate.css';
 import '../css/style.css';
-
-import GLightbox from 'glightbox';
+import ogImage from '../images/logo/og-image.png'; // Import the Open Graph image
+import robotsTxt from '../robots.txt'; // Import robots.txt
+import sitemapXml from '../sitemap.xml'; // Import sitemap.xmlimport GLightbox from 'glightbox';
 import Swiper, { Navigation } from 'swiper';
 import WOW from 'wowjs';
 

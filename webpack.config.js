@@ -81,6 +81,21 @@ module.exports = {
           preprocessor: processNestedHtml,
         },
       },
+      
+    {
+      test: /\.xml$/i, // Add this rule for .xml files
+      type: 'asset/resource',
+      generator: {
+        filename: '[name][ext]', // Keep the original filename
+      },
+    },
+    {
+      test: /\.txt$/i, // Add this rule for .txt files
+      type: 'asset/resource',
+      generator: {
+        filename: '[name][ext]', // Keep the original filename
+      },
+    },
     ],
   },
   plugins: [
