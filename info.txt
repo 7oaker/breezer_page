@@ -1,0 +1,5 @@
+npm start -c
+npm run build
+npm run deploy
+
+-> git refresh DNS domain..
