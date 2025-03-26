@@ -954,9 +954,6 @@ body{
 .order-last{
   order: 9999;
 }
-.order-first{
-  order: -9999;
-}
 .mx-auto{
   margin-left: auto;
   margin-right: auto;

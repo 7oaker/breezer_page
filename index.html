@@ -5,6 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Breezer - Track snus, together!</title>
+    <script>
+      // Always set the theme to dark mode before the page renders
+      document.documentElement.classList.add('dark');
+    </script>
   <link rel="icon" href="favicon.ico"><link href="style.css" rel="stylesheet"></head>
   <body class="bg-white dark:bg-black">
     <!-- ======= Header Start ======= -->
@@ -1121,7 +1125,7 @@
             <div
               class="-mx-4 flex flex-wrap items-center justify-between"
             >
-              <div class="w-full px-4 lg:w-1/2">
+              <div class="order-last w-full px-4 lg:order-first lg:w-1/2">
                 <div
                   class="wow fadeInUp relative z-10 mx-auto mb-14 w-full max-w-[470px] pb-6 lg:mx-0 lg:mb-0"
                   data-wow-delay=".2s"
@@ -1334,7 +1338,7 @@
               </div>
 
               <div
-                class="order-first w-full px-4 lg:order-last lg:w-1/2"
+                class="order-last w-full px-4 lg:order-last lg:w-1/2"
               >
                 <div
                   class="wow fadeInUp relative z-10 mx-auto mb-14 w-full max-w-[470px] pb-6 lg:mr-0 lg:mb-0"
@@ -3508,11 +3512,10 @@
             <h2
               class="mb-4 text-3xl font-bold text-black dark:text-white sm:text-4xl md:text-[44px] md:leading-tight"
             >
-              Let's Stay Connected
+              Let's get in Touch
             </h2>
             <p class="text-base text-body">
-              Whether you're seeking support, have feedback, or are interested in collaborating with us, we'd love to hear from you! 
-  Reach out through the form below, and let's make something great together.
+              Whether you're seeking support, have feedback, or are interested in collaborating with us, please fill out the form below or write us a mail to <b>info@breezer.now</b>!
             </p>
           </div>
         </div>
@@ -3530,7 +3533,7 @@
                       type="text"
                       name="name"
                       id="name"
-                      placeholder="Enter your name"
+                      placeholder="Name"
                       class="w-full rounded border border-stroke bg-white py-4 px-[30px] text-base text-body outline-none focus:border-primary dark:border-[#34374A] dark:bg-[#2A2E44] dark:focus:border-primary"
                     />
                   </div>
@@ -3554,7 +3557,7 @@
                       type="email"
                       name="email"
                       id="email"
-                      placeholder="Enter Your email"
+                      placeholder="Mail"
                       class="w-full rounded border border-stroke bg-white py-4 px-[30px] text-base text-body outline-none focus:border-primary dark:border-[#34374A] dark:bg-[#2A2E44] dark:focus:border-primary"
                     />
                   </div>
@@ -3566,7 +3569,7 @@
                       type="text"
                       name="phone"
                       id="phone"
-                      placeholder="Enter your Phone Number"
+                      placeholder="Phone"
                       class="w-full rounded border border-stroke bg-white py-4 px-[30px] text-base text-body outline-none focus:border-primary dark:border-[#34374A] dark:bg-[#2A2E44] dark:focus:border-primary"
                     />
                   </div>
@@ -3578,7 +3581,7 @@
                       rows="6"
                       name="message"
                       id="message"
-                      placeholder="Tell us why you reach out - we try to answer quickly"
+                      placeholder="Tell us why you reach out, we will answer quickly!"
                       class="w-full rounded border border-stroke bg-white py-4 px-[30px] text-base text-body outline-none focus:border-primary dark:border-[#34374A] dark:bg-[#2A2E44] dark:focus:border-primary"
                     ></textarea>
                   </div>
