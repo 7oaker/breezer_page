@@ -52,8 +52,9 @@
     }
     </script>
     <script>
-      // Always set the theme to dark mode before the page renders
-      document.documentElement.classList.add('dark');
+      // Force dark mode as default
+      document.documentElement.classList.add('dark'); // Always apply dark mode
+      localStorage.setItem('theme', 'dark'); // Save dark mode as the default in localStorage
     </script>
   </head>
   <body class="bg-white dark:bg-black">
