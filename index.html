@@ -52,8 +52,9 @@
     }
     </script>
     <script>
-      // Always set the theme to dark mode before the page renders
-      document.documentElement.classList.add('dark');
+      // Force dark mode as default
+      document.documentElement.classList.add('dark'); // Always apply dark mode
+      localStorage.setItem('theme', 'dark'); // Save dark mode as the default in localStorage
     </script>
   <link rel="icon" href="favicon.ico"><link href="style.css" rel="stylesheet"></head>
   <body class="bg-white dark:bg-black">
