@@ -903,9 +903,6 @@ body{
 .top-5{
   top: 1.25rem;
 }
-.bottom-10{
-  bottom: 2.5rem;
-}
 .-bottom-1\/2{
   bottom: -50%;
 }
@@ -917,12 +914,6 @@ body{
 }
 .right-5{
   right: 1.25rem;
-}
-.left-10{
-  left: 2.5rem;
-}
-.-top-12{
-  top: -3rem;
 }
 .top-36{
   top: 9rem;
@@ -1124,6 +1115,9 @@ body{
 .h-\[90px\]{
   height: 90px;
 }
+.h-\[70px\]{
+  height: 70px;
+}
 .h-1\/2{
   height: 50%;
 }
@@ -1165,6 +1159,9 @@ body{
 }
 .w-\[90px\]{
   width: 90px;
+}
+.w-\[70px\]{
+  width: 70px;
 }
 .w-1\/2{
   width: 50%;
@@ -1243,6 +1240,9 @@ body{
 }
 .max-w-\[22px\]{
   max-width: 22px;
+}
+.grow{
+  flex-grow: 1;
 }
 .-translate-y-1\/2{
   --tw-translate-y: -50%;
