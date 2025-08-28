@@ -36,6 +36,7 @@
   "dependencies": {
     "dotenv": "^16.4.7",
     "glightbox": "^3.2.0",
+    "lucide": "^0.542.0",
     "swiper": "^8.4.2",
     "wowjs": "^1.1.3"
   }
