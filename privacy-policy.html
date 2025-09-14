@@ -258,7 +258,7 @@
       <div class="dark:text-white">
       <div class="container mx-auto p-6 pt-[100px] bg-white dark:bg-stroke-dark rounded-lg shadow-md">
         <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Privacy Policy for Breezer</h1>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mb-8"><strong>Last updated: 24.11.2024</strong></p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-8"><strong>Last updated: 14.09.2025</strong></p>
 
         <p class="mb-4">At Breezer ("we", "our", or "us"), we value your privacy and are committed to protecting the personal
             information you share with us. This Privacy Policy explains how we collect, use, store, and protect your
@@ -280,19 +280,25 @@
             <li><strong>Email, username, and password:</strong> Used for account creation and authentication.</li>
             <li><strong>Profile picture (optional):</strong> You may choose to upload a profile picture for
                 personalization within the app.</li>
+            <li><strong>Country and currency (optional):</strong> If provided in Settings, used to localize your
+                experience (e.g., pricing and statistics) and enable country-specific features such as regional
+                channels. Country may be considered personal data because it can relate to your location.</li>
         </ul>
 
-        <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">2.2 Consumption Data</h3>
-        <p class="mb-2">We collect data related to your snus consumption habits, including:</p>
+        <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">2.2 Consumption and Quitting Data</h3>
+        <p class="mb-2">We collect data related to your snus consumption and quitting progress, including:</p>
         <ul class="list-disc pl-6 mb-4">
             <li><strong>Snus type, pack size, price per pack, and consumption limits:</strong> You can track your
                 consumption by entering the type of snus, its pack size, and price.</li>
             <li><strong>Consumption events:</strong> Records each time you log your consumption.</li>
-            <li><strong>Weekly, monthly, and yearly consumption summaries:</strong> These provide you with insights into
-                your snus usage, spending, and habits.</li>
+            <li><strong>Quitting mode data:</strong> The date you started quitting, progress toward goals, and derived
+                achievement metrics such as money saved, time saved, and snus avoided.</li>
+            <li><strong>Weekly, monthly, and yearly summaries:</strong> Insights into your usage, spending, and habits.</li>
+            <li><strong>Health improvements display:</strong> Informational milestones based on studies. These are
+                estimates for motivation only and may be inaccurate. They are not medical advice.</li>
         </ul>
-        <p class="mb-4">This information is processed only to deliver the app's functionality, and is used solely for tracking and
-            analytical purposes.</p>
+        <p class="mb-4">This information is processed only to deliver the app's functionality and to provide insights and
+            motivation, and is used solely for tracking and analytical purposes.</p>
 
         <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">2.3 Usage Data</h3>
         <p class="mb-2">We may automatically collect certain technical data when you use the app, including:</p>
@@ -302,14 +308,33 @@
             <li><strong>IP Address:</strong> For maintaining the security of our app.</li>
         </ul>
 
+        <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">2.4 Community and Social Data</h3>
+        <p class="mb-2">To provide global and country channels, mentions, and social features, we process:</p>
+        <ul class="list-disc pl-6 mb-4">
+            <li><strong>Chat content and metadata:</strong> Messages you send, mentions, timestamps, and channel
+                membership. Channel messages are visible to participants and may be public to all users depending on
+                channel type.</li>
+            <li><strong>Friends and notifications preferences:</strong> Which friends may receive updates about your
+                activity when enabled, and your opt-in/opt-out status for notifications.</li>
+            <li><strong>Push notification tokens:</strong> Device tokens used to deliver notifications via Expo Push
+                Notifications API.</li>
+            <li><strong>Moderation signals:</strong> Reports, blocks, and enforcement actions to keep the community safe.</li>
+        </ul>
+
         <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">3. Purpose of Data Collection</h2>
         <p class="mb-4">We use your personal information for the following purposes:</p>
         <ul class="list-disc pl-6 mb-4">
+            
             <li><strong>Account creation and authentication:</strong> Your email, username, and password help create and
                 secure your account.</li>
-            <li><strong>Personalization:</strong> The profile picture helps personalize your experience.</li>
-            <li><strong>Statistics and insights:</strong> Consumption data is used to provide insights into your habits and
-                to help you set goals and limits for your consumption.</li>
+            <li><strong>Personalization and localization:</strong> The profile picture helps personalize your experience. Country and currency (if provided) help localize prices,
+                statistics, and enable regional features.</li>
+            <li><strong>Statistics, insights, and motivation:</strong> Consumption and quitting data provide insights,
+                achievements, and motivational milestones.</li>
+            <li><strong>Community features:</strong> To operate chats, country channels, mentions, and social visibility,
+                and to keep the community safe through moderation.</li>
+            <li><strong>Notifications:</strong> To send opt-in updates to you and (if enabled) to your friends using Expo
+                Push Notifications.</li>
         </ul>
         <p class="mb-4">We <strong>do not</strong> use your data for personalized marketing, ads, or sharing with third parties for
             advertising purposes.</p>
@@ -322,14 +347,19 @@
                 standards.</li>
             <li><strong>RevenueCat (for cash reporting and payment integrations):</strong> RevenueCat handles payments and
                 cash reporting, ensuring secure financial data processing.</li>
+            <li><strong>Expo Push Notifications (for notifications delivery):</strong> Used to send push notifications to
+                your devices. Only device tokens and necessary metadata are shared for delivery.</li>
         </ul>
         <p class="mb-4">We ensure that all third parties we work with take appropriate security measures to protect your data.</p>
 
         <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">5. User Rights and Data Control</h2>
         <p class="mb-4">You have the following rights and control over your personal data:</p>
         <ul class="list-disc pl-6 mb-4">
-            <li><strong>Profile management:</strong> You can update your profile picture and consumption data directly
-                through the app.</li>
+            <li><strong>Profile management:</strong> You can update your profile picture, country, currency, and
+                consumption/quitting data directly through the app.</li>
+            <li><strong>Friends controls:</strong> You can choose to add/remove friends and to share consumption details like when a snus has been taken whith them.</li>
+            <li><strong>Notifications control:</strong> You can opt in or out of push notifications anytime in Settings or
+                via your device settings.</li>
             <li><strong>Data deletion:</strong> If you wish to delete your account and associated data, you can do so by
                 sending an email to <a href="mailto:info@breezer.now" class="text-blue-500 underline">info@breezer.now</a> or by going to <strong>Settings
                 -> Account Settings -> Delete Account</strong> in the app.</li>
@@ -343,8 +373,9 @@
         <ul class="list-disc pl-6 mb-4">
             <li><strong>Encryption:</strong> Your data is stored securely using encryption provided by Appwrite Cloud.</li>
             <li><strong>Access control:</strong> Only authorized personnel have access to your data.</li>
-            <li><strong>No transfer outside your region:</strong> Your data is not transferred to other countries and is
-                stored securely within the region Appwrite Cloud operates in.</li>
+            <li><strong>Regional storage:</strong> We aim to store data within the region where Appwrite Cloud operates for
+                your workspace. Push notification delivery is handled by Expo, which may process data across regions solely
+                to deliver notifications.</li>
         </ul>
         <p class="mb-4">While we take all reasonable precautions to protect your data, please note that no method of transmission over
             the Internet or method of electronic storage is 100% secure. We cannot guarantee absolute security, but we strive
@@ -377,16 +408,19 @@
         <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">10. Marketing and Promotional Communications</h2>
         <p class="mb-4">At present, Breezer does not engage in sending promotional communications, but this may change in the future. If we
             do send you marketing emails, you will have the option to opt-out by clicking the "unsubscribe" link in the email
-            or updating your preferences in the app settings.</p>
+            or updating your preferences in the app settings. Push notifications are sent only with your consent and can be
+            disabled at any time in Settings or via your device settings.</p>
 
         <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">11. Data Retention</h2>
         <p class="mb-4">We will retain your personal data for as long as your account remains active. If you delete your account, we will
-            delete all associated data as per our retention policy.</p>
+            delete all associated data as per our retention policy. Certain minimal logs (e.g., security and moderation
+            logs) may be retained for a limited period as required for safety, fraud prevention, and legal compliance.</p>
 
         <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">12. Children's Privacy</h2>
         <p class="mb-4">Breezer is not intended for use by children under the age of 17. If you are under 17, please do not use the app. We
             do not knowingly collect data from children under the age of 17. If we become aware that we have collected personal
-            data from someone under 17, we will take steps to delete that data.</p>
+            data from someone under 17, we will take steps to delete that data. Community features are moderated but may
+            expose users to content shared by others; parental guidance is advised.</p>
 
         <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">13. Contact Information</h2>
         <p class="mb-4">If you have any questions, concerns, or requests regarding this Privacy Policy, please contact us at:</p>
