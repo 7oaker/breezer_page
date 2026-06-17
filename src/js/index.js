@@ -9,6 +9,355 @@ import sitemapXml from '../sitemap.xml'; // Import sitemap.xmlimport GLightbox f
 import Swiper, { Navigation } from 'swiper';
 import WOW from 'wowjs';
 
+/**
+ * Cookie consent (DSGVO/GDPR-style opt-in) for Google Analytics.
+ * - No analytics script is loaded until user explicitly enables Analytics.
+ * - Consent is stored in a first-party cookie (essential cookie).
+ * - A "Cookie settings" footer link (data-cookie-settings) re-opens settings.
+ */
+const BREEZER_GA_MEASUREMENT_ID = 'G-F1DFG9VDZQ';
+const BREEZER_COOKIE_CONSENT_KEY = 'breezer_cookie_consent_v1';
+const BREEZER_COOKIE_CONSENT_MAX_AGE_SECONDS = 60 * 60 * 24 * 365; // 12 months
+
+function breezerParseJson(value) {
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
+}
+
+function breezerGetCookie(name) {
+  const cookies = document.cookie ? document.cookie.split('; ') : [];
+  for (const c of cookies) {
+    const idx = c.indexOf('=');
+    if (idx === -1) continue;
+    const k = decodeURIComponent(c.slice(0, idx));
+    if (k !== name) continue;
+    return decodeURIComponent(c.slice(idx + 1));
+  }
+  return null;
+}
+
+function breezerSetCookie(name, value, maxAgeSeconds) {
+  const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+  document.cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}; Max-Age=${maxAgeSeconds}; Path=/; SameSite=Lax${secure}`;
+}
+
+function breezerGetConsent() {
+  // Migration (one-time): if old localStorage consent exists, move it to cookie.
+  const legacyRaw = localStorage.getItem(BREEZER_COOKIE_CONSENT_KEY);
+  if (legacyRaw && !breezerGetCookie(BREEZER_COOKIE_CONSENT_KEY)) {
+    const legacyParsed = breezerParseJson(legacyRaw);
+    if (legacyParsed && typeof legacyParsed === 'object') {
+      const migrated = {
+        analytics: Boolean(legacyParsed.analytics),
+        updatedAt: legacyParsed.updatedAt || null,
+        version: legacyParsed.version || 1,
+      };
+      breezerSetCookie(
+        BREEZER_COOKIE_CONSENT_KEY,
+        JSON.stringify(migrated),
+        BREEZER_COOKIE_CONSENT_MAX_AGE_SECONDS
+      );
+    }
+    localStorage.removeItem(BREEZER_COOKIE_CONSENT_KEY);
+  }
+
+  const raw = breezerGetCookie(BREEZER_COOKIE_CONSENT_KEY);
+  const parsed = raw ? breezerParseJson(raw) : null;
+  if (!parsed || typeof parsed !== 'object') return null;
+  return {
+    analytics: Boolean(parsed.analytics),
+    updatedAt: parsed.updatedAt || null,
+    version: parsed.version || 1,
+  };
+}
+
+function breezerSetConsent(next) {
+  const payload = {
+    analytics: Boolean(next.analytics),
+    version: 1,
+    updatedAt: new Date().toISOString(),
+  };
+  breezerSetCookie(
+    BREEZER_COOKIE_CONSENT_KEY,
+    JSON.stringify(payload),
+    BREEZER_COOKIE_CONSENT_MAX_AGE_SECONDS
+  );
+  return payload;
+}
+
+function breezerDeleteCookie(name) {
+  // Expire cookie for current path and root path; best-effort only.
+  document.cookie = `${name}=; Max-Age=0; path=/; SameSite=Lax`;
+  document.cookie = `${name}=; Max-Age=0; path=/; SameSite=Lax; domain=${location.hostname}`;
+}
+
+function breezerDisableGoogleAnalytics() {
+  window[`ga-disable-${BREEZER_GA_MEASUREMENT_ID}`] = true;
+  breezerDeleteCookie('_ga');
+  // GA4 property cookies are usually _ga_<container-id>
+  document.cookie
+    .split(';')
+    .map((c) => c.trim().split('=')[0])
+    .filter((n) => n.startsWith('_ga_'))
+    .forEach((n) => breezerDeleteCookie(n));
+}
+
+function breezerEnsureGtagStub() {
+  if (window.dataLayer && typeof window.gtag === 'function') return;
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function gtag() {
+    window.dataLayer.push(arguments);
+  };
+  // Default: deny everything until explicit opt-in.
+  window.gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'denied',
+    functionality_storage: 'denied',
+    personalization_storage: 'denied',
+    security_storage: 'granted',
+    wait_for_update: 500,
+  });
+}
+
+function breezerLoadGoogleAnalytics() {
+  if (window[`ga-disable-${BREEZER_GA_MEASUREMENT_ID}`]) return;
+  if (document.getElementById('breezer-ga-gtag')) return;
+
+  breezerEnsureGtagStub();
+  window.gtag('consent', 'update', {
+    analytics_storage: 'granted',
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+  });
+
+  const script = document.createElement('script');
+  script.async = true;
+  script.id = 'breezer-ga-gtag';
+  script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(BREEZER_GA_MEASUREMENT_ID)}`;
+  document.head.appendChild(script);
+
+  window.gtag('js', new Date());
+  window.gtag('config', BREEZER_GA_MEASUREMENT_ID, {
+    allow_google_signals: false,
+    allow_ad_personalization_signals: false,
+    send_page_view: true,
+  });
+}
+
+function breezerApplyConsent(consent) {
+  if (!consent || !consent.analytics) {
+    breezerDisableGoogleAnalytics();
+    return;
+  }
+  // Re-enable GA if previously disabled in this session.
+  window[`ga-disable-${BREEZER_GA_MEASUREMENT_ID}`] = false;
+  breezerLoadGoogleAnalytics();
+}
+
+function breezerCreateCookieBanner() {
+  const wrapper = document.createElement('div');
+  wrapper.id = 'breezer-cookie-banner';
+  wrapper.className = 'fixed inset-x-0 bottom-0 z-[9999] p-4 sm:p-6';
+
+  wrapper.innerHTML = `
+    <div class="mx-auto max-w-4xl rounded-xl border border-stroke bg-white/95 shadow-card backdrop-blur dark:border-stroke-dark dark:bg-[#15182B]/95 dark:shadow-card-dark">
+      <div class="p-4 sm:p-6">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div class="max-w-2xl">
+            <h2 class="text-base font-semibold text-black dark:text-white">Cookies & privacy</h2>
+            <p class="mt-2 text-sm text-body dark:text-white/70">
+              We use <strong>essential storage</strong> to remember your preferences (e.g. theme) and, with your permission,
+              <strong>Google Analytics</strong> to measure website usage and improve the site.
+            </p>
+            <p class="mt-2 text-xs text-body dark:text-white/60">
+              You can change your choice anytime via <strong>Cookie settings</strong> in the footer.
+            </p>
+            <a href="privacy-policy-website.html" class="mt-2 inline-block text-sm text-primary underline underline-offset-2">Learn more</a>
+          </div>
+
+          <div class="flex w-full flex-col gap-2 sm:w-auto sm:min-w-[220px]">
+            <button type="button" data-cc-accept class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-opacity-90">
+              Accept analytics
+            </button>
+            <button type="button" data-cc-reject class="rounded-md border border-stroke bg-white px-4 py-2 text-sm font-medium text-black hover:bg-gray dark:border-stroke-dark dark:bg-black dark:text-white">
+              Reject
+            </button>
+            <button type="button" data-cc-customize class="rounded-md px-4 py-2 text-sm font-medium text-primary hover:underline">
+              Customize
+            </button>
+          </div>
+        </div>
+
+        <div data-cc-panel class="mt-5 hidden border-t border-stroke pt-5 dark:border-stroke-dark">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="text-sm font-medium text-black dark:text-white">Essential</p>
+              <p class="mt-1 text-xs text-body dark:text-white/60">Required for basic functionality and preferences.</p>
+            </div>
+            <span class="text-xs font-semibold text-body dark:text-white/60">Always on</span>
+          </div>
+
+          <div class="mt-4 flex items-start justify-between gap-4">
+            <div>
+              <p class="text-sm font-medium text-black dark:text-white">Analytics</p>
+              <p class="mt-1 text-xs text-body dark:text-white/60">Google Analytics to understand usage and improve the website.</p>
+            </div>
+            <label class="flex items-center gap-2">
+              <input data-cc-analytics type="checkbox" class="h-4 w-4 accent-primary" />
+              <span class="text-sm text-body dark:text-white/70">Enable</span>
+            </label>
+          </div>
+
+          <div class="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-end">
+            <button type="button" data-cc-save class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-opacity-90">
+              Save selection
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const panel = wrapper.querySelector('[data-cc-panel]');
+  const analyticsToggle = wrapper.querySelector('[data-cc-analytics]');
+
+  const openCustomize = () => {
+    panel.classList.remove('hidden');
+    const existing = breezerGetConsent();
+    analyticsToggle.checked = Boolean(existing?.analytics);
+  };
+
+  wrapper.querySelector('[data-cc-customize]').addEventListener('click', openCustomize);
+  wrapper.querySelector('[data-cc-accept]').addEventListener('click', () => {
+    const consent = breezerSetConsent({ analytics: true });
+    breezerApplyConsent(consent);
+    wrapper.remove();
+  });
+  wrapper.querySelector('[data-cc-reject]').addEventListener('click', () => {
+    const consent = breezerSetConsent({ analytics: false });
+    breezerApplyConsent(consent);
+    wrapper.remove();
+  });
+  wrapper.querySelector('[data-cc-save]').addEventListener('click', () => {
+    const consent = breezerSetConsent({ analytics: analyticsToggle.checked });
+    breezerApplyConsent(consent);
+    wrapper.remove();
+  });
+
+  return wrapper;
+}
+
+function breezerOpenCookieSettingsModal() {
+  const existing = breezerGetConsent() || { analytics: false };
+
+  const overlay = document.createElement('div');
+  overlay.id = 'breezer-cookie-settings';
+  overlay.className = 'fixed inset-0 z-[9999] flex items-end justify-center p-4 sm:items-center';
+  overlay.innerHTML = `
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="relative w-full max-w-xl rounded-xl border border-stroke bg-white shadow-card dark:border-stroke-dark dark:bg-[#15182B] dark:shadow-card-dark">
+      <div class="p-5 sm:p-6">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h2 class="text-base font-semibold text-black dark:text-white">Cookie settings</h2>
+            <p class="mt-2 text-sm text-body dark:text-white/70">
+              Choose whether we may use Google Analytics. Essential storage (e.g. theme preference) is always enabled.
+            </p>
+          </div>
+          <button type="button" data-cc-close class="rounded-md px-2 py-1 text-sm text-body hover:text-black dark:text-white/70 dark:hover:text-white" aria-label="Close cookie settings">
+            Close
+          </button>
+        </div>
+
+        <div class="mt-5 space-y-4 border-t border-stroke pt-5 dark:border-stroke-dark">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="text-sm font-medium text-black dark:text-white">Essential</p>
+              <p class="mt-1 text-xs text-body dark:text-white/60">Required for basic functionality and preferences.</p>
+            </div>
+            <span class="text-xs font-semibold text-body dark:text-white/60">Always on</span>
+          </div>
+
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="text-sm font-medium text-black dark:text-white">Analytics</p>
+              <p class="mt-1 text-xs text-body dark:text-white/60">Google Analytics to understand usage and improve the website.</p>
+            </div>
+            <label class="flex items-center gap-2">
+              <input data-cc-analytics type="checkbox" class="h-4 w-4 accent-primary" />
+              <span class="text-sm text-body dark:text-white/70">Enable</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-end">
+          <button type="button" data-cc-reject class="rounded-md border border-stroke bg-white px-4 py-2 text-sm font-medium text-black hover:bg-gray dark:border-stroke-dark dark:bg-black dark:text-white">
+            Reject analytics
+          </button>
+          <button type="button" data-cc-save class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-opacity-90">
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const checkbox = overlay.querySelector('[data-cc-analytics]');
+  checkbox.checked = Boolean(existing.analytics);
+
+  const close = () => overlay.remove();
+
+  overlay.querySelector('[data-cc-close]').addEventListener('click', close);
+  overlay.querySelector('[data-cc-reject]').addEventListener('click', () => {
+    const consent = breezerSetConsent({ analytics: false });
+    breezerApplyConsent(consent);
+    close();
+  });
+  overlay.querySelector('[data-cc-save]').addEventListener('click', () => {
+    const consent = breezerSetConsent({ analytics: checkbox.checked });
+    breezerApplyConsent(consent);
+    close();
+  });
+
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay.querySelector('.absolute')) close();
+  });
+
+  document.body.appendChild(overlay);
+}
+
+function breezerInitCookieConsent() {
+  // Ensure a safe default in case any Google tag code is added later.
+  breezerEnsureGtagStub();
+
+  const existing = breezerGetConsent();
+  if (existing) {
+    breezerApplyConsent(existing);
+  } else {
+    document.body.appendChild(breezerCreateCookieBanner());
+  }
+
+  // Footer link handler(s)
+  document.querySelectorAll('[data-cookie-settings]').forEach((el) => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      breezerOpenCookieSettingsModal();
+    });
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', breezerInitCookieConsent);
+} else {
+  breezerInitCookieConsent();
+}
+
 window.wow = new WOW.WOW({
   live: false,
 });
