@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Join Breezer</title>
+  <meta name="apple-itunes-app" content="app-id=6737725511" />
+  <meta name="description" content="Track or quit snus together with Breezer." />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #161622;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+    }
+    .logo {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1FD9FF;
+      letter-spacing: 4px;
+      margin-bottom: 48px;
+      opacity: 0.9;
+    }
+    .icon-wrap {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(31, 217, 255, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 32px;
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+    .subtitle {
+      font-size: 15px;
+      color: #9ca3af;
+      line-height: 1.6;
+      margin-bottom: 40px;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      margin-bottom: 12px;
+      transition: opacity 0.15s;
+    }
+    .btn:active { opacity: 0.8; }
+    .btn-primary {
+      background: #1FD9FF;
+      color: #161622;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(22,22,34,0.3);
+      border-top-color: #161622;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <p class="logo">BREEZER</p>
+
+    <div class="icon-wrap">🤝</div>
+
+    <h1 id="title">You've been invited!</h1>
+    <p class="subtitle" id="subtitle">
+      Track or quit snus together.<br>Download Breezer to connect.
+    </p>
+
+    <a class="btn btn-primary" id="store-btn" href="#">
+      <span class="spinner" id="spinner"></span>
+      <span id="btn-text">Opening…</span>
+    </a>
+    <a class="btn btn-ghost" href="/">Learn more about Breezer</a>
+  </div>
+
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var ref = params.get('ref');
+
+      if (ref) {
+        document.getElementById('title').textContent = '@' + ref + ' invited you!';
+      }
+
+      var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+      var isAndroid = /android/i.test(navigator.userAgent);
+      var iosUrl = 'https://apps.apple.com/at/app/breezer/id6737725511?l=en-GB';
+      var androidUrl = 'https://play.google.com/store/apps/details?id=com.breezerapp.breezer';
+
+      var storeUrl = isAndroid ? androidUrl : iosUrl;
+      var btn = document.getElementById('store-btn');
+      btn.href = storeUrl;
+
+      // Update button text based on platform
+      var btnText = document.getElementById('btn-text');
+      if (isAndroid) btnText.textContent = 'Get Breezer on Google Play';
+      else if (isIOS) btnText.textContent = 'Get Breezer on the App Store';
+      else {
+        // Desktop — no auto-redirect, just show the button
+        btnText.textContent = 'Download Breezer';
+        document.getElementById('spinner').style.display = 'none';
+        return;
+      }
+
+      // Auto-redirect to store on mobile after brief delay
+      setTimeout(function () {
+        window.location.href = storeUrl;
+      }, 1200);
+    })();
+  </script>
+</body>
+</html>

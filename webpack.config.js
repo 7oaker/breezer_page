@@ -2,8 +2,9 @@ const path = require('path');
 const glob = require('glob');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const dotenv = require('dotenv');
-const webpack = require('webpack'); // Import DefinePlugin
+const webpack = require('webpack');
 
 // Load environment variables from a .env file
 dotenv.config();
@@ -106,7 +107,15 @@ module.exports = {
     }),
     // Use DefinePlugin to inject environment variables
     new webpack.DefinePlugin({
-      'process.env.REACT_APP_WEBHOOK_URL': JSON.stringify(process.env.REACT_APP_WEBHOOK_URL), // Inject the environment variable
+      'process.env.REACT_APP_WEBHOOK_URL': JSON.stringify(process.env.REACT_APP_WEBHOOK_URL),
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        // Apple Universal Links — must be served at /.well-known/apple-app-site-association
+        { from: 'src/.well-known', to: '.well-known' },
+        // Invite redirect page — served at /invite/
+        { from: 'src/invite', to: 'invite' },
+      ],
     }),
   ],
   output: {
