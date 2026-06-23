@@ -1,0 +1,10 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.breezerapp.breezer",
+      "sha256_cert_fingerprints": ["64:D8:C5:43:BF:B0:21:FF:A2:5A:6D:B2:BB:F3:18:6C:E6:8C:D1:E6:3D:5B:F0:85:8C:B6:32:3B:F6:C7:BA:6E"]
+    }
+  }
+]
