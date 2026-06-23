@@ -1,70 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Homepage - Highest Priority -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://breezer.now/</loc>
-    <lastmod>2025-01-27</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://breezer.now/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://breezer.now/de/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://breezer.now/de/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://breezer.now/de/" />
+    <lastmod>2026-06-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
-  <!-- Legal Pages - High Priority for Trust -->
   <url>
-    <loc>https://breezer.now/privacy-policy.html</loc>
-    <lastmod>2025-01-27</lastmod>
+    <loc>https://breezer.now/de/</loc>
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://breezer.now/de/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://breezer.now/de/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://breezer.now/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://breezer.now/de/" />
+    <lastmod>2026-06-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <url>
+    <loc>https://breezer.now/de/snus-tracker.html</loc>
+    <lastmod>2026-06-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://breezer.now/de/snus-aufhoeren.html</loc>
+    <lastmod>2026-06-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://breezer.now/de/zyn-tracker.html</loc>
+    <lastmod>2026-06-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://breezer.now/de/vs-snusless.html</loc>
+    <lastmod>2026-06-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://breezer.now/eula.html</loc>
-    <lastmod>2025-01-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Main Content Sections - Medium Priority -->
-  <url>
-    <loc>https://breezer.now/#about</loc>
-    <lastmod>2025-01-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://breezer.now/#features</loc>
-    <lastmod>2025-01-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://breezer.now/#screens</loc>
-    <lastmod>2025-01-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <url>
-    <loc>https://breezer.now/#work-process</loc>
-    <lastmod>2025-01-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <!-- Support and Contact - Lower Priority -->
-  <url>
-    <loc>https://breezer.now/#support</loc>
-    <lastmod>2025-01-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-
-  <!-- Error Pages - Low Priority but Important -->
-  <url>
-    <loc>https://breezer.now/404.html</loc>
-    <lastmod>2025-01-27</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
   </url>
 </urlset>

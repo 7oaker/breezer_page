@@ -1,0 +1,70 @@
+<script>
+  (function () {
+    var LANG_KEY = 'breezer_lang';
+
+    var path = window.location.pathname.replace(/\/index\.html$/i, '/');
+    if (path.length > 1 && path.charAt(path.length - 1) !== '/') {
+      path += '/';
+    }
+
+    var isEnHome = path === '/';
+    var isDeHome = path === '/de/';
+    if (!isEnHome && !isDeHome) return;
+
+    var ua = navigator.userAgent || '';
+    if (/bot|crawl|spider|slurp|bingpreview|facebookexternalhit|linkedinbot|mediapartners|yandex|baiduspider|duckduckbot|applebot|semrush|ahref|googlebot|google-inspectiontool|storebot-google/i.test(ua)) {
+      return;
+    }
+
+    function getSavedLang() {
+      try {
+        return localStorage.getItem(LANG_KEY);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function saveLang(value) {
+      try {
+        localStorage.setItem(LANG_KEY, value);
+      } catch (e) {
+        // Storage blocked: redirect still works, preference just won't persist.
+      }
+    }
+
+    var params = new URLSearchParams(window.location.search);
+    var forced = params.get('lang');
+    var saved = getSavedLang();
+
+    // Only persist language when the user explicitly chooses it (?lang= or nav link).
+    if (forced === 'en' || forced === 'de') {
+      saveLang(forced);
+      saved = forced;
+    }
+
+    var browserDe = (navigator.languages || [navigator.language || 'en']).some(function (lang) {
+      return String(lang || '').toLowerCase().indexOf('de') === 0;
+    });
+
+    var target = null;
+    if (saved === 'de' && isEnHome) {
+      target = '/de/';
+    } else if (saved === 'en' && isDeHome) {
+      target = '/';
+    } else if (!saved) {
+      // Auto-redirect from browser language only. No storage write (GDPR-friendly).
+      if (browserDe && isEnHome) target = '/de/';
+      else if (!browserDe && isDeHome) target = '/';
+    }
+
+    if (!target) return;
+
+    var cleanSearch = window.location.search
+      .replace(/([?&])lang=(en|de)(&|$)/, function (_, prefix, _lang, tail) {
+        return tail ? prefix : '';
+      })
+      .replace(/\?$/, '');
+
+    window.location.replace(target + cleanSearch + window.location.hash);
+  })();
+</script>

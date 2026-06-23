@@ -23,26 +23,38 @@ const processNestedHtml = (content, loaderContext, dir = null) =>
         );
       });
 
-// HTML generation
+// HTML generation (root pages + nested SEO pages under src/de/)
 const paths = [];
-const generateHTMLPlugins = () =>
-  glob.sync('./src/*.html').map((dir) => {
-    const filename = path.basename(dir);
+const generateHTMLPlugins = () => {
+  const htmlFiles = glob.sync('./src/**/*.html').filter((filePath) => {
+    if (filePath.includes('/partials/') || filePath.includes('/invite/')) return false;
+    const base = path.basename(filePath);
+    // Template demo pages: keep out of production build (noindex is not enough alone).
+    if (['blog-grid.html', 'blog-details.html', 'signin.html', 'signup.html'].includes(base)) {
+      return false;
+    }
+    return true;
+  });
 
-    if (filename !== '404.html') {
-      paths.push(filename);
+  return htmlFiles.map((filePath) => {
+    const relativePath = path.relative(path.join(__dirname, 'src'), filePath);
+    const is404 = path.basename(filePath) === '404.html';
+
+    if (!is404) {
+      paths.push(relativePath);
     }
 
     return new HtmlWebpackPlugin({
-      filename,
-      template: `./src/${filename}`,
+      filename: relativePath,
+      template: filePath,
       favicon: `./src/images/favicon.ico`,
       inject: 'body',
     });
   });
+};
 
 module.exports = {
-  mode: 'development',
+  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
   entry: './src/js/index.js',
   devServer: {
     static: {
@@ -111,10 +123,10 @@ module.exports = {
     }),
     new CopyWebpackPlugin({
       patterns: [
-        // Apple Universal Links — must be served at /.well-known/apple-app-site-association
         { from: 'src/.well-known', to: '.well-known' },
-        // Invite redirect page — served at /invite/
         { from: 'src/invite', to: 'invite' },
+        { from: 'src/.nojekyll', to: '.', noErrorOnMissing: true },
+        { from: 'CNAME', to: '.', noErrorOnMissing: true },
       ],
     }),
   ],
@@ -122,6 +134,7 @@ module.exports = {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'build'),
     clean: true,
+    publicPath: 'auto',
     assetModuleFilename: 'images/[name][ext]',
   },
 };

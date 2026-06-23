@@ -17,6 +17,80 @@ import WOW from 'wowjs';
  */
 const BREEZER_GA_MEASUREMENT_ID = 'G-F1DFG9VDZQ';
 const BREEZER_COOKIE_CONSENT_KEY = 'breezer_cookie_consent_v1';
+
+function breezerIsGermanPage() {
+  const lang = (document.documentElement.lang || '').toLowerCase();
+  if (lang.startsWith('de')) return true;
+  const path = window.location.pathname.replace(/\/index\.html$/i, '/');
+  return path === '/de/' || path.startsWith('/de/');
+}
+
+function breezerPrivacyPolicyUrl() {
+  return breezerIsGermanPage() ? '../privacy-policy-website.html' : 'privacy-policy-website.html';
+}
+
+const BREEZER_UI = {
+  en: {
+    cookiesTitle: 'Cookies & privacy',
+    cookiesIntro:
+      'We use <strong>essential storage</strong> for basic functionality (theme, language preference when you choose it) and, with your permission, <strong>Google Analytics</strong> to measure website usage and improve the site.',
+    cookiesHint:
+      'You can change your choice anytime via <strong>Cookie settings</strong> in the footer.',
+    learnMore: 'Learn more',
+    acceptAnalytics: 'Accept analytics',
+    reject: 'Reject',
+    customize: 'Customize',
+    essential: 'Essential',
+    essentialHint:
+      'Required for basic functionality and preferences (theme, language when selected).',
+    alwaysOn: 'Always on',
+    analytics: 'Analytics',
+    analyticsHint: 'Google Analytics to understand usage and improve the website.',
+    enable: 'Enable',
+    saveSelection: 'Save selection',
+    cookieSettings: 'Cookie settings',
+    cookieSettingsIntro:
+      'Choose whether we may use Google Analytics. Essential storage (theme, language when you select it) is always enabled.',
+    close: 'Close',
+    rejectAnalytics: 'Reject analytics',
+    save: 'Save',
+    formSuccess: 'Thank you for reaching out! We will get back to you soon.',
+    formError: 'Something went wrong. Please try again later.',
+  },
+  de: {
+    cookiesTitle: 'Cookies & Datenschutz',
+    cookiesIntro:
+      'Wir nutzen <strong>essenzielle Speicherung</strong> für Grundfunktionen (Theme, Sprache wenn du sie wählst) und mit deiner Zustimmung <strong>Google Analytics</strong>, um die Website-Nutzung zu messen und die Seite zu verbessern.',
+    cookiesHint:
+      'Du kannst deine Wahl jederzeit über <strong>Cookie-Einstellungen</strong> im Footer ändern.',
+    learnMore: 'Mehr erfahren',
+    acceptAnalytics: 'Analytics akzeptieren',
+    reject: 'Ablehnen',
+    customize: 'Anpassen',
+    essential: 'Essenziell',
+    essentialHint:
+      'Erforderlich für Grundfunktionen und Einstellungen (Theme, Sprache bei Auswahl).',
+    alwaysOn: 'Immer aktiv',
+    analytics: 'Analytics',
+    analyticsHint:
+      'Google Analytics, um die Nutzung zu verstehen und die Website zu verbessern.',
+    enable: 'Aktivieren',
+    saveSelection: 'Auswahl speichern',
+    cookieSettings: 'Cookie-Einstellungen',
+    cookieSettingsIntro:
+      'Wähle, ob wir Google Analytics nutzen dürfen. Essenzielle Speicherung (Theme, Sprache bei Auswahl) ist immer aktiv.',
+    close: 'Schließen',
+    rejectAnalytics: 'Analytics ablehnen',
+    save: 'Speichern',
+    formSuccess: 'Danke für deine Nachricht! Wir melden uns bald bei dir.',
+    formError: 'Etwas ist schiefgelaufen. Bitte versuche es später erneut.',
+  },
+};
+
+function breezerUi(key) {
+  const locale = breezerIsGermanPage() ? 'de' : 'en';
+  return BREEZER_UI[locale][key];
+}
 const BREEZER_COOKIE_CONSENT_MAX_AGE_SECONDS = 60 * 60 * 24 * 365; // 12 months
 
 function breezerParseJson(value) {
@@ -170,26 +244,25 @@ function breezerCreateCookieBanner() {
       <div class="p-4 sm:p-6">
         <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div class="max-w-2xl">
-            <h2 class="text-base font-semibold text-black dark:text-white">Cookies & privacy</h2>
+            <h2 class="text-base font-semibold text-black dark:text-white">${breezerUi('cookiesTitle')}</h2>
             <p class="mt-2 text-sm text-body dark:text-white/70">
-              We use <strong>essential storage</strong> to remember your preferences (e.g. theme) and, with your permission,
-              <strong>Google Analytics</strong> to measure website usage and improve the site.
+              ${breezerUi('cookiesIntro')}
             </p>
             <p class="mt-2 text-xs text-body dark:text-white/60">
-              You can change your choice anytime via <strong>Cookie settings</strong> in the footer.
+              ${breezerUi('cookiesHint')}
             </p>
-            <a href="privacy-policy-website.html" class="mt-2 inline-block text-sm text-primary underline underline-offset-2">Learn more</a>
+            <a href="${breezerPrivacyPolicyUrl()}" class="mt-2 inline-block text-sm text-primary underline underline-offset-2">${breezerUi('learnMore')}</a>
           </div>
 
           <div class="flex w-full flex-col gap-2 sm:w-auto sm:min-w-[220px]">
             <button type="button" data-cc-accept class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-opacity-90">
-              Accept analytics
+              ${breezerUi('acceptAnalytics')}
             </button>
             <button type="button" data-cc-reject class="rounded-md border border-stroke bg-white px-4 py-2 text-sm font-medium text-black hover:bg-gray dark:border-stroke-dark dark:bg-black dark:text-white">
-              Reject
+              ${breezerUi('reject')}
             </button>
             <button type="button" data-cc-customize class="rounded-md px-4 py-2 text-sm font-medium text-primary hover:underline">
-              Customize
+              ${breezerUi('customize')}
             </button>
           </div>
         </div>
@@ -197,26 +270,26 @@ function breezerCreateCookieBanner() {
         <div data-cc-panel class="mt-5 hidden border-t border-stroke pt-5 dark:border-stroke-dark">
           <div class="flex items-start justify-between gap-4">
             <div>
-              <p class="text-sm font-medium text-black dark:text-white">Essential</p>
-              <p class="mt-1 text-xs text-body dark:text-white/60">Required for basic functionality and preferences.</p>
+              <p class="text-sm font-medium text-black dark:text-white">${breezerUi('essential')}</p>
+              <p class="mt-1 text-xs text-body dark:text-white/60">${breezerUi('essentialHint')}</p>
             </div>
-            <span class="text-xs font-semibold text-body dark:text-white/60">Always on</span>
+            <span class="text-xs font-semibold text-body dark:text-white/60">${breezerUi('alwaysOn')}</span>
           </div>
 
           <div class="mt-4 flex items-start justify-between gap-4">
             <div>
-              <p class="text-sm font-medium text-black dark:text-white">Analytics</p>
-              <p class="mt-1 text-xs text-body dark:text-white/60">Google Analytics to understand usage and improve the website.</p>
+              <p class="text-sm font-medium text-black dark:text-white">${breezerUi('analytics')}</p>
+              <p class="mt-1 text-xs text-body dark:text-white/60">${breezerUi('analyticsHint')}</p>
             </div>
             <label class="flex items-center gap-2">
               <input data-cc-analytics type="checkbox" class="h-4 w-4 accent-primary" />
-              <span class="text-sm text-body dark:text-white/70">Enable</span>
+              <span class="text-sm text-body dark:text-white/70">${breezerUi('enable')}</span>
             </label>
           </div>
 
           <div class="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-end">
             <button type="button" data-cc-save class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-opacity-90">
-              Save selection
+              ${breezerUi('saveSelection')}
             </button>
           </div>
         </div>
@@ -265,43 +338,43 @@ function breezerOpenCookieSettingsModal() {
       <div class="p-5 sm:p-6">
         <div class="flex items-start justify-between gap-4">
           <div>
-            <h2 class="text-base font-semibold text-black dark:text-white">Cookie settings</h2>
+            <h2 class="text-base font-semibold text-black dark:text-white">${breezerUi('cookieSettings')}</h2>
             <p class="mt-2 text-sm text-body dark:text-white/70">
-              Choose whether we may use Google Analytics. Essential storage (e.g. theme preference) is always enabled.
+              ${breezerUi('cookieSettingsIntro')}
             </p>
           </div>
-          <button type="button" data-cc-close class="rounded-md px-2 py-1 text-sm text-body hover:text-black dark:text-white/70 dark:hover:text-white" aria-label="Close cookie settings">
-            Close
+          <button type="button" data-cc-close class="rounded-md px-2 py-1 text-sm text-body hover:text-black dark:text-white/70 dark:hover:text-white" aria-label="${breezerUi('close')}">
+            ${breezerUi('close')}
           </button>
         </div>
 
         <div class="mt-5 space-y-4 border-t border-stroke pt-5 dark:border-stroke-dark">
           <div class="flex items-start justify-between gap-4">
             <div>
-              <p class="text-sm font-medium text-black dark:text-white">Essential</p>
-              <p class="mt-1 text-xs text-body dark:text-white/60">Required for basic functionality and preferences.</p>
+              <p class="text-sm font-medium text-black dark:text-white">${breezerUi('essential')}</p>
+              <p class="mt-1 text-xs text-body dark:text-white/60">${breezerUi('essentialHint')}</p>
             </div>
-            <span class="text-xs font-semibold text-body dark:text-white/60">Always on</span>
+            <span class="text-xs font-semibold text-body dark:text-white/60">${breezerUi('alwaysOn')}</span>
           </div>
 
           <div class="flex items-start justify-between gap-4">
             <div>
-              <p class="text-sm font-medium text-black dark:text-white">Analytics</p>
-              <p class="mt-1 text-xs text-body dark:text-white/60">Google Analytics to understand usage and improve the website.</p>
+              <p class="text-sm font-medium text-black dark:text-white">${breezerUi('analytics')}</p>
+              <p class="mt-1 text-xs text-body dark:text-white/60">${breezerUi('analyticsHint')}</p>
             </div>
             <label class="flex items-center gap-2">
               <input data-cc-analytics type="checkbox" class="h-4 w-4 accent-primary" />
-              <span class="text-sm text-body dark:text-white/70">Enable</span>
+              <span class="text-sm text-body dark:text-white/70">${breezerUi('enable')}</span>
             </label>
           </div>
         </div>
 
         <div class="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-end">
           <button type="button" data-cc-reject class="rounded-md border border-stroke bg-white px-4 py-2 text-sm font-medium text-black hover:bg-gray dark:border-stroke-dark dark:bg-black dark:text-white">
-            Reject analytics
+            ${breezerUi('rejectAnalytics')}
           </button>
           <button type="button" data-cc-save class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-opacity-90">
-            Save
+            ${breezerUi('save')}
           </button>
         </div>
       </div>
@@ -554,14 +627,27 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       .then(responseText => {
         console.log('Response from webhook:', responseText); // Log the raw response (e.g., "Accepted")
-        alert('Thank you for reaching out! We will get back to you soon.'); // Show "Thank You" message
+        alert(breezerUi('formSuccess'));
       })
       .catch((error) => {
-        console.error('Error:', error); // Log any error that occurs
-        alert('Something went wrong. Please try again later.'); // Show error message
+        console.error('Error:', error);
+        alert(breezerUi('formError'));
       });
     });
   } else {
     console.log('Form element not found in the DOM.');
   }
+
+  document.querySelectorAll('[data-set-lang]').forEach(function (link) {
+    link.addEventListener('click', function () {
+      var lang = link.getAttribute('data-set-lang');
+      if (lang === 'en' || lang === 'de') {
+        try {
+          localStorage.setItem('breezer_lang', lang);
+        } catch (e) {
+          // Ignore if storage is unavailable.
+        }
+      }
+    });
+  });
 });

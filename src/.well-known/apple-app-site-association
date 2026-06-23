@@ -7,7 +7,7 @@
         "components": [
           {
             "/": "/invite*",
-            "comment": "Invite deep links — handled by InviteLinkHandler in the app"
+            "comment": "Invite deep links, handled by InviteLinkHandler in the app"
           }
         ]
       }

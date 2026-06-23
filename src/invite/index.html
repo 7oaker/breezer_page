@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Join Breezer</title>
+  <title>Join Breezer | Snus App Invite</title>
+  <meta name="description" content="You have been invited to Breezer, the social snus app. Download free for iOS and Android." />
+  <meta name="robots" content="noindex, follow" />
+  <link rel="canonical" href="https://breezer.now/invite/" />
   <meta name="apple-itunes-app" content="app-id=6737725511" />
-  <meta name="description" content="Track or quit snus together with Breezer." />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -132,7 +134,7 @@
       if (isAndroid) btnText.textContent = 'Get Breezer on Google Play';
       else if (isIOS) btnText.textContent = 'Get Breezer on the App Store';
       else {
-        // Desktop — no auto-redirect, just show the button
+        // Desktop: no auto-redirect, just show the button
         btnText.textContent = 'Download Breezer';
         document.getElementById('spinner').style.display = 'none';
         return;
