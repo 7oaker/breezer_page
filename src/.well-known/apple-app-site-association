@@ -1,15 +1,9 @@
 {
   "applinks": {
-    "apps": [],
     "details": [
       {
         "appIDs": ["YMVS5BPJ6T.com.breezerapp.breezer"],
-        "components": [
-          {
-            "/": "/invite*",
-            "comment": "Invite deep links, handled by InviteLinkHandler in the app"
-          }
-        ]
+        "paths": ["/invite", "/invite/", "/invite/*", "/invite?*"]
       }
     ]
   }
