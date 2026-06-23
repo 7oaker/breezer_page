@@ -139,6 +139,7 @@ de = de.replace(
 
 // Asset and page paths for /de/ output
 de = de.replace(/src="images\//g, 'src="../images/');
+de = de.replace(/<include src="partials\//g, '<include src="../partials/');
 de = de.replace(/href="index\.html"/g, 'href="/de/"');
 de = de.replace(/href="privacy-policy/g, 'href="../privacy-policy');
 de = de.replace(/href="eula\.html"/g, 'href="../eula.html"');
@@ -146,36 +147,6 @@ de = de.replace(/href="eula\.html"/g, 'href="../eula.html"');
 // Nav labels
 de = de.replace(/>\s*About\s*</g, '>Über uns<');
 de = de.replace(/>\s*How It Works\s*</g, '>So funktioniert\'s<');
-
-// Language switcher in nav (before Support)
-de = de.replace(
-  `<li class="menu-item">
-                  <a
-                    href="#support"
-                    class="menu-scroll inline-flex items-center text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary lg:py-7"
-                  >
-                    Support
-                  </a>
-                </li>`,
-  `<li class="menu-item">
-                  <a
-                    href="/"
-                    hreflang="en"
-                    data-set-lang="en"
-                    class="inline-flex items-center text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary lg:py-7"
-                  >
-                    English
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a
-                    href="#support"
-                    class="menu-scroll inline-flex items-center text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary lg:py-7"
-                  >
-                    Support
-                  </a>
-                </li>`
-);
 
 // Major section headings and all visible copy (longest strings first)
 const translationMap = [
@@ -256,22 +227,6 @@ for (const [en, deText] of translationMap) {
 de = de.replace(
   /By clicking contact us button, you agree our terms and\s+policy,/g,
   'Mit Klick auf Kontakt stimmst du unseren AGB und Richtlinien zu,'
-);
-
-// Remove Deutsch switcher on German page (English switcher is enough)
-de = de.replace(
-  `                <li class="menu-item">
-                  <a
-                    href="/de/"
-                    hreflang="de-AT"
-                    data-set-lang="de"
-                    class="inline-flex items-center text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary lg:py-7"
-                  >
-                    Deutsch
-                  </a>
-                </li>
-`,
-  ''
 );
 
 de = de.replace(

@@ -650,4 +650,27 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  var langSwitcher = document.getElementById('lang-switcher');
+  if (langSwitcher) {
+    var htmlLang = (document.documentElement.lang || '').toLowerCase();
+    var onDe = htmlLang.indexOf('de') === 0 || window.location.pathname.indexOf('/de') === 0;
+    var activeLang = onDe ? 'de' : 'en';
+    var activeClasses = ['bg-primary', 'text-white', 'pointer-events-none'];
+    var inactiveClasses = ['text-body', 'dark:text-white/70'];
+
+    langSwitcher.querySelectorAll('[data-lang]').forEach(function (btn) {
+      var isActive = btn.getAttribute('data-lang') === activeLang;
+      btn.setAttribute('aria-current', isActive ? 'true' : 'false');
+      activeClasses.forEach(function (c) {
+        btn.classList.toggle(c, isActive);
+      });
+      if (isActive) {
+        inactiveClasses.forEach(function (c) {
+          btn.classList.remove(c);
+        });
+        btn.classList.remove('hover:text-primary', 'dark:hover:text-primary');
+      }
+    });
+  }
 });
