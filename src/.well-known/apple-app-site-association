@@ -3,7 +3,12 @@
     "details": [
       {
         "appIDs": ["YMVS5BPJ6T.com.breezerapp.breezer"],
-        "paths": ["/invite", "/invite/", "/invite/*", "/invite?*"]
+        "components": [
+          {
+            "/": "/invite*",
+            "comment": "Matches /invite with any or no query string"
+          }
+        ]
       }
     ]
   }

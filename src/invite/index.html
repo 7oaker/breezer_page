@@ -140,6 +140,13 @@
         return;
       }
 
+      // Deferred deep linking: write invite URL to clipboard so the app can read it
+      // after a fresh install. clipboard.writeText doesn't require a user gesture on HTTPS.
+      // On iOS 16+ the app will show "Breezer wants to paste from Safari" — expected behavior.
+      if (ref && navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(window.location.href).catch(function () {});
+      }
+
       // Auto-redirect to store on mobile after brief delay
       setTimeout(function () {
         window.location.href = storeUrl;
