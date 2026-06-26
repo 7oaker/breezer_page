@@ -6,8 +6,8 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://breezer.now/" />
     <xhtml:link rel="alternate" hreflang="de-AT" href="https://breezer.now/de/" />
     <xhtml:link rel="alternate" hreflang="de" href="https://breezer.now/de/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://breezer.now/de/" />
-    <lastmod>2026-06-22</lastmod>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://breezer.now/" />
+    <lastmod>2026-06-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -17,36 +17,92 @@
     <xhtml:link rel="alternate" hreflang="de-AT" href="https://breezer.now/de/" />
     <xhtml:link rel="alternate" hreflang="de" href="https://breezer.now/de/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://breezer.now/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://breezer.now/de/" />
-    <lastmod>2026-06-22</lastmod>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://breezer.now/" />
+    <lastmod>2026-06-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
   <url>
+    <loc>https://breezer.now/snus-tracker.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://breezer.now/snus-tracker.html" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://breezer.now/de/snus-tracker.html" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://breezer.now/de/snus-tracker.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://breezer.now/snus-tracker.html" />
+    <lastmod>2026-06-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://breezer.now/quit-snus.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://breezer.now/quit-snus.html" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://breezer.now/de/snus-aufhoeren.html" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://breezer.now/de/snus-aufhoeren.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://breezer.now/quit-snus.html" />
+    <lastmod>2026-06-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://breezer.now/zyn-tracker.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://breezer.now/zyn-tracker.html" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://breezer.now/de/zyn-tracker.html" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://breezer.now/de/zyn-tracker.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://breezer.now/zyn-tracker.html" />
+    <lastmod>2026-06-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://breezer.now/vs-snusless.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://breezer.now/vs-snusless.html" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://breezer.now/de/vs-snusless.html" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://breezer.now/de/vs-snusless.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://breezer.now/vs-snusless.html" />
+    <lastmod>2026-06-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
     <loc>https://breezer.now/de/snus-tracker.html</loc>
-    <lastmod>2026-06-22</lastmod>
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://breezer.now/de/snus-tracker.html" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://breezer.now/de/snus-tracker.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://breezer.now/" />
+    <lastmod>2026-06-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://breezer.now/de/snus-aufhoeren.html</loc>
-    <lastmod>2026-06-22</lastmod>
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://breezer.now/de/snus-aufhoeren.html" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://breezer.now/de/snus-aufhoeren.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://breezer.now/" />
+    <lastmod>2026-06-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://breezer.now/de/zyn-tracker.html</loc>
-    <lastmod>2026-06-22</lastmod>
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://breezer.now/de/zyn-tracker.html" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://breezer.now/de/zyn-tracker.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://breezer.now/" />
+    <lastmod>2026-06-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://breezer.now/de/vs-snusless.html</loc>
-    <lastmod>2026-06-22</lastmod>
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://breezer.now/de/vs-snusless.html" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://breezer.now/de/vs-snusless.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://breezer.now/" />
+    <lastmod>2026-06-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

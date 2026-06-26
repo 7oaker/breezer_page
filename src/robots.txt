@@ -9,4 +9,19 @@ Disallow: /privacy-policy-website.html
 Disallow: /eula.html
 Disallow: /invite/
 
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
 Sitemap: https://breezer.now/sitemap.xml
