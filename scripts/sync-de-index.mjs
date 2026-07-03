@@ -6,6 +6,82 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
 const src = fs.readFileSync(path.join(root, 'src/index.html'), 'utf8');
 
+// FAQ content for the DE homepage. `en` strings must exactly match the visible
+// FAQ section and FAQPage schema in src/index.html — they drive both the DE
+// schema below and the body translation, so schema and visible text stay in sync.
+const faqDe = [
+  {
+    en: {
+      q: 'What is Breezer?',
+      a: 'Breezer is a free social snus app for iOS and Android. It lets you track snus consumption, compete with friends on global leaderboards, earn rewards, and quit snus with a guided Quit Mode.',
+    },
+    de: {
+      q: 'Was ist Breezer?',
+      a: 'Breezer ist eine kostenlose soziale Snus App für iOS und Android. Du kannst deinen Snus-Konsum tracken, mit Freunden auf globalen Ranglisten antreten, Rewards sammeln und mit dem Quit-Modus Schritt für Schritt aufhören.',
+    },
+  },
+  {
+    en: {
+      q: 'What is the best snus tracker app?',
+      a: 'Breezer is the leading snus tracker app. It logs each pouch with one tap and shows daily, weekly, and monthly consumption statistics, spending totals, and habit charts – all for free on iOS and Android.',
+    },
+    de: {
+      q: 'Was ist die beste Snus Tracker App?',
+      a: 'Breezer ist die führende Snus Tracker App. Du loggst jeden Beutel mit einem Tap und siehst tägliche, wöchentliche und monatliche Statistiken, Ausgaben und Konsum-Trends – kostenlos für iOS und Android.',
+    },
+  },
+  {
+    en: {
+      q: 'Is there a social snus app?',
+      a: "Yes. Breezer is the first social snus app. You can add friends, see each other's rankings on a global leaderboard, and challenge each other – turning snus tracking into a shared, competitive experience.",
+    },
+    de: {
+      q: 'Gibt es eine soziale Snus App?',
+      a: 'Ja. Breezer ist die erste soziale Snus App. Du kannst Freunde hinzufügen, eure Rankings auf einer globalen Rangliste vergleichen und euch gegenseitig herausfordern – so wird Snus-Tracking zum gemeinsamen Erlebnis.',
+    },
+  },
+  {
+    en: {
+      q: 'Can Breezer help me quit snus?',
+      a: "Yes. Breezer's Quit Mode tracks your withdrawal symptoms, counts days snus-free, calculates money saved, and celebrates health milestones. Streaks and achievements keep you motivated throughout the journey.",
+    },
+    de: {
+      q: 'Kann Breezer beim Snus aufhören helfen?',
+      a: 'Ja. Der Quit-Modus von Breezer trackt Entzugssymptome, zählt snusfreie Tage, berechnet gespartes Geld und feiert Gesundheitsmeilensteine. Streaks und Erfolge halten dich auf dem Weg motiviert.',
+    },
+  },
+  {
+    en: {
+      q: 'Is Breezer free?',
+      a: 'Yes, Breezer is free to download on iOS and Android. Optional Breezer Pro features are available as an in-app subscription.',
+    },
+    de: {
+      q: 'Ist Breezer kostenlos?',
+      a: 'Ja, Breezer ist für iOS und Android kostenlos. Optionale Breezer-Pro-Funktionen gibt es als In-App-Abo.',
+    },
+  },
+  {
+    en: {
+      q: 'What platforms is Breezer available on?',
+      a: 'Breezer is available on iPhone (iOS) via the App Store and on Android via Google Play. It is free to download in both stores.',
+    },
+    de: {
+      q: 'Auf welchen Plattformen ist Breezer verfügbar?',
+      a: 'Breezer gibt es für iPhone (iOS) im App Store und für Android bei Google Play. Der Download ist in beiden Stores kostenlos.',
+    },
+  },
+  {
+    en: {
+      q: 'How does Breezer track snus consumption?',
+      a: 'You log each snus pouch with a single tap in the Breezer app. The app then generates detailed statistics showing your daily, weekly, and monthly consumption patterns, money spent, and progress over time in visual charts.',
+    },
+    de: {
+      q: 'Wie trackt Breezer den Snus-Konsum?',
+      a: 'Du loggst jeden Snus mit einem einzigen Tap in der Breezer App. Die App erstellt daraus detaillierte Statistiken zu deinem täglichen, wöchentlichen und monatlichen Konsum, deinen Ausgaben und deinem Fortschritt in visuellen Charts.',
+    },
+  },
+];
+
 const headDe = `    <meta name="description" content="Breezer ist die soziale Snus App: Konsum tracken, Rankings, Freunde und Quit-Modus. Kostenloser Snus Tracker für iOS und Android." />
     <meta name="keywords" content="snus app, snus tracker, snus app österreich, snus tracking, snus community, snus rankings, snus aufhören, zyn tracker, Breezer app" />
     <meta name="author" content="Breezer Team" />
@@ -14,24 +90,24 @@ const headDe = `    <meta name="description" content="Breezer ist die soziale Sn
     <link rel="alternate" hreflang="en" href="https://breezer.now/" />
     <link rel="alternate" hreflang="de-AT" href="https://breezer.now/de/" />
     <link rel="alternate" hreflang="de" href="https://breezer.now/de/" />
-    <link rel="alternate" hreflang="x-default" href="https://breezer.now/de/" />
+    <link rel="alternate" hreflang="x-default" href="https://breezer.now/" />
     <include src="../partials/language-router-head.html" />
-    <meta property="og:title" content="BREEZER: ULTIMATE SNUS APP" />
+    <meta property="og:title" content="Breezer: Soziale Snus App – Tracken, Ranken & Aufhören" />
     <meta property="og:description" content="Tracke deinen Snus-Konsum, bleib in Kontrolle, tritt global an und spare Geld. Die smarte, soziale Snus App." />
     <meta property="og:url" content="https://breezer.now/de/" />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="https://breezer.now/images/og-image.png" />
-    <meta property="og:site_name" content="Breezer: Ultimate Snus App" />
+    <meta property="og:site_name" content="Breezer" />
     <meta property="og:locale" content="de_AT" />
     <meta property="og:locale:alternate" content="en_US" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="BREEZER: DIE ULTIMATIVE SNUS APP" />
+    <meta name="twitter:title" content="Breezer: Soziale Snus App – Tracken, Ranken & Aufhören" />
     <meta name="twitter:description" content="Snus tracken, mit Freunden ranken, Geld sparen und Teil der ersten sozialen Snus Community werden." />
     <meta name="twitter:image" content="https://breezer.now/images/og-image.png" />
     <meta name="twitter:site" content="@breezerapp" />
     <meta name="google-site-verification" content="bwKXk7Y2z1UH9uVey_xx8RvpBl3cFq4OClKifDmF0ms" />
-    <title>BREEZER: ULTIMATE SNUS APP</title>
+    <title>Breezer: Soziale Snus App – Tracken, Ranken & Aufhören</title>
 <!-- Google Analytics is loaded only after cookie consent (see cookie banner). -->
   <script type="application/ld+json">
     {
@@ -50,7 +126,7 @@ const headDe = `    <meta name="description" content="Breezer ist die soziale Sn
           "@id": "https://breezer.now/#organization",
           "name": "Breezer",
           "url": "https://breezer.now",
-          "logo": "https://breezer.now/images/logo/logo.svg",
+          "logo": "https://breezer.now/images/logo.svg",
           "email": "info@breezer.now",
           "sameAs": [
             "https://www.instagram.com/breezer.now",
@@ -93,37 +169,27 @@ const headDe = `    <meta name="description" content="Breezer ist die soziale Sn
             "Visuelle Statistiken und Charts",
             "Erfolge und Meilensteine"
           ],
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "ratingCount": "27",
+            "bestRating": "5",
+            "worstRating": "1"
+          },
           "author": { "@id": "https://breezer.now/#organization" },
           "publisher": { "@id": "https://breezer.now/#organization" }
         },
         {
           "@type": "FAQPage",
-          "mainEntity": [
-            {
-              "@type": "Question",
-              "name": "Was ist die beste Snus App?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Breezer ist die erste soziale Snus App mit Tracking, Rankings, Freunden und Quit-Modus. Kostenlos für iOS und Android."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Ist Breezer kostenlos?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Ja, der Download ist kostenlos. Breezer Pro ist optional als In-App-Abo verfügbar."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Kann Breezer beim Snus aufhören helfen?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Ja. Der Quit-Modus trackt Entzug, Gesundheitsmeilensteine, Ersparnis und Streaks."
-              }
-            }
-          ]
+          "mainEntity": ${JSON.stringify(
+            faqDe.map(({ de: { q, a } }) => ({
+              '@type': 'Question',
+              name: q,
+              acceptedAnswer: { '@type': 'Answer', text: a },
+            })),
+            null,
+            2
+          ).replace(/\n/g, '\n          ')}
         }
       ]
     }
@@ -219,6 +285,23 @@ const translationMap = [
   ['alt="Mobile Frame for Breezer App Screenshots"', 'alt="Smartphone-Rahmen für Breezer App Screenshots"'],
 ];
 
+// Visible FAQ section + footer guide nav + review line (run first: longest strings win)
+translationMap.unshift(
+  ...faqDe.flatMap(({ en, de: deText }) => [
+    [en.a, deText.a],
+    [en.q, deText.q],
+  ]),
+  ['Everything you need to know about Breezer, the social snus app.', 'Alles, was du über Breezer wissen musst – die soziale Snus App.'],
+  ['4.8 · 27 reviews on App Store &amp; Google Play', '4,8 · 27 Bewertungen im App Store &amp; bei Google Play'],
+  ['Frequently Asked Questions', 'Häufige Fragen'],
+  ['What Breezers Say', 'Was Breezer-Nutzer sagen'],
+  ['href="/snus-tracker.html"', 'href="/de/snus-tracker.html"'],
+  ['href="/quit-snus.html"', 'href="/de/snus-aufhoeren.html"'],
+  ['href="/zyn-tracker.html"', 'href="/de/zyn-tracker.html"'],
+  ['href="/vs-snusless.html"', 'href="/de/vs-snusless.html"'],
+  ['>Quit Snus<', '>Snus aufhören<']
+);
+
 for (const [en, deText] of translationMap) {
   de = de.split(en).join(deText);
 }
@@ -246,6 +329,7 @@ const leftover = [
   'Hear from our', 'Whether you', 'By clicking contact', 'All rights reserved',
   'Get it on', 'Download from', 'How It Works', 'Premium Tracking',
   'Smart Notifications', 'Quitting Statistics', 'Tell us why',
+  'Frequently Asked', 'What is Breezer?', 'reviews on App Store', '>Quit Snus<',
 ];
 const missing = leftover.filter((s) => de.includes(s));
 if (missing.length) {

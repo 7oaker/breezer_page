@@ -1,11 +1,11 @@
-import '../../node_modules/glightbox/dist/css/glightbox.min.css';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import '../css/animate.css';
 import '../css/style.css';
 import ogImage from '../images/logo/og-image.png'; // Import the Open Graph image
 import robotsTxt from '../robots.txt'; // Import robots.txt
-import sitemapXml from '../sitemap.xml'; // Import sitemap.xmlimport GLightbox from 'glightbox';
+import sitemapXml from '../sitemap.xml'; // Import sitemap.xml
+import llmsTxt from '../llms.txt'; // Import llms.txt
 import Swiper, { Navigation } from 'swiper';
 import WOW from 'wowjs';
 
@@ -472,24 +472,33 @@ const testimonial = new Swiper('.mySwiper', {
   'use strict';
 
   /* ========  mobile menu  start ========= */
+  // SEO subpages use a slim header without the mobile menu, so guard each lookup.
   const menuWrapper = document.querySelector('.menu-wrapper');
   const body = document.querySelector('body');
-  document.querySelector('.navbarOpen').addEventListener('click', () => {
-    menuWrapper.classList.remove('hidden');
-    body.classList.add('overflow-hidden');
-  });
-  document.querySelector('.navbarClose').addEventListener('click', () => {
-    menuWrapper.classList.add('hidden');
-    body.classList.remove('overflow-hidden');
-  });
-
-  // === close navbar-collapse when a  clicked
-  document.querySelectorAll('.navbar li:not(.submenu-item) a').forEach((e) =>
-    e.addEventListener('click', () => {
+  const navbarOpen = document.querySelector('.navbarOpen');
+  const navbarClose = document.querySelector('.navbarClose');
+  if (navbarOpen && menuWrapper) {
+    navbarOpen.addEventListener('click', () => {
+      menuWrapper.classList.remove('hidden');
+      body.classList.add('overflow-hidden');
+    });
+  }
+  if (navbarClose && menuWrapper) {
+    navbarClose.addEventListener('click', () => {
       menuWrapper.classList.add('hidden');
       body.classList.remove('overflow-hidden');
-    })
-  );
+    });
+  }
+
+  // === close navbar-collapse when a  clicked
+  if (menuWrapper) {
+    document.querySelectorAll('.navbar li:not(.submenu-item) a').forEach((e) =>
+      e.addEventListener('click', () => {
+        menuWrapper.classList.add('hidden');
+        body.classList.remove('overflow-hidden');
+      })
+    );
+  }
 
   // === Sub-menu
   const submenuItems = document.querySelectorAll('.submenu-item');
@@ -505,18 +514,22 @@ const testimonial = new Swiper('.mySwiper', {
   window.onscroll = function () {
     // ===  Sticky Navbar
     const header = document.querySelector('.navbar');
-    if (window.pageYOffset >= 100) {
-      header.classList.add('sticky-navbar');
-    } else {
-      header.classList.remove('sticky-navbar');
+    if (header) {
+      if (window.pageYOffset >= 100) {
+        header.classList.add('sticky-navbar');
+      } else {
+        header.classList.remove('sticky-navbar');
+      }
     }
 
     // ===  show or hide the back-top-top button
     const backToTop = document.querySelector('.back-to-top');
-    if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
-      backToTop.style.display = 'flex';
-    } else {
-      backToTop.style.display = 'none';
+    if (backToTop) {
+      if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+        backToTop.style.display = 'flex';
+      } else {
+        backToTop.style.display = 'none';
+      }
     }
   };
 
@@ -587,9 +600,12 @@ themeCheck();
     return (-c / 2) * (t * (t - 2) - 1) + b;
   };
 
-  document.querySelector('.back-to-top').onclick = () => {
-    scrollTo(document.documentElement);
-  };
+  const backToTopBtn = document.querySelector('.back-to-top');
+  if (backToTopBtn) {
+    backToTopBtn.onclick = () => {
+      scrollTo(document.documentElement);
+    };
+  }
   /* ========  scroll to top  end ========= */
 })();
 

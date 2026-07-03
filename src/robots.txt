@@ -1,13 +1,5 @@
 User-agent: *
 Allow: /
-Disallow: /blog-grid.html
-Disallow: /blog-details.html
-Disallow: /signin.html
-Disallow: /signup.html
-Disallow: /privacy-policy.html
-Disallow: /privacy-policy-website.html
-Disallow: /eula.html
-Disallow: /invite/
 
 User-agent: GPTBot
 Allow: /
