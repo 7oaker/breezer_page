@@ -6,7 +6,8 @@ import ogImage from '../images/logo/og-image.png'; // Import the Open Graph imag
 import robotsTxt from '../robots.txt'; // Import robots.txt
 import sitemapXml from '../sitemap.xml'; // Import sitemap.xml
 import llmsTxt from '../llms.txt'; // Import llms.txt
-import Swiper, { Navigation } from 'swiper';
+import Swiper from 'swiper';
+import { Navigation } from 'swiper/modules';
 import WOW from 'wowjs';
 
 /**
