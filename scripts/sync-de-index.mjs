@@ -206,9 +206,9 @@ de = de.replace(
 // Asset and page paths for /de/ output
 de = de.replace(/src="images\//g, 'src="../images/');
 de = de.replace(/<include src="partials\//g, '<include src="../partials/');
-de = de.replace(/href="index\.html"/g, 'href="/de/"');
+de = de.replace(/href="\/"/g, 'href="/de/"');
 de = de.replace(/href="privacy-policy/g, 'href="../privacy-policy');
-de = de.replace(/href="eula\.html"/g, 'href="../eula.html"');
+de = de.replace(/href="eula"/g, 'href="../eula"');
 
 // Nav labels
 de = de.replace(/>\s*About\s*</g, '>Über uns<');
@@ -295,10 +295,10 @@ translationMap.unshift(
   ['4.8 · 27 reviews on App Store &amp; Google Play', '4,8 · 27 Bewertungen im App Store &amp; bei Google Play'],
   ['Frequently Asked Questions', 'Häufige Fragen'],
   ['What Breezers Say', 'Was Breezer-Nutzer sagen'],
-  ['href="/snus-tracker.html"', 'href="/de/snus-tracker.html"'],
-  ['href="/quit-snus.html"', 'href="/de/snus-aufhoeren.html"'],
-  ['href="/zyn-tracker.html"', 'href="/de/zyn-tracker.html"'],
-  ['href="/vs-snusless.html"', 'href="/de/vs-snusless.html"'],
+  ['href="/snus-tracker"', 'href="/de/snus-tracker"'],
+  ['href="/quit-snus"', 'href="/de/snus-aufhoeren"'],
+  ['href="/zyn-tracker"', 'href="/de/zyn-tracker"'],
+  ['href="/vs-snusless"', 'href="/de/vs-snusless"'],
   ['>Quit Snus<', '>Snus aufhören<']
 );
 

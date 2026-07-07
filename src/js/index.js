@@ -27,7 +27,7 @@ function breezerIsGermanPage() {
 }
 
 function breezerPrivacyPolicyUrl() {
-  return breezerIsGermanPage() ? '../privacy-policy-website.html' : 'privacy-policy-website.html';
+  return '/privacy-policy-website';
 }
 
 const BREEZER_UI = {

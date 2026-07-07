@@ -62,6 +62,25 @@ module.exports = {
     },
     compress: true,
     port: 3000,
+    // Mirror Vercel's cleanUrls: serve /snus-tracker from snus-tracker.html in dev
+    setupMiddlewares: (middlewares, devServer) => {
+      middlewares.unshift({
+        name: 'clean-urls',
+        middleware: (req, res, next) => {
+          const [pathname, query] = req.url.split('?');
+          if (pathname === '/de' || pathname === '/invite') {
+            res.writeHead(301, { Location: `${pathname}/${query ? `?${query}` : ''}` });
+            res.end();
+            return;
+          }
+          if (pathname !== '/' && !pathname.endsWith('/') && !path.extname(pathname)) {
+            req.url = `${pathname}.html${query ? `?${query}` : ''}`;
+          }
+          next();
+        },
+      });
+      return middlewares;
+    },
   },
   module: {
     rules: [
