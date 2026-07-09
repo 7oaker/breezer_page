@@ -1,5 +1,4 @@
 import 'swiper/css';
-import 'swiper/css/pagination';
 import '../css/animate.css';
 import '../css/style.css';
 import ogImage from '../images/logo/og-image.png'; // Import the Open Graph image
@@ -442,10 +441,10 @@ window.wow.init({
 
 // Testimonial
 const testimonial = new Swiper('.mySwiper', {
-  // configure Swiper to use modules
   modules: [Navigation],
   slidesPerView: 1,
   spaceBetween: 30,
+  grabCursor: true,
   navigation: {
     nextEl: '.swiper-button-next',
     prevEl: '.swiper-button-prev',
