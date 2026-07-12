@@ -79,18 +79,6 @@
       color: #6b7280;
       font-size: 14px;
     }
-    .spinner {
-      display: inline-block;
-      width: 14px;
-      height: 14px;
-      border: 2px solid rgba(22,22,34,0.3);
-      border-top-color: #161622;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
@@ -105,8 +93,7 @@
     </p>
 
     <a class="btn btn-primary" id="store-btn" href="#">
-      <span class="spinner" id="spinner"></span>
-      <span id="btn-text">Opening…</span>
+      <span id="btn-text">Download Breezer</span>
     </a>
     <a class="btn btn-ghost" href="/">Learn more about Breezer</a>
   </div>
@@ -135,8 +122,6 @@
       else if (isIOS) btnText.textContent = 'Get Breezer on the App Store';
       else {
         // Desktop: no auto-redirect, just show the button
-        btnText.textContent = 'Download Breezer';
-        document.getElementById('spinner').style.display = 'none';
         return;
       }
 
