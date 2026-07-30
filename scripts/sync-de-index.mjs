@@ -209,6 +209,7 @@ de = de.replace(/<include src="partials\//g, '<include src="../partials/');
 de = de.replace(/href="\/"/g, 'href="/de/"');
 de = de.replace(/href="privacy-policy/g, 'href="../privacy-policy');
 de = de.replace(/href="eula"/g, 'href="../eula"');
+de = de.replace(/href="imprint"/g, 'href="impressum"');
 
 // Nav labels
 de = de.replace(/>\s*About\s*</g, '>Über uns<');
@@ -266,6 +267,7 @@ const translationMap = [
   ['Privacy Policy Website', 'Datenschutz Website'],
   ['Privacy Policy App', 'Datenschutz App'],
   ['Terms and conditions', 'AGB'],
+  ['Imprint', 'Impressum'],
   ['&copy; 2025 Breezer. All rights reserved', '&copy; 2025 Breezer. Alle Rechte vorbehalten'],
   ['How It Works', 'So funktioniert\'s'],
   ['About', 'Über uns'],
