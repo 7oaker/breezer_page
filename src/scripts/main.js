@@ -46,6 +46,7 @@ const BREEZER_UI = {
     close: 'Close',
     rejectAnalytics: 'Reject analytics',
     save: 'Save',
+    formSending: 'Sending…',
     formSuccess: 'Thank you for reaching out! We will get back to you soon.',
     formError: 'Something went wrong. Please try again later.',
   },
@@ -74,6 +75,7 @@ const BREEZER_UI = {
     close: 'Schließen',
     rejectAnalytics: 'Analytics ablehnen',
     save: 'Speichern',
+    formSending: 'Wird gesendet…',
     formSuccess: 'Danke für deine Nachricht! Wir melden uns bald bei dir.',
     formError: 'Etwas ist schiefgelaufen. Bitte versuche es später erneut.',
   },
@@ -635,16 +637,46 @@ themeCheck();
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('form');
   if (form) {
+    // Status is rendered inline rather than through alert(): a native dialog
+    // blocks the page, looks like a browser warning, and reads as spam.
+    const status = document.createElement('p');
+    status.setAttribute('role', 'status');
+    status.setAttribute('aria-live', 'polite');
+    status.className = 'mt-4 hidden rounded-md px-4 py-3 text-sm font-medium';
+    form.appendChild(status);
+
+    const submitBtn = form.querySelector('button[type="submit"], input[type="submit"], button');
+
+    function showStatus(kind, message) {
+      status.textContent = message;
+      status.className =
+        'mt-4 rounded-md px-4 py-3 text-sm font-medium ' +
+        (kind === 'success'
+          ? 'bg-primary/10 text-primary'
+          : kind === 'error'
+            ? 'bg-danger/10 text-danger'
+            : 'bg-white/5 text-body');
+    }
+
+    function setBusy(busy) {
+      if (!submitBtn) return;
+      submitBtn.disabled = busy;
+      submitBtn.classList.toggle('opacity-60', busy);
+      submitBtn.classList.toggle('pointer-events-none', busy);
+    }
+
     form.addEventListener('submit', function (e) {
-      e.preventDefault(); // Prevent form submission
+      e.preventDefault();
       // Vite replaces import.meta.env at build time; webpack's DefinePlugin
       // (which handled process.env here) is gone. Only PUBLIC_*-prefixed vars
       // are exposed to client code.
       const webhookUrl = import.meta.env.PUBLIC_WEBHOOK_URL;
       if (!webhookUrl) {
         console.error('PUBLIC_WEBHOOK_URL is not set — contact form cannot submit.');
+        showStatus('error', breezerUi('formError'));
         return;
       }
+
       const formData = new FormData(this);
       const data = {
         name: formData.get('name'),
@@ -654,31 +686,28 @@ document.addEventListener('DOMContentLoaded', () => {
         message: formData.get('message'),
       };
 
+      setBusy(true);
+      showStatus('pending', breezerUi('formSending'));
+
       fetch(webhookUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json', // Sending JSON data
-        },
-        body: JSON.stringify(data), // Stringify the data to JSON
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
       })
-      .then(response => {
-        if (response.ok) { // Check if response status is OK (2xx)
-          return response.text(); // If OK, return the response as text
-        } else {
-          throw new Error('Something went wrong'); // Throw an error if response is not OK
-        }
-      })
-      .then(responseText => {
-        console.log('Response from webhook:', responseText); // Log the raw response (e.g., "Accepted")
-        alert(breezerUi('formSuccess'));
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-        alert(breezerUi('formError'));
-      });
+        .then((response) => {
+          if (!response.ok) throw new Error('Request failed with status ' + response.status);
+          return response.text();
+        })
+        .then(() => {
+          showStatus('success', breezerUi('formSuccess'));
+          form.reset();
+        })
+        .catch((error) => {
+          console.error('Contact form submit failed:', error);
+          showStatus('error', breezerUi('formError'));
+        })
+        .finally(() => setBusy(false));
     });
-  } else {
-    console.log('Form element not found in the DOM.');
   }
 
   document.querySelectorAll('[data-set-lang]').forEach(function (link) {

@@ -21,6 +21,9 @@ module.exports = {
       body: '#79808A',
       gray: '#F8F9FF',
       'stroke-dark': '#34374A',
+      // Error/validation states — the palette is a full replacement, so there is
+      // no Tailwind default red to fall back on.
+      danger: '#E5484D',
     },
     screens: {
       sm: '575px',
