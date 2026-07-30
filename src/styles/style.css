@@ -1,0 +1,220 @@
+/* Inter is self-hosted via @fontsource-variable/inter, imported in
+   layouts/Base.astro — no third-party font request. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-inter;
+  }
+}
+
+@layer components {
+  .sticky-navbar {
+    @apply !fixed !border-b !bg-opacity-80 !backdrop-blur-sm dark:!bg-opacity-80;
+  }
+
+  .sticky-navbar .menu-scroll.active,
+  .menu-scroll.active {
+    @apply text-primary dark:text-primary;
+  }
+
+  .sticky-navbar ul > .menu-item > a {
+    @apply lg:py-[21px];
+  }
+
+  .submenu-item a.active {
+    @apply text-primary dark:text-white;
+  }
+  .submenu-item a.active span svg {
+    @apply rotate-180 lg:rotate-0;
+  }
+
+  .container {
+    @apply w-full sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px];
+  }
+
+  .keep-signed:checked ~ span.box {
+    @apply border-primary bg-primary;
+  }
+
+  .keep-signed:checked ~ span.box .icon {
+    @apply block;
+  }
+
+  #togglePlan:checked ~ span .dot {
+    @apply translate-x-[26px];
+  }
+
+  .faq .faq-btn::after {
+    content: "+";
+    @apply text-lg font-semibold text-black dark:text-white;
+  }
+  .faq.active .faq-btn::after {
+    content: "-";
+  }
+
+  .faq .faq-content {
+    @apply max-h-0 py-0 opacity-0 transition-all duration-100 ease-in-out;
+  }
+
+  .faq.active .faq-content {
+    @apply max-h-fit py-[30px]  opacity-100;
+  }
+
+  .swiper-button-prev,
+  .swiper-button-next {
+    @apply static top-auto bottom-0 flex h-10 w-10 items-center justify-center rounded-full border border-body text-body after:hidden hover:border-primary hover:bg-primary hover:text-white;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   .prose-breezer — Markdown body styling for guides and blog posts.
+
+   Tailwind's preflight resets heading sizes, list markers and table borders to
+   nothing, so Markdown rendered through <Content /> arrives unstyled. This block
+   restores it in the site's own type scale rather than pulling in the typography
+   plugin for six pages.
+
+   Article.astro applies the class and leaves ALL vertical rhythm to this file.
+   Do not add a space-y-* utility back to that wrapper: utilities are emitted
+   after components, so its margin-top would silently override every rule here.
+   --------------------------------------------------------------------------- */
+
+.prose-breezer > * + * {
+  margin-top: 1.15rem;
+}
+
+.prose-breezer h2 {
+  margin-top: 2.75rem;
+  margin-bottom: 1rem;
+  font-size: 1.625rem;
+  line-height: 1.3;
+  font-weight: 700;
+  color: theme('colors.black');
+}
+
+.prose-breezer h3 {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+  line-height: 1.4;
+  font-weight: 600;
+  color: theme('colors.black');
+}
+
+.dark .prose-breezer h2,
+.dark .prose-breezer h3 {
+  color: theme('colors.white');
+}
+
+.prose-breezer strong {
+  font-weight: 600;
+  color: theme('colors.black');
+}
+
+.dark .prose-breezer strong {
+  color: theme('colors.white');
+}
+
+.prose-breezer a {
+  color: theme('colors.primary');
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.prose-breezer a:hover {
+  text-decoration: none;
+}
+
+.prose-breezer ul,
+.prose-breezer ol {
+  padding-left: 1.5rem;
+}
+
+.prose-breezer ul {
+  list-style: disc;
+}
+
+.prose-breezer ol {
+  list-style: decimal;
+}
+
+.prose-breezer li + li {
+  margin-top: 0.5rem;
+}
+
+.prose-breezer li::marker {
+  color: theme('colors.body');
+}
+
+.prose-breezer blockquote {
+  border-left: 3px solid theme('colors.primary');
+  padding-left: 1rem;
+  font-style: italic;
+}
+
+/* The wrapper is injected by the rehypeTableScroll plugin in astro.config.mjs. */
+.table-scroll {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  /* Keeps the focus ring from being clipped by the scroll container. */
+  outline-offset: 2px;
+}
+
+.prose-breezer table {
+  width: 100%;
+  min-width: 32rem;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+  text-align: left;
+}
+
+.prose-breezer th,
+.prose-breezer td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid theme('colors.stroke');
+  vertical-align: top;
+}
+
+.prose-breezer th {
+  font-weight: 600;
+  color: theme('colors.black');
+  white-space: nowrap;
+}
+
+.prose-breezer tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.dark .prose-breezer th,
+.dark .prose-breezer td {
+  border-color: theme('colors.stroke-dark');
+}
+
+.dark .prose-breezer th {
+  color: theme('colors.white');
+}
+
+.prose-breezer code {
+  padding: 0.15em 0.4em;
+  border-radius: 0.25rem;
+  background: theme('colors.gray');
+  font-size: 0.875em;
+}
+
+.dark .prose-breezer code {
+  background: theme('colors.dark');
+}
+
+.prose-breezer hr {
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+  border-color: theme('colors.stroke');
+}
+
+.dark .prose-breezer hr {
+  border-color: theme('colors.stroke-dark');
+}

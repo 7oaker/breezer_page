@@ -1,0 +1,68 @@
+---
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const lang = 'de' as const;
+---
+
+<Base
+  lang={lang}
+  title="Impressum | Breezer"
+  description="Impressum und Offenlegung gemäß § 5 ECG und § 25 MedienG für breezer.now und die App Breezer."
+  path="/de/impressum"
+  noindex
+>
+  <Header lang={lang} />
+  <main class="pt-[120px] pb-16">
+    <article class="container max-w-[820px]">
+
+
+            <h1 class="mb-2 text-3xl font-bold text-black dark:text-white sm:text-[44px]">Impressum</h1>
+            <p class="mb-10 text-base text-body">Offenlegung gemäß § 5 ECG und § 25 MedienG für breezer.now und die App Breezer.</p>
+
+            <div class="space-y-6 text-base leading-relaxed text-body">
+              <p>
+                <span class="block font-semibold text-black dark:text-white">Medieninhaber und Diensteanbieter</span>
+                Klaus Siebeneicher<br />
+                Am Sonnenhang 2<br />
+                3243 St. Leonhard am Forst<br />
+                Österreich
+              </p>
+
+              <p>
+                <span class="block font-semibold text-black dark:text-white">Kontakt</span>
+                <a href="mailto:info@breezer.now" class="text-primary hover:underline">info@breezer.now</a>
+              </p>
+
+              <p>
+                <span class="block font-semibold text-black dark:text-white">Unternehmensgegenstand</span>
+                Entwicklung und Betrieb der App „Breezer“ und der Website breezer.now.
+              </p>
+
+              <p>
+                <span class="block font-semibold text-black dark:text-white">Rechtsform</span>
+                Einzelunternehmen, nicht im Firmenbuch eingetragen. Keine UID-Nummer
+                (Kleinunternehmer gemäß § 6 Abs. 1 Z 27 UStG).
+              </p>
+              <!--
+                Sobald das Gewerbe angemeldet ist, hier ergänzen (§ 5 Abs. 1 Z 5 und 6 ECG):
+                Gewerbebehörde: Bezirkshauptmannschaft Melk
+                GISA-Zahl: XXXXXXXX
+                Mitgliedschaft: WKO Niederösterreich, Fachgruppe UBIT
+                Anwendbare Rechtsvorschrift: Gewerbeordnung 1994, www.ris.bka.gv.at
+              -->
+
+              <p>
+                <span class="block font-semibold text-black dark:text-white">Blattlinie</span>
+                Information über die App Breezer sowie über das Tracken und Reduzieren des Konsums von Nikotinbeuteln.
+              </p>
+
+              <p class="pt-4 text-sm">
+                <a href="../imprint" class="text-primary hover:underline">English version</a>
+              </p>
+            </div>
+          </article>
+  </main>
+  <Footer lang={lang} />
+</Base>

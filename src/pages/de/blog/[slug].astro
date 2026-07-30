@@ -1,0 +1,42 @@
+---
+import { getCollection, render } from 'astro:content';
+import Article from '../../../layouts/Article.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', (p) => p.data.lang === 'de' && !p.data.draft);
+  return posts.map((entry) => ({
+    params: { slug: entry.id.split('/').pop() },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+const slug = entry.id.split('/').pop();
+---
+
+<Article
+  lang="de"
+  title={d.title}
+  heading={d.heading}
+  description={d.description}
+  summary={d.summary}
+  path={`/de/blog/${slug}`}
+  altPath={d.translationOf ? `/blog/${d.translationOf}` : undefined}
+  crumbs={[
+    { name: 'Snus App', path: '/de' },
+    { name: 'Blog', path: '/de/blog' },
+    { name: d.heading, path: `/de/blog/${slug}` },
+  ]}
+  publishDate={d.publishDate}
+  updatedDate={d.updatedDate}
+  faq={d.faq}
+  heroImage={d.heroImage}
+  heroImageAlt={d.heroImageAlt}
+  gallery={d.gallery}
+  schemaType="BlogPosting"
+  author={d.author}
+>
+  <Content />
+</Article>

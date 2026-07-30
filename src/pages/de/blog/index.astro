@@ -1,0 +1,79 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import StoreButtons from '../../../components/StoreButtons.astro';
+import BlogHub from '../../../components/BlogHub.astro';
+import { organization, breadcrumbs } from '../../../i18n/schema';
+import { blogCopy } from '../../../i18n/blog';
+
+const lang = 'de' as const;
+const c = blogCopy[lang];
+
+const posts = (await getCollection('blog', (p) => p.data.lang === lang && !p.data.draft)).sort(
+  (a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf()
+);
+const guides = (await getCollection('guides', (g) => g.data.lang === lang && !g.data.draft)).sort(
+  (a, b) => a.data.slug.localeCompare(b.data.slug)
+);
+
+const site = 'https://breezer.now';
+const slugOf = (id: string) => id.split('/').pop();
+
+const schema = [
+  organization,
+  {
+    '@type': 'Blog',
+    '@id': `${site}/de/blog#blog`,
+    name: c.title,
+    description: c.description,
+    url: `${site}/de/blog`,
+    inLanguage: 'de-AT',
+    publisher: { '@id': `${site}/#organization` },
+    blogPost: posts.map((p) => ({
+      '@type': 'BlogPosting',
+      headline: p.data.title,
+      url: `${site}/de/blog/${slugOf(p.id)}`,
+      description: p.data.summary,
+      datePublished: p.data.publishDate.toISOString().slice(0, 10),
+      dateModified: (p.data.updatedDate ?? p.data.publishDate).toISOString().slice(0, 10),
+    })),
+  },
+  breadcrumbs([
+    { name: c.crumbHome, path: '/de' },
+    { name: 'Blog', path: '/de/blog' },
+  ]),
+];
+---
+
+<Base
+  lang={lang}
+  title={c.title}
+  description={c.description}
+  path="/de/blog"
+  altPath="/blog"
+  schema={schema}
+  forceDark
+>
+  <Header lang={lang} />
+  <BlogHub
+    lang={lang}
+    homeHref="/de"
+    posts={posts.map((p) => ({
+      href: `/de/blog/${slugOf(p.id)}`,
+      title: p.data.title,
+      summary: p.data.summary,
+      date: p.data.publishDate,
+      words: p.body?.split(/\s+/).length ?? 0,
+    }))}
+    guides={guides.map((g) => ({
+      href: `/de/${g.data.slug}`,
+      title: g.data.title,
+      summary: g.data.summary,
+    }))}
+  >
+    <StoreButtons slot="cta" lang={lang} />
+  </BlogHub>
+  <Footer lang={lang} />
+</Base>

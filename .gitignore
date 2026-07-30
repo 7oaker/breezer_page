@@ -1,8 +1,9 @@
 # Node.js dependencies
 node_modules/
 
-# Build directory
-build/
+# Build output
+dist/
+.astro/
 
 # macOS system files
 __MACOSX/

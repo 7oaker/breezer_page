@@ -1,0 +1,16 @@
+{
+  "name": "Breezer — Social Snus App",
+  "short_name": "Breezer",
+  "description": "Track snus consumption, compete with friends on global rankings, and quit with a guided Quit Mode.",
+  "lang": "en",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0D6BCD",
+  "icons": [
+    { "src": "/images/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/images/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/images/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

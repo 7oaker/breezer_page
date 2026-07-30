@@ -1,0 +1,41 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { nav, route } from '../i18n/routes';
+
+const lang = 'en' as const;
+---
+
+<Base
+  lang={lang}
+  title="Page Not Found | Breezer"
+  description="This Breezer page could not be found. Head back to the snus tracker, Quit Mode, or the blog."
+  path="/404"
+  noindex
+>
+  <Header lang={lang} />
+  <main class="pt-[160px] pb-24">
+    <div class="container max-w-[720px] text-center">
+      <p class="mb-4 text-sm font-semibold uppercase tracking-wide text-primary">404</p>
+      <h1 class="mb-[18px] text-[28px] font-bold text-black dark:text-white sm:text-[35px]">
+        Sorry, the page can't be found
+      </h1>
+      <p class="mb-[30px] text-base font-medium text-body sm:text-lg">
+        The page you were looking for appears to have been moved, deleted or does not exist.
+      </p>
+      <a
+        href="/"
+        class="inline-flex justify-center rounded-md bg-primary py-3 px-8 text-base font-medium text-white hover:bg-opacity-90"
+      >
+        Back to homepage
+      </a>
+      <nav aria-label="Popular pages" class="mt-8 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm">
+        {nav.map((item) => (
+          <a href={route(item.key, lang)} class="text-primary hover:underline">{item.label[lang]}</a>
+        ))}
+      </nav>
+    </div>
+  </main>
+  <Footer lang={lang} />
+</Base>

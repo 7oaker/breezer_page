@@ -1,0 +1,26 @@
+---
+import type { Lang } from '../i18n/routes';
+
+interface Props {
+  lang: Lang;
+  /** Where each language should point. Defaults to the two homepages. */
+  enHref?: string;
+  deHref?: string;
+}
+const { lang, enHref = '/', deHref = '/de' } = Astro.props;
+
+const base =
+  'lang-switcher-btn rounded-md px-2.5 py-1.5 text-xs font-semibold leading-none transition-colors hover:text-primary dark:hover:text-primary';
+const active = 'text-primary';
+const idle = 'text-body dark:text-white/70';
+---
+
+<div
+  id="lang-switcher"
+  class="inline-flex items-center rounded-lg border border-stroke p-1 dark:border-stroke-dark"
+  role="group"
+  aria-label="Language"
+>
+  <a href={enHref} hreflang="en" data-set-lang="en" data-lang="en" class:list={[base, lang === 'en' ? active : idle]}>EN</a>
+  <a href={deHref} hreflang="de-AT" data-set-lang="de" data-lang="de" class:list={[base, lang === 'de' ? active : idle]}>DE</a>
+</div>

@@ -1,0 +1,50 @@
+---
+import type { Lang } from '../i18n/routes';
+
+interface Props {
+  href: string;
+  title: string;
+  summary: string;
+  date: Date;
+  readingMinutes?: number;
+  lang: Lang;
+  featured?: boolean;
+}
+const { href, title, summary, date, readingMinutes, lang, featured = false } = Astro.props;
+
+const cardTitle = title.replace(/\s*\|\s*(Breezer|Österreich)\s*$/i, '').trim();
+const fmt = date.toLocaleDateString(lang === 'de' ? 'de-AT' : 'en-GB', {
+  year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC',
+});
+const readLabel = lang === 'de' ? 'Min. Lesezeit' : 'min read';
+---
+
+<a
+  href={href}
+  class:list={[
+    'group relative flex h-full flex-col overflow-hidden rounded-2xl border border-stroke bg-white shadow-card duration-300 hover:-translate-y-1 hover:border-primary hover:shadow-input dark:border-stroke-dark dark:bg-dark dark:shadow-card-dark',
+    featured ? 'p-8 sm:col-span-2' : 'p-6',
+  ]}
+>
+  <span class="absolute inset-x-0 top-0 h-1 bg-gradient-1 opacity-0 duration-300 group-hover:opacity-100"></span>
+
+  <div class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-medium uppercase tracking-wide text-primary">
+    <time datetime={date.toISOString().slice(0, 10)}>{fmt}</time>
+    {readingMinutes && (
+      <>
+        <span aria-hidden="true" class="text-body/50">·</span>
+        <span class="text-body">{readingMinutes} {readLabel}</span>
+      </>
+    )}
+  </div>
+
+  <h3
+    class:list={[
+      'mb-2 font-semibold text-black duration-300 group-hover:text-primary dark:text-white',
+      featured ? 'text-2xl sm:text-[28px]' : 'text-lg',
+    ]}
+  >
+    {cardTitle}
+  </h3>
+  <p class:list={['flex-1 leading-relaxed text-body', featured ? 'text-base' : 'text-sm']}>{summary}</p>
+</a>

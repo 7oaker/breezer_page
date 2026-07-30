@@ -1,0 +1,100 @@
+---
+/**
+ * Every <head> tag that matters for search and AI crawlers, in one place.
+ * Anything that needs to be in the first HTTP response lives here — AI crawlers
+ * (GPTBot, ClaudeBot, PerplexityBot, …) do not execute JavaScript, so nothing
+ * SEO-relevant may be added client-side.
+ */
+import type { Lang } from '../i18n/ui';
+
+export interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  /** Path without origin, e.g. "/snus-tracker". The EN route. */
+  path: string;
+  /** The matching DE route, e.g. "/de/snus-tracker". Omit if untranslated. */
+  altPath?: string;
+  ogType?: 'website' | 'article';
+  image?: string;
+  imageAlt?: string;
+  noindex?: boolean;
+  publishedTime?: string;
+  modifiedTime?: string;
+  /** Extra JSON-LD nodes to merge into the page graph. */
+  schema?: Record<string, unknown>[];
+}
+
+const {
+  lang,
+  title,
+  description,
+  path,
+  altPath,
+  ogType = 'website',
+  image = '/images/og-image.png',
+  imageAlt,
+  noindex = false,
+  publishedTime,
+  modifiedTime,
+  schema = [],
+} = Astro.props as Props;
+
+const site = Astro.site?.origin ?? 'https://breezer.now';
+const abs = (p: string) => new URL(p, site).href;
+
+const canonical = abs(path);
+const enHref = lang === 'en' ? canonical : altPath ? abs(altPath) : null;
+const deHref = lang === 'de' ? canonical : altPath ? abs(altPath) : null;
+const hasPair = Boolean(enHref && deHref);
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow'} />
+<link rel="canonical" href={canonical} />
+
+{
+  hasPair && (
+    <>
+      <link rel="alternate" hreflang="en" href={enHref} />
+      <link rel="alternate" hreflang="de-AT" href={deHref} />
+      <link rel="alternate" hreflang="de" href={deHref} />
+      <link rel="alternate" hreflang="x-default" href={enHref} />
+    </>
+  )
+}
+
+<meta property="og:type" content={ogType} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:site_name" content="Breezer" />
+<meta property="og:image" content={abs(image)} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={imageAlt ?? title} />
+<meta property="og:locale" content={lang === 'de' ? 'de_AT' : 'en_US'} />
+<meta property="og:locale:alternate" content={lang === 'de' ? 'en_US' : 'de_AT'} />
+{publishedTime && <meta property="article:published_time" content={publishedTime} />}
+{modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={abs(image)} />
+<meta name="twitter:site" content="@breezerapp" />
+
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<meta name="theme-color" content="#0D6BCD" />
+<meta name="google-site-verification" content="bwKXk7Y2z1UH9uVey_xx8RvpBl3cFq4OClKifDmF0ms" />
+
+{
+  schema.length > 0 && (
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({ '@context': 'https://schema.org', '@graph': schema })}
+    />
+  )
+}

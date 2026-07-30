@@ -1,9 +1,9 @@
 module.exports = {
-  content: ['./src/**/*.{html,js}'],
+  content: ['./src/**/*.{astro,html,js,ts,md,mdx}'],
   darkMode: 'class',
   theme: {
     fontFamily: {
-      inter: ['Inter', 'sans-serif'],
+      inter: ['Inter Variable', 'Inter', 'sans-serif'],
     },
     container: {
       center: true,

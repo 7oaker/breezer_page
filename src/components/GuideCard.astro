@@ -1,0 +1,25 @@
+---
+interface Props {
+  href: string;
+  title: string;
+  summary: string;
+}
+const { href, title, summary } = Astro.props;
+const cardTitle = title.replace(/\s*\|\s*(Breezer|Österreich)\s*$/i, '').trim();
+---
+
+<a
+  href={href}
+  class="group flex h-full flex-col rounded-2xl border border-stroke bg-white p-6 shadow-card duration-300 hover:-translate-y-1 hover:border-primary hover:shadow-input dark:border-stroke-dark dark:bg-dark dark:shadow-card-dark"
+>
+  <h3 class="mb-2 text-lg font-semibold text-black duration-300 group-hover:text-primary dark:text-white">
+    {cardTitle}
+  </h3>
+  <p class="mb-4 flex-1 text-sm leading-relaxed text-body">{summary}</p>
+  <span class="inline-flex items-center gap-1.5 text-sm font-medium text-primary">
+    <slot name="cta" />
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="duration-300 group-hover:translate-x-1">
+      <path d="M5 12h14M12 5l7 7-7 7" />
+    </svg>
+  </span>
+</a>

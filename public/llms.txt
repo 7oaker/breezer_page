@@ -1,0 +1,34 @@
+# Breezer
+
+> Breezer is a free social snus app for iOS and Android. It tracks snus and
+> nicotine-pouch consumption with one tap, shows spending and habit statistics,
+> lets friends compete on global leaderboards, and includes a guided Quit Mode
+> that tracks days snus-free, money saved, and health milestones.
+
+Breezer is made in Austria. The site is available in English and German
+(Austria). Download: App Store (https://apps.apple.com/at/app/breezer/id6737725511)
+and Google Play (https://play.google.com/store/apps/details?id=com.breezerapp.breezer).
+
+## Pages (English)
+
+- [Breezer: Social Snus App](https://breezer.now/): Homepage — features, how it works, screenshots, reviews, and FAQ.
+- [Snus Tracker](https://breezer.now/snus-tracker): How the snus tracker works — one-tap logging, statistics, cost tracking, widgets.
+- [Quit Snus](https://breezer.now/quit-snus): Quit Mode — withdrawal tracking, health milestones, money saved.
+- [Zyn Tracker](https://breezer.now/zyn-tracker): Tracking Zyn, Velo, and other nicotine pouches with daily limits and costs.
+- [Breezer vs Snusless](https://breezer.now/vs-snusless): Comparison of the two snus apps — tracking, quit mode, social features, price.
+- [Blog](https://breezer.now/blog): Guides on tracking snus, quitting nicotine pouches, and app comparisons.
+
+## Seiten (Deutsch)
+
+- [Breezer: Soziale Snus App](https://breezer.now/de): Startseite auf Deutsch.
+- [Snus Tracker](https://breezer.now/de/snus-tracker): Snus-Konsum tracken, Statistiken und Kosten.
+- [Snus aufhören](https://breezer.now/de/snus-aufhoeren): Quit-Modus — Entzug tracken, Meilensteine, Ersparnis.
+- [Zyn Tracker](https://breezer.now/de/zyn-tracker): Zyn, Velo und andere Nikotinbeutel tracken.
+- [Breezer vs Snusless](https://breezer.now/de/vs-snusless): Snus-App-Vergleich auf Deutsch.
+- [Blog](https://breezer.now/de/blog): Guides zum Tracken, Aufhören und App-Vergleiche.
+
+## Contact
+
+- Email: info@breezer.now
+- Instagram: https://www.instagram.com/breezer.now
+- TikTok: https://www.tiktok.com/@breezerapp

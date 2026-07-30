@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Home from '../components/home/Home.astro';
+import { useTranslations } from '../i18n/ui';
+import { homeFaq } from '../i18n/faq';
+import { website, organization, mobileApp, faqPage } from '../i18n/schema';
+
+const lang = 'en' as const;
+const t = useTranslations(lang);
+---
+
+<Base
+  lang={lang}
+  title="Breezer: Social Snus App – Track, Rank & Quit"
+  description="Breezer is the social snus app – track consumption, compete with friends on global rankings, and quit snus with guided Quit Mode. Free for iOS and Android."
+  path="/"
+  altPath="/de"
+  imageAlt="Breezer: Social Snus App – Track, Rank & Quit"
+  schema={[website, organization, mobileApp, faqPage(homeFaq[lang])]}
+>
+  <Header lang={lang} full />
+  <Home t={t} lang={lang} />
+  <Footer lang={lang} />
+</Base>

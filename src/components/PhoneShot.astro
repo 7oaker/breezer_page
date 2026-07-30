@@ -1,0 +1,48 @@
+---
+/**
+ * An app screenshot inside the device frame, matching the homepage treatment.
+ * The frame itself is decorative (aria-hidden); the screenshot carries the alt
+ * text, so the meaning survives for screen readers and image search.
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import frame from '../assets/images/screens/mobile-frame.png';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  /** Above-the-fold shots should not be lazy-loaded. */
+  eager?: boolean;
+  class?: string;
+}
+const { src, alt, eager = false, class: className = '' } = Astro.props;
+---
+
+<figure class:list={['relative mx-auto w-full max-w-[295px]', className]}>
+  <div class="relative z-0 mx-auto w-full max-w-[265px] py-2">
+    <Image
+      src={src}
+      width={263}
+      height={569}
+      alt={alt}
+      class="mx-auto w-full rounded-2xl"
+      loading={eager ? 'eager' : 'lazy'}
+      decoding={eager ? 'sync' : 'async'}
+    />
+  </div>
+  <Image
+    src={frame}
+    width={295}
+    height={594}
+    alt=""
+    aria-hidden="true"
+    class="pointer-events-none absolute top-0 left-0 right-0 z-10 mx-auto w-full max-w-[295px]"
+    loading={eager ? 'eager' : 'lazy'}
+    decoding="async"
+  />
+  <div
+    class="absolute -inset-x-6 top-10 bottom-10 -z-10 rounded-[40px] bg-gradient-1 opacity-[0.07] blur-2xl"
+    aria-hidden="true"
+  >
+  </div>
+</figure>

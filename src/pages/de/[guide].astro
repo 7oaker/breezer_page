@@ -1,0 +1,35 @@
+---
+import { getCollection, render } from 'astro:content';
+import Article from '../../layouts/Article.astro';
+
+export async function getStaticPaths() {
+  const guides = await getCollection('guides', (g) => g.data.lang === 'de' && !g.data.draft);
+  return guides.map((entry) => ({ params: { guide: entry.data.slug }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+---
+
+<Article
+  lang="de"
+  title={d.title}
+  heading={d.heading}
+  description={d.description}
+  summary={d.summary}
+  path={`/de/${d.slug}`}
+  altPath={`/${d.translationOf}`}
+  crumbs={[
+    { name: 'Snus App', path: '/de' },
+    { name: d.heading, path: `/de/${d.slug}` },
+  ]}
+  publishDate={d.publishDate}
+  updatedDate={d.updatedDate}
+  faq={d.faq}
+  heroImage={d.heroImage}
+  heroImageAlt={d.heroImageAlt}
+  gallery={d.gallery}
+>
+  <Content />
+</Article>

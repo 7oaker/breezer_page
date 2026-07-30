@@ -1,0 +1,105 @@
+---
+/**
+ * Shared blog hub body for both locales. Keeping the layout here (rather than
+ * duplicated in the two index pages) is what stops EN and DE drifting apart.
+ */
+import PostCard from './PostCard.astro';
+import GuideCard from './GuideCard.astro';
+import StoreButtons from './StoreButtons.astro';
+import { blogCopy } from '../i18n/blog';
+import type { Lang } from '../i18n/routes';
+
+interface PostItem {
+  href: string;
+  title: string;
+  summary: string;
+  date: Date;
+  words: number;
+}
+interface GuideItem {
+  href: string;
+  title: string;
+  summary: string;
+}
+interface Props {
+  lang: Lang;
+  homeHref: string;
+  posts: PostItem[];
+  guides: GuideItem[];
+}
+
+const { lang, homeHref, posts, guides } = Astro.props;
+const c = blogCopy[lang];
+const de = lang === 'de';
+
+// ~220 wpm is the usual reading-speed assumption for web prose.
+const minutes = (words: number) => Math.max(1, Math.round(words / 220));
+
+const [featured, ...rest] = posts;
+const readGuide = de ? 'Guide lesen' : 'Read guide';
+---
+
+<main class="pt-[120px] pb-20">
+  <div class="container max-w-[1000px]">
+    <nav aria-label="Breadcrumb" class="mb-6 text-sm text-body">
+      <a href={homeHref} class="hover:text-primary">{c.crumbHome}</a>
+      <span aria-hidden="true"> / </span>Blog
+    </nav>
+
+    <header class="mb-14 max-w-[720px]">
+      <p class="mb-3 text-sm font-semibold uppercase tracking-wide text-primary">Breezer Blog</p>
+      <h1 class="mb-4 text-3xl font-bold text-black dark:text-white sm:text-[44px]">{c.h1}</h1>
+      <p class="text-lg leading-relaxed text-body">{c.intro}</p>
+    </header>
+
+    <section class="mb-16">
+      <div class="mb-6 flex items-baseline justify-between gap-4">
+        <h2 class="text-2xl font-bold text-black dark:text-white">{c.postsHeading}</h2>
+        {posts.length > 0 && (
+          <span class="text-sm text-body">
+            {posts.length} {posts.length === 1 ? (de ? 'Artikel' : 'article') : de ? 'Artikel' : 'articles'}
+          </span>
+        )}
+      </div>
+
+      {
+        posts.length === 0 ? (
+          <div class="rounded-2xl border border-stroke bg-gray/40 p-10 text-center dark:border-stroke-dark dark:bg-dark">
+            <p class="mb-2 text-lg font-semibold text-black dark:text-white">{c.emptyTitle}</p>
+            <p class="mx-auto max-w-[460px] text-base text-body">{c.empty}</p>
+          </div>
+        ) : (
+          <div class="grid gap-6 sm:grid-cols-2">
+            <PostCard {...featured} readingMinutes={minutes(featured.words)} lang={lang} featured />
+            {rest.map((p) => (
+              <PostCard {...p} readingMinutes={minutes(p.words)} lang={lang} />
+            ))}
+          </div>
+        )
+      }
+    </section>
+
+    <section class="mb-16">
+      <h2 class="mb-2 text-2xl font-bold text-black dark:text-white">{c.guidesHeading}</h2>
+      <p class="mb-6 max-w-[620px] text-base text-body">{c.guidesIntro}</p>
+      <div class="grid gap-6 sm:grid-cols-2">
+        {guides.map((g) => (
+          <GuideCard {...g}>
+            <Fragment slot="cta">{readGuide}</Fragment>
+          </GuideCard>
+        ))}
+      </div>
+    </section>
+
+    <aside
+      class="relative overflow-hidden rounded-2xl border border-stroke bg-gray/40 p-8 sm:p-10 dark:border-stroke-dark dark:bg-dark"
+    >
+      <span class="absolute inset-x-0 top-0 h-1 bg-gradient-1"></span>
+      <div class="max-w-[560px]">
+        <h2 class="mb-3 text-2xl font-bold text-black dark:text-white">{c.ctaHeading}</h2>
+        <p class="mb-6 text-base leading-relaxed text-body">{c.ctaBody}</p>
+        <StoreButtons lang={lang} />
+      </div>
+    </aside>
+  </div>
+</main>
