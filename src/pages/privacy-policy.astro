@@ -18,12 +18,23 @@ const lang = 'en' as const;
     <div class="dark:text-white">
           <div class="container mx-auto p-6 pt-[100px] bg-white dark:bg-stroke-dark rounded-lg shadow-md">
             <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Privacy Policy App for Breezer</h1>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mb-8"><strong>Last updated: 17.06.2026</strong></p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-8"><strong>Last updated: 14.08.2026</strong></p>
 
             <p class="mb-4">At Breezer ("we", "our", or "us"), we value your privacy and are committed to protecting the personal
                 information you share with us. This Privacy Policy App explains how we collect, use, store, and protect your
                 data when you use the Breezer mobile application (the "App") and associated services (collectively, the
                 "Service"). By using the App, you agree to the practices described in this Privacy Policy App.</p>
+
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Controller</h2>
+            <p class="mb-4">The controller responsible for the processing of your personal data within the meaning of Article 4(7)
+                GDPR is:</p>
+            <p class="mb-4">Klaus Siebeneicher<br />
+                Am Sonnenhang 2<br />
+                3243 St. Leonhard am Forst<br />
+                Austria<br />
+                <a href="mailto:info@breezer.now" class="text-blue-500 underline">info@breezer.now</a></p>
+            <p class="mb-4">Full legal details are available in our <a href="/imprint" class="text-blue-500 underline">Imprint</a>.
+                We have not appointed a data protection officer, as we are not required to do so.</p>
 
             <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">1. Introduction</h2>
             <p class="mb-4">Breezer is an app designed to help users track their snus consumption, set personalized limits, and analyze
@@ -61,14 +72,39 @@ const lang = 'en' as const;
                 motivation, and is used solely for tracking and analytical purposes.</p>
 
             <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">2.3 Usage Data</h3>
-            <p class="mb-2">We may automatically collect certain technical data when you use the app, including:</p>
+            <p class="mb-2">We automatically collect certain technical data when you use the app, including:</p>
             <ul class="list-disc pl-6 mb-4">
-                <li><strong>Device information:</strong> Such as device type, model, and manufacturer.</li>
-                <li><strong>Usage patterns:</strong> How often you use the app and which features you interact with.</li>
+                <li><strong>Device information:</strong> Such as device type, model, manufacturer, app version, operating
+                    system version and language.</li>
                 <li><strong>IP Address:</strong> For maintaining the security of our app.</li>
             </ul>
 
-            <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">2.4 Community and Social Data</h3>
+            <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">2.4 Product Analytics</h3>
+            <p class="mb-2">To understand how the app is used and where it can be improved, we record a limited set of usage
+                events:</p>
+            <ul class="list-disc pl-6 mb-4">
+                <li>Which screens you open, and when you use the app.</li>
+                <li>Sign-up, login and your progress through onboarding.</li>
+                <li>Whether the Breezer Pro offer was shown to you and what you did with it.</li>
+                <li>Whether you are tracking or quitting, and when that changes.</li>
+            </ul>
+            <p class="mb-4">Where you tell us how much you use during onboarding, we record only a <strong>range</strong> (for
+                example "11-20"), never the exact figure.</p>
+            <p class="mb-4">These events are linked to an internal account identifier and your country. They are
+                <strong>not</strong> linked to your email address or your username, and they <strong>never</strong> include
+                your individual consumption entries, your chat messages or your uploaded images. See Section 7 for how to
+                switch this off.</p>
+            <p class="mb-4">As with any internet request, our analytics provider receives your device's IP address in order to
+                receive the data at all. We have switched off the provider's location lookup, so your IP address is not used
+                to derive your city or region.</p>
+
+            <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">2.5 Crash and Error Reports</h3>
+            <p class="mb-4">When the app crashes or hits an error, we receive a diagnostic report: the technical error, your
+                device and app version, and a trail of what the app was doing beforehand. We do not attach your account
+                identifier, email address or IP address to these reports, and they do not contain your consumption entries
+                or chat messages.</p>
+
+            <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">2.6 Community and Social Data</h3>
             <p class="mb-2">To provide global and country channels, mentions, and social features, we process:</p>
             <ul class="list-disc pl-6 mb-4">
                 <li><strong>Chat content and metadata:</strong> Messages you send, mentions, timestamps, and channel
@@ -84,7 +120,7 @@ const lang = 'en' as const;
                 <li><strong>Automated activity announcements:</strong> System messages posted on your behalf when you reach certain milestones or change your quitting mode. These appear in community chat and include your username and avatar.</li>
             </ul>
 
-            <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">2.5 Third-Party Content</h3>
+            <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">2.7 Third-Party Content</h3>
             <p class="mb-4">The app includes a community feed that displays publicly available posts from Reddit via the Reddit API. Breezer does not store Reddit content permanently; it is fetched and cached temporarily for display purposes. No Reddit account or credentials are required. Reddit's own privacy policy governs content on their platform.</p>
 
             <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">3. Purpose of Data Collection</h2>
@@ -101,6 +137,10 @@ const lang = 'en' as const;
                     and to keep the community safe through moderation.</li>
                 <li><strong>Notifications:</strong> To send opt-in updates to you and (if enabled) to your friends using Expo
                     Push Notifications.</li>
+                <li><strong>Product analytics:</strong> To understand how the app is used, which features people reach, and
+                    where they get stuck, so we can improve it.</li>
+                <li><strong>Stability and security:</strong> To detect, diagnose and fix crashes and errors, and to protect
+                    the app against abuse.</li>
             </ul>
             <p class="mb-4">We <strong>do not</strong> use your data for personalized marketing, ads, or sharing with third parties for
                 advertising purposes.</p>
@@ -111,13 +151,27 @@ const lang = 'en' as const;
                 <li><strong>Appwrite Cloud (for data storage and management):</strong> We use Appwrite Cloud to store and manage
                     user data. Appwrite ensures secure data handling practices and complies with relevant data protection
                     standards.</li>
-                <li><strong>RevenueCat (for cash reporting and payment integrations):</strong> RevenueCat handles payments and
-                    cash reporting, ensuring secure financial data processing.</li>
+                <li><strong>RevenueCat (for subscription management):</strong> RevenueCat manages your Breezer Pro
+                    subscription status. Your actual payment is processed by Apple or Google, depending on your platform;
+                    we never see or store your payment card details.</li>
                 <li><strong>Expo Push Notifications (for notifications delivery):</strong> Used to send push notifications to
                     your devices. Only device tokens and necessary metadata are shared for delivery.</li>
                 <li><strong>Appwrite Cloud Storage (for image storage):</strong> Images uploaded in community chat are stored via Appwrite Cloud Storage.</li>
+                <li><strong>PostHog (for product analytics):</strong> Receives the usage events described in Section 2.4.
+                    Processed on PostHog's European Union infrastructure.</li>
+                <li><strong>Sentry (for crash and error reporting):</strong> Receives the diagnostic reports described in
+                    Section 2.5. Processed on Sentry's European Union infrastructure.</li>
+                <li><strong>Reddit (for the community feed):</strong> The app requests publicly available posts from the
+                    Reddit API for display. See Section 2.7.</li>
+                <li><strong>ui-avatars.com (for fallback profile images):</strong> If you have not uploaded a profile picture,
+                    the app generates a placeholder avatar from your initials. Your username is included in that image
+                    request.</li>
+                <li><strong>Expo (for app updates):</strong> The app checks Expo's update service for new versions, which
+                    involves your device's IP address and an installation identifier.</li>
             </ul>
-            <p class="mb-4">We ensure that all third parties we work with take appropriate security measures to protect your data.</p>
+            <p class="mb-4">We ensure that all third parties we work with take appropriate security measures to protect your data.
+                We do <strong>not</strong> sell your personal data, and we do not share it with data brokers or advertising
+                networks.</p>
 
             <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">5. User Rights and Data Control</h2>
             <p class="mb-4">You have the following rights and control over your personal data:</p>
@@ -127,6 +181,9 @@ const lang = 'en' as const;
                 <li><strong>Friends controls:</strong> You can choose to add/remove friends and to share consumption details like when a snus has been taken whith them.</li>
                 <li><strong>Notifications control:</strong> You can opt in or out of push notifications anytime in Settings or
                     via your device settings.</li>
+                <li><strong>Analytics control:</strong> You can stop sharing usage data at any time under <strong>Settings
+                    -&gt; Policies -&gt; Share usage data</strong>. Switching it off stops all product analytics collection
+                    from your device immediately, and does not affect any other part of the app.</li>
                 <li><strong>Data deletion:</strong> If you wish to delete your account and associated data, you can do so by
                     sending an email to <a href="mailto:info@breezer.now" class="text-blue-500 underline">info@breezer.now</a> or by going to <strong>Settings
                     -> Account Settings -> Delete Account</strong> in the app.</li>
@@ -143,21 +200,53 @@ const lang = 'en' as const;
                 <li><strong>Regional storage:</strong> We aim to store data within the region where Appwrite Cloud operates for
                     your workspace. Push notification delivery is handled by Expo, which may process data across regions solely
                     to deliver notifications.</li>
+                <li><strong>Analytics and crash data:</strong> Product analytics are processed by PostHog on their European
+                    Union infrastructure, and crash reports by Sentry on their European Union infrastructure. Neither is
+                    transferred outside the EU by us.</li>
             </ul>
             <p class="mb-4">While we take all reasonable precautions to protect your data, please note that no method of transmission over
                 the Internet or method of electronic storage is 100% secure. We cannot guarantee absolute security, but we strive
                 to implement robust security measures.</p>
 
-            <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">7. Cookies and Tracking Technologies</h2>
-            <p class="mb-4">The Breezer app <strong>does not use cookies</strong> or any other tracking technologies beyond those required
-                to track your consumption data. We do not track your activity for marketing or advertising purposes.</p>
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">7. Analytics and Tracking Technologies</h2>
+            <p class="mb-4">The Breezer app does <strong>not</strong> use cookies or advertising identifiers, we do <strong>not</strong>
+                track you across other apps or websites, and we do <strong>not</strong> track your activity for marketing or
+                advertising purposes. There are no ads in the app.</p>
+            <p class="mb-4">We do use two services to keep the app working and to improve it:</p>
+            <ul class="list-disc pl-6 mb-4">
+                <li><strong>PostHog</strong> for product analytics, so we can see how the app is used. The events it records
+                    are described in Section 2.4. Screen recording is switched off, and we do not automatically capture
+                    what you type or tap.</li>
+                <li><strong>Sentry</strong> for crash and error reporting, so we can find and fix things that break. What it
+                    receives is described in Section 2.5.</li>
+            </ul>
+            <p class="mb-4">You can turn product analytics off at any time under <strong>Settings -&gt; Policies -&gt; Share usage
+                data</strong>. Switching it off stops all analytics collection from your device and does not affect any other
+                part of the app. Crash reporting is not covered by this toggle, because we need it to keep the app usable for
+                everyone.</p>
 
             <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">8. Policy Changes and Notification</h2>
             <p class="mb-4">We may update this Privacy Policy App from time to time to reflect changes in our practices or legal requirements. If we
                 make significant changes to how we handle your data, we will notify you through the app, by email, or through app
                 store updates. We encourage you to review this Privacy Policy App periodically for any updates.</p>
 
-            <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">9. Your Rights Under Data Protection Laws</h2>
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">9. Legal Bases for Processing</h2>
+            <p class="mb-4">Where the GDPR applies, we rely on the following legal bases:</p>
+            <ul class="list-disc pl-6 mb-4">
+                <li><strong>Performance of a contract (Art. 6(1)(b) GDPR):</strong> Creating and securing your account, storing
+                    and displaying your consumption and quitting data, operating community features, and managing your
+                    Breezer Pro subscription. Without this processing the app cannot do what you installed it for.</li>
+                <li><strong>Consent (Art. 6(1)(a) GDPR):</strong> Push notifications, and sharing your activity with friends.
+                    You can withdraw either at any time in Settings, with effect for the future.</li>
+                <li><strong>Legitimate interests (Art. 6(1)(f) GDPR):</strong> Product analytics, crash and error reporting,
+                    and security logging. Our legitimate interest is understanding and improving the app, keeping it stable,
+                    and protecting it against abuse. You may object to product analytics at any time by switching off
+                    <strong>Share usage data</strong> in Settings, which stops that processing immediately.</li>
+                <li><strong>Legal obligation (Art. 6(1)(c) GDPR):</strong> Where we are required to retain or disclose data,
+                    for example in response to a lawful request.</li>
+            </ul>
+
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">10. Your Rights Under Data Protection Laws</h2>
             <p class="mb-4">If you are a resident of the European Economic Area (EEA) or another jurisdiction with data protection laws, you
                 have the following rights regarding your personal data:</p>
             <ul class="list-disc pl-6 mb-4">
@@ -169,33 +258,44 @@ const lang = 'en' as const;
                     format.</li>
                 <li><strong>Right to withdraw consent:</strong> If you provided consent for the processing of your data, you can
                     withdraw it at any time.</li>
+                <li><strong>Right to object (Art. 21 GDPR):</strong> You may object to processing based on our legitimate
+                    interests, including product analytics.</li>
+                <li><strong>Right to lodge a complaint (Art. 77 GDPR):</strong> You may complain to a supervisory authority.
+                    Ours is the Austrian Data Protection Authority (Österreichische Datenschutzbehörde, Barichgasse 40-42,
+                    1030 Vienna, <a href="https://www.dsb.gv.at" class="text-blue-500 underline" rel="noopener">dsb.gv.at</a>),
+                    but you may also complain to the authority where you live or work.</li>
             </ul>
             <p class="mb-4">For more details or to exercise any of these rights, please contact us at <a href="mailto:info@breezer.now" class="text-blue-500 underline">info@breezer.now</a>.</p>
 
-            <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">10. Marketing and Promotional Communications</h2>
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">11. Marketing and Promotional Communications</h2>
             <p class="mb-4">At present, Breezer does not engage in sending promotional communications, but this may change in the future. If we
                 do send you marketing emails, you will have the option to opt-out by clicking the "unsubscribe" link in the email
                 or updating your preferences in the app settings. Push notifications are sent only with your consent and can be
                 disabled at any time in Settings or via your device settings.</p>
 
-            <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">11. Data Retention</h2>
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">12. Data Retention</h2>
             <p class="mb-4">We will retain your personal data for as long as your account remains active. If you delete your account, we will
                 delete all associated data as per our retention policy. Certain minimal logs (e.g., security and moderation
-                logs) may be retained for a limited period as required for safety, fraud prevention, and legal compliance.</p>
+                logs) may be retained for a limited period as required for safety, fraud prevention, and legal compliance.
+                Product analytics events and crash reports are retained only for the retention period configured in the
+                respective service and are then deleted automatically. Because analytics events are not linked to your email
+                address, deleting your account does not require us to delete them individually; you can stop new events being
+                collected at any time using the toggle described in Section 7.</p>
 
-            <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">12. Children's Privacy</h2>
-            <p class="mb-4">Breezer is not intended for use by children under the age of 17. If you are under 17, please do not use the app. We
-                do not knowingly collect data from children under the age of 17. If we become aware that we have collected personal
-                data from someone under 17, we will take steps to delete that data. Community features are moderated but may
-                expose users to content shared by others; parental guidance is advised.</p>
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">13. Children's Privacy</h2>
+            <p class="mb-4">Breezer is not intended for use by anyone under the age of 18, in line with our
+                <a href="/eula" class="text-blue-500 underline">End-User License Agreement</a>. If you are under 18, please do
+                not use the app. We do not knowingly collect data from children. If we become aware that we have collected
+                personal data from someone under 18, we will take steps to delete that data. Community features are moderated
+                but may expose users to content shared by others; parental guidance is advised.</p>
 
-            <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">13. Contact Information</h2>
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">14. Contact Information</h2>
             <p class="mb-4">If you have any questions, concerns, or requests regarding this Privacy Policy App, please contact us at:</p>
             <p class="mb-4"><strong>Email:</strong> <a href="mailto:info@breezer.now" class="text-blue-500 underline">info@breezer.now</a></p>
             <p class="mb-4"><strong>App Store Support:</strong> You can also reach us through the support options available in the app stores.</p>
 
             <div class="text-center mt-6 text-sm text-gray-500 dark:text-gray-400">
-                <p>&copy; 2024 Breezer. All Rights Reserved.</p>
+                <p>&copy; 2026 Breezer. All Rights Reserved.</p>
             </div></div>
         </div>
   </main>

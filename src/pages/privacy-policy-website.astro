@@ -23,11 +23,11 @@ const lang = 'en' as const;
                 Privacy Policy Website for Breezer
               </h1>
               <p class="text-sm text-gray-600 dark:text-gray-400 mb-8">
-                <span><strong>Last Updated:</strong> 23.01.2026</span>
+                <span><strong>Last Updated:</strong> 14.08.2026</span>
                 &nbsp;·&nbsp;
-                <span><strong>Version:</strong> 1.0</span>
+                <span><strong>Version:</strong> 1.1</span>
                 &nbsp;·&nbsp;
-                <span><strong>Effective Date:</strong> 23.01.2026</span>
+                <span><strong>Effective Date:</strong> 14.08.2026</span>
               </p>
 
               <p class="mb-4">
@@ -80,11 +80,11 @@ const lang = 'en' as const;
               </h2>
 
               <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">
-                2.1 Website Hosting (GitHub Pages)
+                2.1 Website Hosting (Vercel)
               </h3>
               <p class="mb-2"><strong>Purpose</strong></p>
               <p class="mb-4">
-                Our website is hosted using <strong>GitHub Pages</strong>. This is used to provide the Website reliably and securely to visitors.
+                Our website is hosted on <strong>Vercel</strong>. This is used to provide the Website reliably and securely to visitors. Vercel operates a global edge network, so requests are normally served from the location closest to you.
               </p>
 
               <p class="mb-2"><strong>Data collected and processed</strong></p>
@@ -107,8 +107,8 @@ const lang = 'en' as const;
               <p class="mb-2"><strong>Involved processor</strong></p>
               <ul class="list-disc pl-6 mb-6">
                 <li>
-                  GitHub, Inc. (GitHub Pages)<br />
-                  88 Colin P Kelly Jr St, San Francisco, CA 94107, USA
+                  Vercel, Inc.<br />
+                  340 S Lemon Ave #4133, Walnut, CA 91789, USA
                 </li>
               </ul>
 
@@ -125,11 +125,11 @@ const lang = 'en' as const;
                 <li>understand demand.</li>
               </ul>
               <p class="mb-4">
-                This may involve the transfer of data to third countries, especially the United States.
+                We use two analytics services, and they are treated differently because they behave differently. <strong>Google Analytics</strong> sets cookies and may transfer data to the United States, so it runs <strong>only if you consent</strong>. <strong>PostHog</strong> runs cookieless on EU infrastructure and does not require consent.
               </p>
 
               <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                2.2.1 Google Analytics
+                2.2.1 Google Analytics (only with your consent)
               </h4>
               <p class="mb-2"><strong>Purpose</strong></p>
               <p class="mb-2">Google Analytics is used to analyse visitor behaviour, for example:</p>
@@ -152,9 +152,8 @@ const lang = 'en' as const;
 
               <p class="mb-2"><strong>Legal basis</strong></p>
               <ul class="list-disc pl-6 mb-4">
-                <li><strong>Consent</strong> (Art. 6(1)(a) GDPR), where applicable.</li>
                 <li>
-                  If consent is not required in your jurisdiction, the legal basis may be our <strong>legitimate interests</strong> (Art. 6(1)(f) GDPR), where applicable, to measure reach and improve the Website.
+                  <strong>Consent</strong> (Art. 6(1)(a) GDPR). Google Analytics is <strong>not</strong> loaded unless you explicitly enable analytics in our cookie banner, and you can withdraw that consent at any time via the <strong>Cookie settings</strong> link in the footer.
                 </li>
               </ul>
 
@@ -172,8 +171,54 @@ const lang = 'en' as const;
                 <li>Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Ireland</li>
               </ul>
 
+              <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                2.2.2 PostHog (cookieless, no consent required)
+              </h4>
+              <p class="mb-2"><strong>Purpose</strong></p>
+              <p class="mb-2">PostHog is used to analyse visitor behaviour, for example:</p>
+              <ul class="list-disc pl-6 mb-4">
+                <li>which pages are visited,</li>
+                <li>which content is of interest,</li>
+                <li>how visitors move through the Website,</li>
+                <li>whether a visit ends in a click through to the App Store or Google Play.</li>
+              </ul>
+
+              <p class="mb-2"><strong>Data collected and processed</strong></p>
+              <ul class="list-disc pl-6 mb-4">
+                <li>Technical information such as IP address</li>
+                <li>Browser data (type, version, language)</li>
+                <li>Device information (device type, operating system)</li>
+                <li>Data about user behaviour and interactions (pages viewed, time spent, clicks on our app store links)</li>
+                <li>Referrer URL (from which website you came)</li>
+              </ul>
+
+              <p class="mb-2"><strong>No cookies and no device storage</strong></p>
               <p class="mb-4">
-                We do <strong>not</strong> use Plausible Analytics on breezer.now.
+                We run PostHog in its <strong>cookieless mode</strong>. It does not set cookies, and it does not write anything to your browser's storage. Visits are grouped using an identifier that PostHog derives on its own servers from a value that changes daily, which means we cannot recognise you when you return on a later day and we cannot follow you across other websites.
+              </p>
+              <p class="mb-4">
+                Because nothing is stored on or read from your device, this processing does not require consent under Art. 5(3) of the ePrivacy Directive (in Austria, § 165 TKG 2021). PostHog therefore runs whether or not you accept analytics in our cookie banner; that banner governs Google Analytics, which does set cookies. If you would rather PostHog did not measure your visit either, see the objection route below.
+              </p>
+
+              <p class="mb-2"><strong>Legal basis</strong></p>
+              <ul class="list-disc pl-6 mb-4">
+                <li>
+                  <strong>Legitimate interests</strong> (Art. 6(1)(f) GDPR). Our legitimate interest is measuring reach and improving the Website. You may object at any time under Art. 21 GDPR by contacting us, or by enabling your browser's "Do Not Track" setting, which PostHog respects.
+                </li>
+              </ul>
+
+              <p class="mb-2"><strong>International transfers and safeguards</strong></p>
+              <p class="mb-4">
+                None. PostHog processes this data on its <strong>European Union</strong> infrastructure, and we do not transfer it to a third country.
+              </p>
+
+              <p class="mb-2"><strong>Processor</strong></p>
+              <ul class="list-disc pl-6 mb-6">
+                <li>PostHog, Inc., processing on EU infrastructure (eu.i.posthog.com)</li>
+              </ul>
+
+              <p class="mb-4">
+                We do <strong>not</strong> use Plausible Analytics, advertising pixels or any cross-site tracking on breezer.now.
               </p>
 
               <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">
@@ -232,10 +277,13 @@ const lang = 'en' as const;
               </h2>
               <p class="mb-2">This Website may store information in:</p>
               <ul class="list-disc pl-6 mb-4">
-                <li><strong>Cookies</strong> (e.g., set by Google Analytics)</li>
+                <li><strong>Cookies</strong> (set by Google Analytics, and only if you have consented to analytics)</li>
                 <li><strong>Local Storage</strong> (e.g., theme preference and language choice when you select Deutsch or English)</li>
                 <li><strong>Cookies (essential)</strong> to store your cookie consent choice for analytics only</li>
               </ul>
+              <p class="mb-4">
+                PostHog is <strong>not</strong> in this list: it runs cookieless and neither writes to nor reads from your device.
+              </p>
               <p class="mb-4">
                 You can control how your browser handles cookies and local storage (e.g., accept/block cookies, delete stored data). Please note that blocking cookies may affect analytics measurement and blocking storage may affect preferences such as theme or saved language.
               </p>
@@ -249,7 +297,7 @@ const lang = 'en' as const;
               <p class="mb-2">Examples:</p>
               <ul class="list-disc pl-6 mb-6">
                 <li><strong>Server logs</strong>: typically retained for a limited period for security and troubleshooting.</li>
-                <li><strong>Analytics data</strong>: retention depends on the configuration of Google Analytics and Google’s systems.</li>
+                <li><strong>Analytics data</strong>: retention depends on the configuration of Google Analytics and Google’s systems, and on the retention period configured in our PostHog project.</li>
                 <li><strong>Email communication</strong>: stored as long as needed to process your request and for documentation purposes, where applicable.</li>
                 <li><strong>Contact form submissions</strong>: stored as long as needed to process your request and for documentation purposes, where applicable.</li>
               </ul>
@@ -283,7 +331,11 @@ const lang = 'en' as const;
                 8. Withdrawal of Consent
               </h2>
               <p class="mb-4">
-                Where processing is based on your consent (Art. 6(1)(a) GDPR), you have the right to withdraw it at any time with effect for the future. You can withdraw or change your analytics choice via the <strong>Cookie settings</strong> link in the footer, and you can also control cookies via your browser settings and opt-out mechanisms offered by Google (e.g., Google Analytics opt-out tools).
+                Where processing is based on your consent (Art. 6(1)(a) GDPR), you have the right to withdraw it at any time with effect for the future. You can withdraw or change your analytics choice via the <strong>Cookie settings</strong> link in the footer, and you can also control cookies via your browser settings and opt-out mechanisms offered by Google (e.g., Google Analytics opt-out tools). Withdrawing consent stops Google Analytics and deletes its cookies.
+              </p>
+              <p class="mb-4">
+                PostHog is not based on consent but on our legitimate interests, so the withdrawal above does not apply to it. Instead you have a <strong>right to object</strong> under Art. 21 GDPR: enable the <strong>"Do Not Track"</strong> setting in your browser, which PostHog honours and which stops it collecting anything from your visit, or contact us at
+                <a href="mailto:info@breezer.now" class="text-blue-500 underline">info@breezer.now</a>.
               </p>
 
               <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">

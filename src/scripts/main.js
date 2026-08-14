@@ -1,11 +1,16 @@
 import Swiper from 'swiper';
 import { Navigation } from 'swiper/modules';
+// PostHog, deliberately outside the consent gate below: it runs cookieless and writes
+// nothing to the device, so ePrivacy consent is not engaged. Google Analytics does set
+// cookies and therefore stays gated. See src/scripts/analytics.js.
+import './analytics.js';
 
 /**
  * Cookie consent (DSGVO/GDPR-style opt-in) for Google Analytics.
  * - No analytics script is loaded until user explicitly enables Analytics.
  * - Consent is stored in a first-party cookie (essential cookie).
  * - A "Cookie settings" footer link (data-cookie-settings) re-opens settings.
+ * - Does NOT gate PostHog, which is cookieless and consent-exempt.
  */
 const BREEZER_GA_MEASUREMENT_ID = 'G-F1DFG9VDZQ';
 const BREEZER_COOKIE_CONSENT_KEY = 'breezer_cookie_consent_v1';
@@ -25,7 +30,7 @@ const BREEZER_UI = {
   en: {
     cookiesTitle: 'Cookies & privacy',
     cookiesIntro:
-      'We use <strong>essential storage</strong> for basic functionality (theme, language preference when you choose it) and, with your permission, <strong>Google Analytics</strong> to measure website usage and improve the site.',
+      'We use <strong>essential storage</strong> for basic functionality (theme, language preference when you choose it) and, with your permission, <strong>Google Analytics</strong> to measure website usage and improve the site. We also use <strong>PostHog</strong>, which runs without cookies and stores nothing on your device.',
     cookiesHint:
       'You can change your choice anytime via <strong>Cookie settings</strong> in the footer.',
     learnMore: 'Learn more',
@@ -37,12 +42,12 @@ const BREEZER_UI = {
       'Required for basic functionality and preferences (theme, language when selected).',
     alwaysOn: 'Always on',
     analytics: 'Analytics',
-    analyticsHint: 'Google Analytics to understand usage and improve the website.',
+    analyticsHint: 'Google Analytics to understand usage and improve the website. Sets cookies.',
     enable: 'Enable',
     saveSelection: 'Save selection',
     cookieSettings: 'Cookie settings',
     cookieSettingsIntro:
-      'Choose whether we may use Google Analytics. Essential storage (theme, language when you select it) is always enabled.',
+      'Choose whether we may use Google Analytics. Essential storage (theme, language when you select it) and our cookieless analytics are always active.',
     close: 'Close',
     rejectAnalytics: 'Reject analytics',
     save: 'Save',
@@ -53,7 +58,7 @@ const BREEZER_UI = {
   de: {
     cookiesTitle: 'Cookies & Datenschutz',
     cookiesIntro:
-      'Wir nutzen <strong>essenzielle Speicherung</strong> für Grundfunktionen (Theme, Sprache wenn du sie wählst) und mit deiner Zustimmung <strong>Google Analytics</strong>, um die Website-Nutzung zu messen und die Seite zu verbessern.',
+      'Wir nutzen <strong>essenzielle Speicherung</strong> für Grundfunktionen (Theme, Sprache wenn du sie wählst) und mit deiner Zustimmung <strong>Google Analytics</strong>, um die Website-Nutzung zu messen und die Seite zu verbessern. Zusätzlich nutzen wir <strong>PostHog</strong>, das ohne Cookies läuft und nichts auf deinem Gerät speichert.',
     cookiesHint:
       'Du kannst deine Wahl jederzeit über <strong>Cookie-Einstellungen</strong> im Footer ändern.',
     learnMore: 'Mehr erfahren',
@@ -66,12 +71,12 @@ const BREEZER_UI = {
     alwaysOn: 'Immer aktiv',
     analytics: 'Analytics',
     analyticsHint:
-      'Google Analytics, um die Nutzung zu verstehen und die Website zu verbessern.',
+      'Google Analytics, um die Nutzung zu verstehen und die Website zu verbessern. Setzt Cookies.',
     enable: 'Aktivieren',
     saveSelection: 'Auswahl speichern',
     cookieSettings: 'Cookie-Einstellungen',
     cookieSettingsIntro:
-      'Wähle, ob wir Google Analytics nutzen dürfen. Essenzielle Speicherung (Theme, Sprache bei Auswahl) ist immer aktiv.',
+      'Wähle, ob wir Google Analytics nutzen dürfen. Essenzielle Speicherung (Theme, Sprache bei Auswahl) und unsere cookielose Analyse sind immer aktiv.',
     close: 'Schließen',
     rejectAnalytics: 'Analytics ablehnen',
     save: 'Speichern',
