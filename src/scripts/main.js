@@ -469,6 +469,38 @@ function breezerInitReveal() {
 
 breezerInitReveal();
 
+/**
+ * FAQ-Akkordeon auf der Startseite.
+ *
+ * Markup (.faq / .faq-btn / .faq-content) und CSS (.faq.active .faq-content) waren
+ * immer vorhanden, das dazugehoerige Script hat das Template nie mitgeliefert. Dadurch
+ * liess sich nur das erste Element oeffnen, weil dort `active` fest im HTML steht.
+ *
+ * Delegiert auf document, damit die Anzahl der Fragen egal ist. Mehrere Antworten
+ * duerfen gleichzeitig offen sein: bei FAQs ist es aergerlich, wenn das Lesen der
+ * naechsten Frage die vorherige wieder zuklappt.
+ */
+function breezerInitFaq() {
+  const items = document.querySelectorAll('.faq');
+  if (!items.length) return;
+
+  items.forEach((item) => {
+    const btn = item.querySelector('.faq-btn');
+    if (btn) btn.setAttribute('aria-expanded', item.classList.contains('active') ? 'true' : 'false');
+  });
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target instanceof Element ? e.target.closest('.faq-btn') : null;
+    if (!btn) return;
+    const item = btn.closest('.faq');
+    if (!item) return;
+    const isOpen = item.classList.toggle('active');
+    btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+}
+
+breezerInitFaq();
+
 // Testimonial
 const testimonial = new Swiper('.mySwiper', {
   modules: [Navigation],
