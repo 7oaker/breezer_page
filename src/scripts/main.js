@@ -236,10 +236,14 @@ function breezerApplyConsent(consent) {
 function breezerCreateCookieBanner() {
   const wrapper = document.createElement('div');
   wrapper.id = 'breezer-cookie-banner';
-  wrapper.className = 'fixed inset-x-0 bottom-0 z-[9999] p-4 sm:p-6';
+  // pointer-events-none auf dem Wrapper, -auto auf der Box darin: der Wrapper spannt
+  // sich ueber die volle Breite, die sichtbare Box ist aber nur max-w-4xl und zentriert.
+  // Ohne das faengt der unsichtbare Bereich links und rechts daneben jeden Klick ab,
+  // unter anderem auf die Store-Buttons im Hero.
+  wrapper.className = 'pointer-events-none fixed inset-x-0 bottom-0 z-[9999] p-4 sm:p-6';
 
   wrapper.innerHTML = `
-    <div class="mx-auto max-w-4xl rounded-xl border border-stroke bg-white/95 shadow-card backdrop-blur dark:border-stroke-dark dark:bg-[#15182B]/95 dark:shadow-card-dark">
+    <div class="pointer-events-auto mx-auto max-w-4xl rounded-xl border border-stroke bg-white/95 shadow-card backdrop-blur dark:border-stroke-dark dark:bg-[#15182B]/95 dark:shadow-card-dark">
       <div class="p-4 sm:p-6">
         <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div class="max-w-2xl">
