@@ -45,6 +45,11 @@ const client = key
           // option were ever dropped this keeps us out of the visitor's storage rather
           // than silently starting to set cookies.
           persistence: 'memory',
+          // PostHog's documented companion to cookieless_mode: it turns any identify()
+          // call into a no-op. Nothing on the marketing site identifies anyone, but a
+          // persistent distinct ID is personal data and would undo the whole point, so
+          // this makes that impossible rather than merely unlikely.
+          person_profiles: 'never',
           // The site is hand-built and the one element that matters is instrumented
           // explicitly below. Autocapture would add generated selectors and no insight.
           autocapture: false,
