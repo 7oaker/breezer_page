@@ -155,6 +155,85 @@
   font-style: italic;
 }
 
+/* animate.css ships a flat 1s linear-ish reveal, which reads as sluggish on a
+   grid of cards. Two classes so this wins over `.animated` regardless of which
+   stylesheet is imported last. */
+.wow.animated {
+  animation-duration: 0.6s;
+  animation-timing-function: cubic-bezier(0.16, 0.84, 0.44, 1);
+}
+
+/* Ambient motion. Everything here is decorative and runs forever, so it lives
+   inside the no-preference query: a visitor who asked for reduced motion gets a
+   completely still page rather than a slower one. Periods are deliberately
+   coprime so the two loops never fall into step and start reading as one pulse. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes breezer-float {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(0, -8px, 0);
+    }
+  }
+
+  /* On the hero device: it drifts, it does not bounce. */
+  .float-slow {
+    animation: breezer-float 7s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  @keyframes breezer-twinkle {
+    0%,
+    100% {
+      opacity: 0.55;
+      transform: scale(0.94);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .twinkle-slow {
+    animation: breezer-twinkle 5s ease-in-out infinite;
+  }
+
+  /* Screens carousel: the framed slide is the subject, its neighbours are
+     context. Scoped to md and up because that is where three slides show at
+     once — below it, `-next` is off-screen and would dim nothing visible.
+     Scoped to `.swiper-initialized` because Swiper only marks the centre slide
+     once its deferred bundle runs: unscoped, every screenshot sits dimmed until
+     then, and stays dimmed forever if the bundle fails or JS is off. */
+  @media (min-width: 768px) {
+    .mySwiper.swiper-initialized .swiper-slide {
+      opacity: 0.6;
+      transform: scale(0.95);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+
+    .mySwiper.swiper-initialized .swiper-slide-next {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
+
+/* Reading progress for long articles. Driven by a scaleX transform rather than
+   a width so it stays on the compositor. */
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  height: 2px;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  will-change: transform;
+}
+
 /* The wrapper is injected by the rehypeTableScroll plugin in astro.config.mjs. */
 .table-scroll {
   margin-top: 1.5rem;
@@ -223,15 +302,49 @@
   color: theme('colors.white');
 }
 
-.prose-breezer code {
+/* Inline code only. Unscoped, this pill also painted over fenced blocks, which
+   is what made the formula in the strength post unreadable: a light pill under
+   text Shiki had already coloured for a dark background. */
+.prose-breezer :not(pre) > code {
   padding: 0.15em 0.4em;
   border-radius: 0.25rem;
   background: theme('colors.gray');
   font-size: 0.875em;
 }
 
-.dark .prose-breezer code {
+.dark .prose-breezer :not(pre) > code {
   background: theme('colors.dark');
+}
+
+/* Fenced blocks. Text colour comes from the two Shiki themes configured in
+   astro.config.mjs, which ship as CSS variables rather than inline styles; the
+   surface is ours, so a code block matches the inline pill and the cards
+   instead of introducing GitHub's greys into the palette. */
+.prose-breezer pre {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid theme('colors.stroke');
+  border-radius: 0.75rem;
+  overflow-x: auto;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  background: theme('colors.gray');
+}
+
+.prose-breezer pre,
+.prose-breezer pre span {
+  color: var(--shiki-light);
+}
+
+.dark .prose-breezer pre {
+  border-color: theme('colors.stroke-dark');
+  background: theme('colors.dark');
+}
+
+.dark .prose-breezer pre,
+.dark .prose-breezer pre span {
+  color: var(--shiki-dark);
 }
 
 .prose-breezer hr {

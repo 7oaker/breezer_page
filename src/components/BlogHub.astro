@@ -7,6 +7,7 @@ import PostCard from './PostCard.astro';
 import GuideCard from './GuideCard.astro';
 import StoreButtons from './StoreButtons.astro';
 import { blogCopy } from '../i18n/blog';
+import type { ImageMetadata } from 'astro';
 import type { Lang } from '../i18n/routes';
 
 interface PostItem {
@@ -15,6 +16,7 @@ interface PostItem {
   summary: string;
   date: Date;
   words: number;
+  image?: ImageMetadata;
 }
 interface GuideItem {
   href: string;
@@ -69,7 +71,7 @@ const readGuide = de ? 'Guide lesen' : 'Read guide';
             <p class="mx-auto max-w-[460px] text-base text-body">{c.empty}</p>
           </div>
         ) : (
-          <div class="grid gap-6 sm:grid-cols-2">
+          <div class="grid gap-6 sm:grid-cols-2" data-reveal-stagger>
             <PostCard {...featured} readingMinutes={minutes(featured.words)} lang={lang} featured />
             {rest.map((p) => (
               <PostCard {...p} readingMinutes={minutes(p.words)} lang={lang} />
@@ -82,7 +84,7 @@ const readGuide = de ? 'Guide lesen' : 'Read guide';
     <section class="mb-16">
       <h2 class="mb-2 text-2xl font-bold text-black dark:text-white">{c.guidesHeading}</h2>
       <p class="mb-6 max-w-[620px] text-base text-body">{c.guidesIntro}</p>
-      <div class="grid gap-6 sm:grid-cols-2">
+      <div class="grid gap-6 sm:grid-cols-2" data-reveal-stagger>
         {guides.map((g) => (
           <GuideCard {...g}>
             <Fragment slot="cta">{readGuide}</Fragment>
@@ -92,7 +94,7 @@ const readGuide = de ? 'Guide lesen' : 'Read guide';
     </section>
 
     <aside
-      class="relative overflow-hidden rounded-2xl border border-stroke bg-gray/40 p-8 sm:p-10 dark:border-stroke-dark dark:bg-dark"
+      class="wow fadeInUp relative overflow-hidden rounded-2xl border border-stroke bg-gray/40 p-8 sm:p-10 dark:border-stroke-dark dark:bg-dark"
     >
       <span class="absolute inset-x-0 top-0 h-1 bg-gradient-1"></span>
       <div class="max-w-[560px]">

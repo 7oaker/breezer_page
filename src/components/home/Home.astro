@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import LanguageSwitcher from '../LanguageSwitcher.astro';
 import Icon from '../Icon.astro';
+import PhoneFrame from '../PhoneFrame.astro';
 import type { UI } from '../../i18n/ui';
 import img_author_04 from '../../assets/images/testimonials/author-04.png';
 import img_author_1 from '../../assets/images/testimonials/author-1.png';
@@ -54,9 +55,13 @@ const home = lang === 'de' ? '/de/' : '/';
                   class="mb-6 text-3xl font-bold leading-tight text-black dark:text-white sm:text-[40px] md:text-[50px] lg:text-[42px] xl:text-[50px]"
                 >
                   {t.the_social}
-                  <span
-                    class="inline bg-gradient-1 bg-clip-text text-transparent"
-                  >
+                  {/*
+                    Solid, not the brand gradient: clipped to text it ran cyan
+                    to blue to cyan across the two words, so "Snus" and "App"
+                    read as different colors and the cyan end sat near 1.6:1 on
+                    white. The emphasis comes from the color alone now.
+                  */}
+                  <span class="text-primary dark:text-primary-light">
                     {t.snus_app}
                   </span>
                   {t.for_tracking_ranking_and_quitting}
@@ -139,14 +144,14 @@ const home = lang === 'de' ? '/de/' : '/';
               >
                 <Image src={img_hero_light} width={376} height={546}
                   alt={t.breezer_app_press_snus}
-                  class="mx-auto max-w-full"
+                  class="float-slow mx-auto max-w-full"
                   fetchpriority="high"
                   loading="eager"
                   decoding="sync" />
                 <div
                   class="max-auto absolute top-0 left-0 right-0 pointer-events-none -z-10 aspect-square w-full rounded-full bg-gradient-1"
                 >
-                  <div class="absolute top-5 right-0">
+                  <div class="twinkle-slow absolute top-5 right-0">
                     <svg
                       width="72"
                       height="51"
@@ -205,7 +210,7 @@ const home = lang === 'de' ? '/de/' : '/';
                 data-wow-delay=".2s"
               >
                 <div
-                  class="mx-auto mb-6 flex h-[70px] w-[70px] items-center justify-center rounded-3xl bg-gray text-primary duration-300 group-hover:bg-primary group-hover:text-white dark:bg-[#2A2E44] dark:text-white dark:group-hover:bg-primary"
+                  class="mx-auto mb-6 flex h-[70px] w-[70px] items-center justify-center rounded-3xl bg-gray text-primary duration-300 group-hover:-translate-y-1 group-hover:bg-primary group-hover:text-white dark:bg-[#2A2E44] dark:text-white dark:group-hover:bg-primary"
                 >
                     <svg
                       width="40"
@@ -244,7 +249,7 @@ const home = lang === 'de' ? '/de/' : '/';
                   data-wow-delay=".3s"
                 >
                   <div
-                    class="mx-auto mb-6 flex h-[70px] w-[70px] items-center justify-center rounded-3xl bg-gray text-primary duration-300 group-hover:bg-primary group-hover:text-white dark:bg-[#2A2E44] dark:text-white dark:group-hover:bg-primary"
+                    class="mx-auto mb-6 flex h-[70px] w-[70px] items-center justify-center rounded-3xl bg-gray text-primary duration-300 group-hover:-translate-y-1 group-hover:bg-primary group-hover:text-white dark:bg-[#2A2E44] dark:text-white dark:group-hover:bg-primary"
                   >
                     <svg
                       width="40"
@@ -283,7 +288,7 @@ const home = lang === 'de' ? '/de/' : '/';
                   data-wow-delay=".4s"
                 >
                   <div
-                    class="mx-auto mb-6 flex h-[70px] w-[70px] items-center justify-center rounded-3xl bg-gray text-primary duration-300 group-hover:bg-primary group-hover:text-white dark:bg-[#2A2E44] dark:text-white dark:group-hover:bg-primary"
+                    class="mx-auto mb-6 flex h-[70px] w-[70px] items-center justify-center rounded-3xl bg-gray text-primary duration-300 group-hover:-translate-y-1 group-hover:bg-primary group-hover:text-white dark:bg-[#2A2E44] dark:text-white dark:group-hover:bg-primary"
                   >
                     <svg
                       width="40"
@@ -438,20 +443,13 @@ const home = lang === 'de' ? '/de/' : '/';
             >
               <div class="order-last w-full px-4 lg:order-first lg:w-1/2 hidden md:block">
                 <div
-                  class="wow fadeInUp relative z-10 mx-auto mb-14 w-full max-w-[470px] pb-6 lg:mx-0 lg:mb-0"
+                  class="wow fadeInLeft relative z-10 mx-auto mb-14 w-full max-w-[470px] pb-6 lg:mx-0 lg:mb-0"
                   data-wow-delay=".2s"
                 >
-                  <div class="relative mx-auto w-full max-w-[295px]">
-                    <div class="relative z-0 mx-auto w-full max-w-[265px] py-2">
-                      <Image src={img_snus_stats} width={263} height={569}
-                        alt={t.breezer_weekly_snus_consumption_statistics_and}
-                        class="mx-auto w-full rounded-2xl" loading="lazy" decoding="async" />
-                    </div>
-                    <Image src={img_mobile_frame} width={295} height={594}
-                      alt=""
-                      aria-hidden="true"
-                      class="pointer-events-none absolute top-0 left-0 right-0 z-10 mx-auto w-full max-w-[295px]" loading="lazy" decoding="async" />
-                  </div>
+                  <PhoneFrame
+                    src={img_snus_stats}
+                    alt={t.breezer_weekly_snus_consumption_statistics_and}
+                  />
 
                   <div class="absolute top-0 right-5 pointer-events-none -z-10">
                     <svg
@@ -491,7 +489,7 @@ const home = lang === 'de' ? '/de/' : '/';
 
               <div class="w-full px-4 lg:w-1/2">
                 <div
-                  class="wow fadeInUp lg:ml-auto lg:max-w-[510px]"
+                  class="wow fadeInRight lg:ml-auto lg:max-w-[510px]"
                   data-wow-delay=".3s"
                 >
                   <span
@@ -614,7 +612,7 @@ const home = lang === 'de' ? '/de/' : '/';
             >
               <div class="w-full px-4 lg:w-1/2">
                 <div
-                  class="wow fadeInUp lg:max-w-[510px]"
+                  class="wow fadeInLeft lg:max-w-[510px]"
                   data-wow-delay=".2s"
                 >
                   <span
@@ -697,20 +695,13 @@ const home = lang === 'de' ? '/de/' : '/';
                 class="order-last w-full px-4 lg:order-last lg:w-1/2 hidden md:block"
               >
                 <div
-                  class="wow fadeInUp relative z-10 mx-auto mb-14 w-full max-w-[470px] pb-6 lg:mr-0 lg:mb-0"
+                  class="wow fadeInRight relative z-10 mx-auto mb-14 w-full max-w-[470px] pb-6 lg:mr-0 lg:mb-0"
                   data-wow-delay=".3s"
                 >
-                  <div class="relative mx-auto w-full max-w-[295px]">
-                    <div class="relative z-0 mx-auto w-full max-w-[265px] py-2">
-                      <Image src={img_quitting_home} width={263} height={569}
-                        alt={t.breezer_quit_mode_days_snusfree_savings}
-                        class="mx-auto w-full rounded-2xl" loading="lazy" decoding="async" />
-                    </div>
-                    <Image src={img_mobile_frame} width={295} height={594}
-                      alt=""
-                      aria-hidden="true"
-                      class="pointer-events-none absolute top-0 left-0 right-0 z-10 mx-auto w-full max-w-[295px]" loading="lazy" decoding="async" />
-                  </div>
+                  <PhoneFrame
+                    src={img_quitting_home}
+                    alt={t.breezer_quit_mode_days_snusfree_savings}
+                  />
 
                   <div class="absolute top-0 right-5 pointer-events-none -z-10">
                     <svg
@@ -886,130 +877,75 @@ const home = lang === 'de' ? '/de/' : '/';
           >
             
             <div class="swiper mySwiper relative z-20">
+              {/*
+                A dark panel sitting in the screen window behind the slides. The
+                40px gap between two slides travels through the window on every
+                transition; without this it showed as page background, so mid-swipe
+                the device looked switched off. Now the gap reads as screen.
+              */}
               <div
-                class="pointer-events-none absolute top-0 left-0 right-0 z-50 mx-auto w-full md:w-1/3"
+                class="pointer-events-none absolute top-0 left-0 right-0 z-0 mx-auto w-full md:w-[calc((100%-80px)/3)]"
+                aria-hidden="true"
+              >
+                <div class="relative mx-auto aspect-[295/594] w-full max-w-[295px]">
+                  <div class="absolute inset-y-[2.357%] inset-x-[5.763%] rounded-[7%] bg-[#0F1117]"></div>
+                </div>
+              </div>
+              {/*
+                One static frame the slides travel underneath, so its box has to
+                match a slide's exactly or the screen window shows page
+                background at the edges. Swiper sizes a slide
+                `(container - spaceBetween * (perView - 1)) / perView`, which is
+                `(100% - 80px) / 3` at md and up and the full width below it —
+                `w-1/3` was close enough to look right only at 1000px.
+              */}
+              <div
+                class="pointer-events-none absolute top-0 left-0 right-0 z-50 mx-auto w-full md:w-[calc((100%-80px)/3)]"
               >
                 <Image src={img_mobile_frame} width={295} height={594}
-                  alt={t.mobile_frame_for_breezer_app_screenshots}
-                  class="mx-auto max-w-full" loading="lazy" decoding="async" />
+                  alt=""
+                  aria-hidden="true"
+                  class="mx-auto w-full max-w-[295px]" loading="lazy" decoding="async" />
               </div>
-              <div class="swiper-wrapper py-2">
+              <div class="swiper-wrapper relative z-10">
                 <div class="swiper-slide">
-                  <div
-                    class="mx-auto w-full max-w-[252px] xs:max-w-[265px]"
-                  >
-                    <Image src={img_take_snus} width={263} height={569}
-                      alt={t.breezer_app_log_a_snus_pouch}
-                      class="mx-auto w-full rounded-2xl" loading="lazy" decoding="async" />
-                  </div>
+                  <PhoneFrame src={img_take_snus} alt={t.breezer_app_log_a_snus_pouch} screenOnly />
                 </div>
                 <div class="swiper-slide">
-                  <div
-                    class="mx-auto w-full max-w-[252px] xs:max-w-[265px]"
-                  >
-                    <Image src={img_snus_stats} width={263} height={569}
-                      alt={t.breezer_app_weekly_snus_consumption_statistics}
-                      class="mx-auto w-full rounded-2xl" loading="lazy" decoding="async" />
-                  </div>
+                  <PhoneFrame src={img_snus_stats} alt={t.breezer_app_weekly_snus_consumption_statistics} screenOnly />
                 </div>
                 <div class="swiper-slide">
-                  <div
-                    class="mx-auto w-full max-w-[252px] xs:max-w-[265px]"
-                  >
-                    <Image src={img_snus_profile} width={263} height={569}
-                      alt={t.breezer_app_user_profile_with_personal}
-                      class="mx-auto w-full rounded-2xl" loading="lazy" decoding="async" />
-                  </div>
+                  <PhoneFrame src={img_snus_profile} alt={t.breezer_app_user_profile_with_personal} screenOnly />
                 </div>
                 <div class="swiper-slide">
-                  <div
-                    class="mx-auto w-full max-w-[252px] xs:max-w-[265px]"
-                  >
-                    <Image src={img_snus_ranking} width={263} height={569}
-                      alt={t.breezer_app_global_snus_ranking_leaderboard}
-                      class="mx-auto w-full rounded-2xl" loading="lazy" decoding="async" />
-                  </div>
+                  <PhoneFrame src={img_snus_ranking} alt={t.breezer_app_global_snus_ranking_leaderboard} screenOnly />
                 </div>
                 <div class="swiper-slide">
-                  <div
-                    class="mx-auto w-full max-w-[252px] xs:max-w-[265px]"
-                  >
-                    <Image src={img_snus_activities} width={263} height={569}
-                      alt={t.breezer_app_social_snus_activity_feed}
-                      class="mx-auto w-full rounded-2xl" loading="lazy" decoding="async" />
-                  </div>
+                  <PhoneFrame src={img_snus_activities} alt={t.breezer_app_social_snus_activity_feed} screenOnly />
                 </div>
                 <div class="swiper-slide">
-                  <div
-                    class="mx-auto w-full max-w-[252px] xs:max-w-[265px]"
-                  >
-                    <Image src={img_snus_feed} width={263} height={569}
-                      alt={t.breezer_app_community_feed_and_social}
-                      class="mx-auto w-full rounded-2xl" loading="lazy" decoding="async" />
-                  </div>
+                  <PhoneFrame src={img_snus_feed} alt={t.breezer_app_community_feed_and_social} screenOnly />
                 </div>
                 <div class="swiper-slide">
-                  <div
-                    class="mx-auto w-full max-w-[252px] xs:max-w-[265px]"
-                  >
-                    <Image src={img_snus_chat} width={263} height={569}
-                      alt={t.breezer_app_community_chat_channels}
-                      class="mx-auto w-full rounded-2xl" loading="lazy" decoding="async" />
-                  </div>
+                  <PhoneFrame src={img_snus_chat} alt={t.breezer_app_community_chat_channels} screenOnly />
                 </div>
                 <div class="swiper-slide">
-                  <div
-                    class="mx-auto w-full max-w-[252px] xs:max-w-[265px]"
-                  >
-                    <Image src={img_snus_promotions} width={263} height={569}
-                      alt={t.breezer_app_exclusive_promotions_and_partner}
-                      class="mx-auto w-full rounded-2xl" loading="lazy" decoding="async" />
-                  </div>
+                  <PhoneFrame src={img_snus_promotions} alt={t.breezer_app_exclusive_promotions_and_partner} screenOnly />
                 </div>
                 <div class="swiper-slide">
-                  <div
-                    class="mx-auto w-full max-w-[252px] xs:max-w-[265px]"
-                  >
-                    <Image src={img_notification} width={263} height={569}
-                      alt={t.breezer_app_realtime_friend_activity_notifications}
-                      class="mx-auto w-full rounded-2xl" loading="lazy" decoding="async" />
-                  </div>
+                  <PhoneFrame src={img_notification} alt={t.breezer_app_realtime_friend_activity_notifications} screenOnly />
                 </div>
                 <div class="swiper-slide">
-                  <div
-                    class="mx-auto w-full max-w-[252px] xs:max-w-[265px]"
-                  >
-                    <Image src={img_quitting_home} width={263} height={569}
-                      alt={t.breezer_app_quit_mode_days_snusfree}
-                      class="mx-auto w-full rounded-2xl" loading="lazy" decoding="async" />
-                  </div>
+                  <PhoneFrame src={img_quitting_home} alt={t.breezer_app_quit_mode_days_snusfree} screenOnly />
                 </div>
                 <div class="swiper-slide">
-                  <div
-                    class="mx-auto w-full max-w-[252px] xs:max-w-[265px]"
-                  >
-                    <Image src={img_quitting_health} width={263} height={569}
-                      alt={t.breezer_quit_mode_health_improvements_after}
-                      class="mx-auto w-full rounded-2xl" loading="lazy" decoding="async" />
-                  </div>
+                  <PhoneFrame src={img_quitting_health} alt={t.breezer_quit_mode_health_improvements_after} screenOnly />
                 </div>
                 <div class="swiper-slide">
-                  <div
-                    class="mx-auto w-full max-w-[252px] xs:max-w-[265px]"
-                  >
-                    <Image src={img_quitting_achievements} width={263} height={569}
-                      alt={t.breezer_quit_mode_achievements_and_snusfree}
-                      class="mx-auto w-full rounded-2xl" loading="lazy" decoding="async" />
-                  </div>
+                  <PhoneFrame src={img_quitting_achievements} alt={t.breezer_quit_mode_achievements_and_snusfree} screenOnly />
                 </div>
                 <div class="swiper-slide">
-                  <div
-                    class="mx-auto w-full max-w-[252px] xs:max-w-[265px]"
-                  >
-                    <Image src={img_quitting_social} width={263} height={569}
-                      alt={t.breezer_quit_mode_quitters_ranking_and}
-                      class="mx-auto w-full rounded-2xl" loading="lazy" decoding="async" />
-                  </div>
+                  <PhoneFrame src={img_quitting_social} alt={t.breezer_quit_mode_quitters_ranking_and} screenOnly />
                 </div>
               </div>
               <div
@@ -1132,7 +1068,7 @@ const home = lang === 'de' ? '/de/' : '/';
 
         <div class="container">
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
-            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card dark:bg-dark dark:shadow-card-dark dark:border dark:border-stroke-dark" data-wow-delay=".10s">
+            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card duration-300 hover:-translate-y-1 hover:shadow-input dark:border dark:border-stroke-dark dark:bg-dark dark:shadow-card-dark dark:hover:border-primary" data-wow-delay=".10s">
               <div class="mb-4 border-b border-stroke pb-4 dark:border-stroke-dark">
                 <p class="text-sm leading-relaxed text-body">{t.best_application_on_appstore}</p>
               </div>
@@ -1145,7 +1081,7 @@ const home = lang === 'de' ? '/de/' : '/';
               </div>
             </div>
 
-            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card dark:bg-dark dark:shadow-card-dark dark:border dark:border-stroke-dark" data-wow-delay=".15s">
+            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card duration-300 hover:-translate-y-1 hover:shadow-input dark:border dark:border-stroke-dark dark:bg-dark dark:shadow-card-dark dark:hover:border-primary" data-wow-delay=".15s">
               <div class="mb-4 border-b border-stroke pb-4 dark:border-stroke-dark">
                 <p class="text-sm leading-relaxed text-body">{t.the_best_app_in_the_store}</p>
               </div>
@@ -1158,7 +1094,7 @@ const home = lang === 'de' ? '/de/' : '/';
               </div>
             </div>
 
-            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card dark:bg-dark dark:shadow-card-dark dark:border dark:border-stroke-dark" data-wow-delay=".20s">
+            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card duration-300 hover:-translate-y-1 hover:shadow-input dark:border dark:border-stroke-dark dark:bg-dark dark:shadow-card-dark dark:hover:border-primary" data-wow-delay=".20s">
               <div class="mb-4 border-b border-stroke pb-4 dark:border-stroke-dark">
                 <p class="text-sm leading-relaxed text-body">{t.absolutely_brilliant_the_statistics_make_real}</p>
               </div>
@@ -1171,7 +1107,7 @@ const home = lang === 'de' ? '/de/' : '/';
               </div>
             </div>
 
-            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card dark:bg-dark dark:shadow-card-dark dark:border dark:border-stroke-dark" data-wow-delay=".25s">
+            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card duration-300 hover:-translate-y-1 hover:shadow-input dark:border dark:border-stroke-dark dark:bg-dark dark:shadow-card-dark dark:hover:border-primary" data-wow-delay=".25s">
               <div class="mb-4 border-b border-stroke pb-4 dark:border-stroke-dark">
                 <p class="text-sm leading-relaxed text-body">{t.the_app_helped_me_control_my}</p>
               </div>
@@ -1184,7 +1120,7 @@ const home = lang === 'de' ? '/de/' : '/';
               </div>
             </div>
 
-            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card dark:bg-dark dark:shadow-card-dark dark:border dark:border-stroke-dark" data-wow-delay=".30s">
+            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card duration-300 hover:-translate-y-1 hover:shadow-input dark:border dark:border-stroke-dark dark:bg-dark dark:shadow-card-dark dark:hover:border-primary" data-wow-delay=".30s">
               <div class="mb-4 border-b border-stroke pb-4 dark:border-stroke-dark">
                 <p class="text-sm leading-relaxed text-body">{t.a_really_good_and_helpful_app}</p>
               </div>
@@ -1197,7 +1133,7 @@ const home = lang === 'de' ? '/de/' : '/';
               </div>
             </div>
 
-            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card dark:bg-dark dark:shadow-card-dark dark:border dark:border-stroke-dark" data-wow-delay=".35s">
+            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card duration-300 hover:-translate-y-1 hover:shadow-input dark:border dark:border-stroke-dark dark:bg-dark dark:shadow-card-dark dark:hover:border-primary" data-wow-delay=".35s">
               <div class="mb-4 border-b border-stroke pb-4 dark:border-stroke-dark">
                 <p class="text-sm leading-relaxed text-body">{t.i_dont_usually_write_reviews_but}</p>
               </div>
@@ -1210,7 +1146,7 @@ const home = lang === 'de' ? '/de/' : '/';
               </div>
             </div>
 
-            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card dark:bg-dark dark:shadow-card-dark dark:border dark:border-stroke-dark" data-wow-delay=".40s">
+            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card duration-300 hover:-translate-y-1 hover:shadow-input dark:border dark:border-stroke-dark dark:bg-dark dark:shadow-card-dark dark:hover:border-primary" data-wow-delay=".40s">
               <div class="mb-4 border-b border-stroke pb-4 dark:border-stroke-dark">
                 <p class="text-sm leading-relaxed text-body">{t.great_app_for_tracking_snus_consumption}</p>
               </div>
@@ -1223,7 +1159,7 @@ const home = lang === 'de' ? '/de/' : '/';
               </div>
             </div>
 
-            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card dark:bg-dark dark:shadow-card-dark dark:border dark:border-stroke-dark" data-wow-delay=".45s">
+            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card duration-300 hover:-translate-y-1 hover:shadow-input dark:border dark:border-stroke-dark dark:bg-dark dark:shadow-card-dark dark:hover:border-primary" data-wow-delay=".45s">
               <div class="mb-4 border-b border-stroke pb-4 dark:border-stroke-dark">
                 <p class="text-sm leading-relaxed text-body">{t.goat}</p>
               </div>

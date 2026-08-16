@@ -1,0 +1,100 @@
+---
+/**
+ * An app screenshot inside the device frame.
+ *
+ * The frame PNG is 295x594 with a transparent screen window at x 17..277,
+ * y 14..579 — 261x566, which is exactly the aspect of every app screenshot.
+ * Both the screenshot and the frame are therefore sized as percentages of one
+ * box: the old markup gave them independent max-widths, so below the `xs`
+ * breakpoint the screenshot sat ~21px narrow and ~26px short inside the window
+ * and the page background showed through. That gap was invisible in dark mode
+ * and glaring white in light mode.
+ *
+ * The frame is decorative (aria-hidden); the screenshot carries the alt text,
+ * so the meaning survives for screen readers and image search.
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import frame from '../assets/images/screens/mobile-frame.png';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  /** Above-the-fold shots should not be lazy-loaded. */
+  eager?: boolean;
+  /**
+   * Raises fetch priority without giving up lazy loading. For a shot that is
+   * above the fold on desktop but `display:none` on phones: `eager` would make
+   * every phone download an image it never shows, while lazy alone leaves the
+   * fetch waiting on layout. This gets the queue position back without the
+   * mobile cost.
+   */
+  priority?: boolean;
+  /** Render the screenshot alone, without the device frame around it. */
+  frameless?: boolean;
+  /**
+   * Keep the frame's geometry but omit the frame image — for the carousel,
+   * where one static frame sits above the slides that move underneath it.
+   */
+  screenOnly?: boolean;
+  class?: string;
+  /** Extra classes for the screenshot itself, e.g. a shadow in frameless mode. */
+  imageClass?: string;
+}
+const {
+  src,
+  alt,
+  eager = false,
+  priority = false,
+  frameless = false,
+  screenOnly = false,
+  class: className = '',
+  imageClass = '',
+} = Astro.props;
+
+const loading = eager ? 'eager' : 'lazy';
+const decoding = eager ? 'sync' : 'async';
+---
+
+{
+  frameless ? (
+    <Image
+      src={src}
+      width={263}
+      height={569}
+      alt={alt}
+      class:list={['h-auto max-w-full rounded-[1.75rem]', imageClass, className]}
+      loading={loading}
+      decoding={decoding}
+      fetchpriority={priority ? 'high' : undefined}
+    />
+  ) : (
+    <div class:list={['relative mx-auto aspect-[295/594] w-full max-w-[295px]', className]}>
+      {/* The backplate matches the app's own dark UI, so even a sub-pixel
+          rounding gap at the window edge reads as screen, not as page. */}
+      <div class="absolute inset-y-[2.357%] inset-x-[5.763%] overflow-hidden rounded-[7%] bg-[#0F1117]">
+        <Image
+          src={src}
+          width={263}
+          height={569}
+          alt={alt}
+          class:list={['h-full w-full object-cover object-top', imageClass]}
+          loading={loading}
+          decoding={decoding}
+        />
+      </div>
+      {!screenOnly && (
+        <Image
+          src={frame}
+          width={295}
+          height={594}
+          alt=""
+          aria-hidden="true"
+          class="pointer-events-none absolute inset-0 h-full w-full"
+          loading={loading}
+          decoding="async"
+        />
+      )}
+    </div>
+  )
+}

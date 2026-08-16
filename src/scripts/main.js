@@ -453,6 +453,18 @@ function breezerInitReveal() {
     el.style.visibility = 'hidden';
   });
 
+  // A grid of cards reads better arriving one after the other than all at once.
+  // The delay is written here rather than authored per card so adding a post
+  // never means renumbering the markup.
+  const STAGGER_MS = 70;
+  const STAGGER_MAX = 6;
+  document.querySelectorAll('[data-reveal-stagger]').forEach((group) => {
+    [...group.children].forEach((child, i) => {
+      if (!child.classList.contains('wow')) return;
+      child.dataset.wowDelay = `${Math.min(i, STAGGER_MAX) * STAGGER_MS}ms`;
+    });
+  });
+
   const io = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -472,6 +484,45 @@ function breezerInitReveal() {
 }
 
 breezerInitReveal();
+
+/**
+ * Reading progress for article pages. Measures the <article> element, not the
+ * document, so the site header and footer don't count as unread and leave the
+ * bar short of the end. Everything inside <article> counts, FAQ and CTA
+ * included — the bar tracks the page, not just the prose.
+ */
+function breezerInitReadingProgress() {
+  const bar = document.getElementById('readingProgress');
+  const article = document.querySelector('article');
+  if (!bar || !article) return;
+
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    const start = article.offsetTop;
+    const distance = article.offsetHeight - window.innerHeight;
+    // An article shorter than the viewport has no progress to report. A full bar
+    // would claim the reader finished something they have not started.
+    if (distance <= 0) {
+      bar.style.transform = 'scaleX(0)';
+      return;
+    }
+    const progress = (window.scrollY - start) / distance;
+    bar.style.transform = `scaleX(${Math.min(1, Math.max(0, progress))})`;
+  };
+
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(update);
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  update();
+}
+
+breezerInitReadingProgress();
 
 /**
  * FAQ-Akkordeon auf der Startseite.

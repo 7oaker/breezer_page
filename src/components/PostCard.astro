@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import type { Lang } from '../i18n/routes';
 
 interface Props {
@@ -9,8 +11,10 @@ interface Props {
   readingMinutes?: number;
   lang: Lang;
   featured?: boolean;
+  /** The post's own screenshot, previewed in the card's corner. */
+  image?: ImageMetadata;
 }
-const { href, title, summary, date, readingMinutes, lang, featured = false } = Astro.props;
+const { href, title, summary, date, readingMinutes, lang, featured = false, image } = Astro.props;
 
 const cardTitle = title.replace(/\s*\|\s*(Breezer|Österreich)\s*$/i, '').trim();
 const fmt = date.toLocaleDateString(lang === 'de' ? 'de-AT' : 'en-GB', {
@@ -22,29 +26,55 @@ const readLabel = lang === 'de' ? 'Min. Lesezeit' : 'min read';
 <a
   href={href}
   class:list={[
-    'group relative flex h-full flex-col overflow-hidden rounded-2xl border border-stroke bg-white shadow-card duration-300 hover:-translate-y-1 hover:border-primary hover:shadow-input dark:border-stroke-dark dark:bg-dark dark:shadow-card-dark',
+    'wow fadeInUp group relative flex h-full flex-col overflow-hidden rounded-2xl border border-stroke bg-white shadow-card duration-300 hover:-translate-y-1 hover:border-primary hover:shadow-input dark:border-stroke-dark dark:bg-dark dark:shadow-card-dark',
     featured ? 'p-8 sm:col-span-2' : 'p-6',
   ]}
 >
   <span class="absolute inset-x-0 top-0 h-1 bg-gradient-1 opacity-0 duration-300 group-hover:opacity-100"></span>
 
-  <div class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-medium uppercase tracking-wide text-primary">
-    <time datetime={date.toISOString().slice(0, 10)}>{fmt}</time>
-    {readingMinutes && (
-      <>
-        <span aria-hidden="true" class="text-body/50">·</span>
-        <span class="text-body">{readingMinutes} {readLabel}</span>
-      </>
-    )}
-  </div>
+  {/*
+    The post's own screenshot, tilted and cropped by the card edge. It is
+    decorative here — the card's link text already names the article — so it
+    stays out of the accessibility tree rather than repeating the headline.
+  */}
+  {image && (
+    <Image
+      src={image}
+      alt=""
+      aria-hidden="true"
+      width={132}
+      height={286}
+      class:list={[
+        // Cropped by the card's bottom edge only: sized any larger and the top
+        // of the phone leaves the card too, which reads as a broken crop rather
+        // than as a device peeking in.
+        'pointer-events-none absolute -bottom-6 -right-4 w-[84px] rotate-[8deg] rounded-lg border border-stroke/60 shadow-card duration-500 group-hover:-translate-y-2 group-hover:rotate-[3deg] dark:border-white/10 dark:shadow-card-dark',
+      ]}
+      loading="lazy"
+      decoding="async"
+    />
+  )}
 
-  <h3
-    class:list={[
-      'mb-2 font-semibold text-black duration-300 group-hover:text-primary dark:text-white',
-      featured ? 'text-2xl sm:text-[28px]' : 'text-lg',
-    ]}
-  >
-    {cardTitle}
-  </h3>
-  <p class:list={['flex-1 leading-relaxed text-body', featured ? 'text-base' : 'text-sm']}>{summary}</p>
+  {/* Keeps the copy clear of the screenshot, which overlaps the card's right edge. */}
+  <div class:list={['relative flex flex-1 flex-col', image && 'pr-[76px]']}>
+    <div class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-medium uppercase tracking-wide text-primary">
+      <time datetime={date.toISOString().slice(0, 10)}>{fmt}</time>
+      {readingMinutes && (
+        <>
+          <span aria-hidden="true" class="text-body/50">·</span>
+          <span class="text-body">{readingMinutes} {readLabel}</span>
+        </>
+      )}
+    </div>
+
+    <h3
+      class:list={[
+        'mb-2 font-semibold text-black duration-300 group-hover:text-primary dark:text-white',
+        featured ? 'text-2xl sm:text-[28px]' : 'text-lg',
+      ]}
+    >
+      {cardTitle}
+    </h3>
+    <p class:list={['flex-1 leading-relaxed text-body', featured ? 'text-base' : 'text-sm']}>{summary}</p>
+  </div>
 </a>

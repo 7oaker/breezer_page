@@ -47,6 +47,17 @@ export default defineConfig({
   integrations: [mdx()],
   markdown: {
     rehypePlugins: [rehypeTableScroll],
+    /**
+     * Two themes emitted as CSS variables instead of one baked-in palette.
+     * Shiki's default writes `color`/`background-color` inline for a dark theme,
+     * which left the formula blocks as near-white text on the light page.
+     * `defaultColor: false` emits only the variables, so style.css can pick the
+     * pair that matches the current theme.
+     */
+    shikiConfig: {
+      themes: { light: 'github-light', dark: 'github-dark' },
+      defaultColor: false,
+    },
   },
   image: {
     // Screenshots render at ~263px CSS; these cover 1x/2x/3x without shipping the original.
