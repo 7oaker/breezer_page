@@ -50,8 +50,8 @@ export const authors: Record<string, Author> = {
       en: 'Editorial team at Breezer',
     },
     bio: {
-      de: 'Hinter Breezer steht eine Person in Niederösterreich, die die App baut und die Studien für diese Artikel selbst liest. Die Zahlen hier stammen aus derselben Arbeit: aus der Forschung hinter den Gesundheitsfunktionen und aus den Konsummustern, die die App sichtbar macht. Wo die Evidenz dünn ist, steht das hier so drin, statt aufgerundet zu werden.',
-      en: 'Breezer is built by one person in Lower Austria, who also reads the studies behind these articles. The numbers here come out of that same work: the research behind the health features, and the consumption patterns the app makes visible. Where the evidence is thin, these articles say so instead of rounding it up.',
+      de: 'Hinter Breezer steht eine Person in Niederösterreich, die die App baut, die Studien für diese Artikel selbst liest und dünne Evidenz benennt, statt sie aufzurunden.',
+      en: 'Breezer is built by one person in Lower Austria, who also reads the studies behind these articles and says where the evidence is thin instead of rounding it up.',
     },
   },
 };
