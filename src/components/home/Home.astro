@@ -144,14 +144,14 @@ const home = lang === 'de' ? '/de/' : '/';
               >
                 <Image src={img_hero_light} width={376} height={546}
                   alt={t.breezer_app_press_snus}
-                  class="mx-auto max-w-full"
+                  class="float-slow mx-auto max-w-full"
                   fetchpriority="high"
                   loading="eager"
                   decoding="sync" />
                 <div
                   class="max-auto absolute top-0 left-0 right-0 pointer-events-none -z-10 aspect-square w-full rounded-full bg-gradient-1"
                 >
-                  <div class="absolute top-5 right-0">
+                  <div class="twinkle-slow absolute top-5 right-0">
                     <svg
                       width="72"
                       height="51"
@@ -210,7 +210,7 @@ const home = lang === 'de' ? '/de/' : '/';
                 data-wow-delay=".2s"
               >
                 <div
-                  class="mx-auto mb-6 flex h-[70px] w-[70px] items-center justify-center rounded-3xl bg-gray text-primary duration-300 group-hover:bg-primary group-hover:text-white dark:bg-[#2A2E44] dark:text-white dark:group-hover:bg-primary"
+                  class="mx-auto mb-6 flex h-[70px] w-[70px] items-center justify-center rounded-3xl bg-gray text-primary duration-300 group-hover:-translate-y-1 group-hover:bg-primary group-hover:text-white dark:bg-[#2A2E44] dark:text-white dark:group-hover:bg-primary"
                 >
                     <svg
                       width="40"
@@ -249,7 +249,7 @@ const home = lang === 'de' ? '/de/' : '/';
                   data-wow-delay=".3s"
                 >
                   <div
-                    class="mx-auto mb-6 flex h-[70px] w-[70px] items-center justify-center rounded-3xl bg-gray text-primary duration-300 group-hover:bg-primary group-hover:text-white dark:bg-[#2A2E44] dark:text-white dark:group-hover:bg-primary"
+                    class="mx-auto mb-6 flex h-[70px] w-[70px] items-center justify-center rounded-3xl bg-gray text-primary duration-300 group-hover:-translate-y-1 group-hover:bg-primary group-hover:text-white dark:bg-[#2A2E44] dark:text-white dark:group-hover:bg-primary"
                   >
                     <svg
                       width="40"
@@ -288,7 +288,7 @@ const home = lang === 'de' ? '/de/' : '/';
                   data-wow-delay=".4s"
                 >
                   <div
-                    class="mx-auto mb-6 flex h-[70px] w-[70px] items-center justify-center rounded-3xl bg-gray text-primary duration-300 group-hover:bg-primary group-hover:text-white dark:bg-[#2A2E44] dark:text-white dark:group-hover:bg-primary"
+                    class="mx-auto mb-6 flex h-[70px] w-[70px] items-center justify-center rounded-3xl bg-gray text-primary duration-300 group-hover:-translate-y-1 group-hover:bg-primary group-hover:text-white dark:bg-[#2A2E44] dark:text-white dark:group-hover:bg-primary"
                   >
                     <svg
                       width="40"
@@ -443,7 +443,7 @@ const home = lang === 'de' ? '/de/' : '/';
             >
               <div class="order-last w-full px-4 lg:order-first lg:w-1/2 hidden md:block">
                 <div
-                  class="wow fadeInUp relative z-10 mx-auto mb-14 w-full max-w-[470px] pb-6 lg:mx-0 lg:mb-0"
+                  class="wow fadeInLeft relative z-10 mx-auto mb-14 w-full max-w-[470px] pb-6 lg:mx-0 lg:mb-0"
                   data-wow-delay=".2s"
                 >
                   <PhoneFrame
@@ -489,7 +489,7 @@ const home = lang === 'de' ? '/de/' : '/';
 
               <div class="w-full px-4 lg:w-1/2">
                 <div
-                  class="wow fadeInUp lg:ml-auto lg:max-w-[510px]"
+                  class="wow fadeInRight lg:ml-auto lg:max-w-[510px]"
                   data-wow-delay=".3s"
                 >
                   <span
@@ -612,7 +612,7 @@ const home = lang === 'de' ? '/de/' : '/';
             >
               <div class="w-full px-4 lg:w-1/2">
                 <div
-                  class="wow fadeInUp lg:max-w-[510px]"
+                  class="wow fadeInLeft lg:max-w-[510px]"
                   data-wow-delay=".2s"
                 >
                   <span
@@ -695,7 +695,7 @@ const home = lang === 'de' ? '/de/' : '/';
                 class="order-last w-full px-4 lg:order-last lg:w-1/2 hidden md:block"
               >
                 <div
-                  class="wow fadeInUp relative z-10 mx-auto mb-14 w-full max-w-[470px] pb-6 lg:mr-0 lg:mb-0"
+                  class="wow fadeInRight relative z-10 mx-auto mb-14 w-full max-w-[470px] pb-6 lg:mr-0 lg:mb-0"
                   data-wow-delay=".3s"
                 >
                   <PhoneFrame
@@ -1068,7 +1068,7 @@ const home = lang === 'de' ? '/de/' : '/';
 
         <div class="container">
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
-            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card dark:bg-dark dark:shadow-card-dark dark:border dark:border-stroke-dark" data-wow-delay=".10s">
+            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card duration-300 hover:-translate-y-1 hover:shadow-input dark:border dark:border-stroke-dark dark:bg-dark dark:shadow-card-dark dark:hover:border-primary" data-wow-delay=".10s">
               <div class="mb-4 border-b border-stroke pb-4 dark:border-stroke-dark">
                 <p class="text-sm leading-relaxed text-body">{t.best_application_on_appstore}</p>
               </div>
@@ -1081,7 +1081,7 @@ const home = lang === 'de' ? '/de/' : '/';
               </div>
             </div>
 
-            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card dark:bg-dark dark:shadow-card-dark dark:border dark:border-stroke-dark" data-wow-delay=".15s">
+            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card duration-300 hover:-translate-y-1 hover:shadow-input dark:border dark:border-stroke-dark dark:bg-dark dark:shadow-card-dark dark:hover:border-primary" data-wow-delay=".15s">
               <div class="mb-4 border-b border-stroke pb-4 dark:border-stroke-dark">
                 <p class="text-sm leading-relaxed text-body">{t.the_best_app_in_the_store}</p>
               </div>
@@ -1094,7 +1094,7 @@ const home = lang === 'de' ? '/de/' : '/';
               </div>
             </div>
 
-            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card dark:bg-dark dark:shadow-card-dark dark:border dark:border-stroke-dark" data-wow-delay=".20s">
+            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card duration-300 hover:-translate-y-1 hover:shadow-input dark:border dark:border-stroke-dark dark:bg-dark dark:shadow-card-dark dark:hover:border-primary" data-wow-delay=".20s">
               <div class="mb-4 border-b border-stroke pb-4 dark:border-stroke-dark">
                 <p class="text-sm leading-relaxed text-body">{t.absolutely_brilliant_the_statistics_make_real}</p>
               </div>
@@ -1107,7 +1107,7 @@ const home = lang === 'de' ? '/de/' : '/';
               </div>
             </div>
 
-            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card dark:bg-dark dark:shadow-card-dark dark:border dark:border-stroke-dark" data-wow-delay=".25s">
+            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card duration-300 hover:-translate-y-1 hover:shadow-input dark:border dark:border-stroke-dark dark:bg-dark dark:shadow-card-dark dark:hover:border-primary" data-wow-delay=".25s">
               <div class="mb-4 border-b border-stroke pb-4 dark:border-stroke-dark">
                 <p class="text-sm leading-relaxed text-body">{t.the_app_helped_me_control_my}</p>
               </div>
@@ -1120,7 +1120,7 @@ const home = lang === 'de' ? '/de/' : '/';
               </div>
             </div>
 
-            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card dark:bg-dark dark:shadow-card-dark dark:border dark:border-stroke-dark" data-wow-delay=".30s">
+            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card duration-300 hover:-translate-y-1 hover:shadow-input dark:border dark:border-stroke-dark dark:bg-dark dark:shadow-card-dark dark:hover:border-primary" data-wow-delay=".30s">
               <div class="mb-4 border-b border-stroke pb-4 dark:border-stroke-dark">
                 <p class="text-sm leading-relaxed text-body">{t.a_really_good_and_helpful_app}</p>
               </div>
@@ -1133,7 +1133,7 @@ const home = lang === 'de' ? '/de/' : '/';
               </div>
             </div>
 
-            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card dark:bg-dark dark:shadow-card-dark dark:border dark:border-stroke-dark" data-wow-delay=".35s">
+            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card duration-300 hover:-translate-y-1 hover:shadow-input dark:border dark:border-stroke-dark dark:bg-dark dark:shadow-card-dark dark:hover:border-primary" data-wow-delay=".35s">
               <div class="mb-4 border-b border-stroke pb-4 dark:border-stroke-dark">
                 <p class="text-sm leading-relaxed text-body">{t.i_dont_usually_write_reviews_but}</p>
               </div>
@@ -1146,7 +1146,7 @@ const home = lang === 'de' ? '/de/' : '/';
               </div>
             </div>
 
-            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card dark:bg-dark dark:shadow-card-dark dark:border dark:border-stroke-dark" data-wow-delay=".40s">
+            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card duration-300 hover:-translate-y-1 hover:shadow-input dark:border dark:border-stroke-dark dark:bg-dark dark:shadow-card-dark dark:hover:border-primary" data-wow-delay=".40s">
               <div class="mb-4 border-b border-stroke pb-4 dark:border-stroke-dark">
                 <p class="text-sm leading-relaxed text-body">{t.great_app_for_tracking_snus_consumption}</p>
               </div>
@@ -1159,7 +1159,7 @@ const home = lang === 'de' ? '/de/' : '/';
               </div>
             </div>
 
-            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card dark:bg-dark dark:shadow-card-dark dark:border dark:border-stroke-dark" data-wow-delay=".45s">
+            <div class="wow fadeInUp rounded-xl bg-white p-5 shadow-card duration-300 hover:-translate-y-1 hover:shadow-input dark:border dark:border-stroke-dark dark:bg-dark dark:shadow-card-dark dark:hover:border-primary" data-wow-delay=".45s">
               <div class="mb-4 border-b border-stroke pb-4 dark:border-stroke-dark">
                 <p class="text-sm leading-relaxed text-body">{t.goat}</p>
               </div>
