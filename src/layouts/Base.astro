@@ -12,14 +12,67 @@ type Props = SeoProps & { bodyClass?: string };
 const { bodyClass = 'bg-white dark:bg-black', ...seo } = Astro.props;
 const lang = seo.lang === 'de' ? 'de-AT' : 'en';
 
-// Runs before first paint so the saved/system theme doesn't flash the wrong way
-// for a frame while the deferred bundle loads. Injected via set:html because
-// Astro treats the body of a <script> as raw text: an expression written inline
-// ships as literal source and silently does nothing.
+/**
+ * Sends a visitor whose browser prefers German to the German counterpart of the
+ * page they asked for, once, before anything paints.
+ *
+ * Deliberately one-way, EN to DE only. Googlebot crawls with an English
+ * Accept-Language, so a two-way rule would bounce it off every German URL and
+ * out of the index. The target comes from the hreflang alternate already in the
+ * head, so this works on any page that has a counterpart and needs no second
+ * map to maintain. An explicit click on the language switcher writes
+ * `breezer_lang`, and that always wins from then on.
+ *
+ * Injected via set:html because Astro treats the body of a <script> as raw
+ * text: an expression written inline ships as literal source and does nothing.
+ */
+const langInit = `(function () {
+  try {
+    if (localStorage.getItem('breezer_lang')) return;
+    if ((document.documentElement.lang || '').toLowerCase().indexOf('de') === 0) return;
+
+    var prefs = navigator.languages && navigator.languages.length
+      ? navigator.languages
+      : [navigator.language || ''];
+    var wantsGerman = false;
+    for (var i = 0; i < prefs.length; i++) {
+      var tag = (prefs[i] || '').toLowerCase();
+      // Whichever of the two ranks higher decides; anything else is ignored.
+      if (tag.indexOf('de') === 0) { wantsGerman = true; break; }
+      if (tag.indexOf('en') === 0) break;
+    }
+    if (!wantsGerman) return;
+
+    var alt = document.querySelector('link[rel="alternate"][hreflang^="de"]');
+    if (!alt) return;
+    // Only the path is taken from the alternate. Those hrefs are absolute
+    // production URLs, so following one wholesale would throw a visitor on a
+    // preview deployment (or a dev server) over to the live site.
+    var path = new URL(alt.getAttribute('href'), location.href).pathname;
+    if (path === location.pathname) return;
+    location.replace(path + location.search + location.hash);
+  } catch (e) {}
+})();`;
+
+/**
+ * Runs before first paint so the saved/system theme doesn't flash the wrong way
+ * for a frame while the deferred bundle loads.
+ *
+ * A stored value that already matches the browser is deleted rather than
+ * honoured. With only two states, storing "light" while the browser is light
+ * pins the site to light forever, and a visitor who once tapped the toggle can
+ * never get back to following their browser. Keeping the key only while it
+ * diverges makes "follow the browser" the state you return to.
+ */
 const themeInit = `(function () {
   try {
-    var t = localStorage.getItem('theme');
-    if (t === 'dark' || (t !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches)) {
+    var systemDark = matchMedia('(prefers-color-scheme: dark)').matches;
+    var stored = localStorage.getItem('theme');
+    if (stored === (systemDark ? 'dark' : 'light')) {
+      localStorage.removeItem('theme');
+      stored = null;
+    }
+    if (stored === 'dark' || (stored !== 'light' && systemDark)) {
       document.documentElement.classList.add('dark');
     }
   } catch (e) {}
@@ -32,6 +85,8 @@ const themeInit = `(function () {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <Seo {...seo} />
+    {/* Language first: if it redirects, the theme work belongs to the new page. */}
+    <script is:inline set:html={langInit} />
     <script is:inline set:html={themeInit} />
     <slot name="head" />
   </head>

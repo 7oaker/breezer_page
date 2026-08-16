@@ -667,14 +667,19 @@ const themeCheck = () => {
   }
 };
 
-// Manual Theme Switch
+// Manual Theme Switch. A choice that lands back on what the browser already
+// wants clears the key instead of storing it, so toggling twice returns the
+// visitor to following their browser rather than pinning them to a value that
+// only looks identical today. Base.astro applies the same rule pre-paint, which
+// is what releases anyone still pinned by the old two-state behaviour.
 const themeSwitch = () => {
-  if (document.documentElement.classList.contains('dark')) {
-    document.documentElement.classList.remove('dark'); // Switch to light mode
-    localStorage.setItem('theme', 'light'); // Save preference in localStorage
+  const next = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+  document.documentElement.classList.toggle('dark', next === 'dark');
+
+  if (next === (systemThemeQuery.matches ? 'dark' : 'light')) {
+    localStorage.removeItem('theme');
   } else {
-    document.documentElement.classList.add('dark'); // Switch to dark mode
-    localStorage.setItem('theme', 'dark'); // Save preference in localStorage
+    localStorage.setItem('theme', next);
   }
 };
 
