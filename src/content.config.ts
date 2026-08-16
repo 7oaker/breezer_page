@@ -8,8 +8,13 @@ import { glob } from 'astro/loaders';
  */
 
 const seoFields = {
-  /** <title>. Keep under ~60 chars so Google doesn't truncate it. */
-  title: z.string().min(10).max(75),
+  /**
+   * <title>. Hard-capped at 60 because Google rewrites or truncates beyond
+   * roughly 600 pixels, and a rewritten title is one you no longer control.
+   * The cap is deliberately the enforcement point rather than a comment: a
+   * build that fails is the only review step that never gets skipped.
+   */
+  title: z.string().min(10).max(60),
   /** <h1>. May differ from the title tag; must carry the target keyword. */
   heading: z.string().min(5),
   /** <meta name="description">. */

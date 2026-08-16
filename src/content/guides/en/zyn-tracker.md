@@ -7,12 +7,18 @@ lang: en
 slug: zyn-tracker
 translationOf: zyn-tracker
 publishDate: 2026-06-26
-updatedDate: 2026-06-26
+updatedDate: 2026-08-16
 faq:
+  - q: "Does Zyn have an app?"
+    a: "Zyn itself does not offer a consumption tracking app. Third-party apps fill that gap, and Breezer is one of them: it logs Zyn along with every other pouch brand, with one tap per pouch. Note that Zyn Rewards, the loyalty programme, is a separate thing and is not consumption tracking."
+  - q: "Is there a Zyn app for tracking how many you use?"
+    a: "Yes. Breezer is a free Zyn tracker for iOS and Android. You tap once per pouch and it records the time, counts your daily and weekly totals, calculates cost, and shows the pattern over time. No brand lock-in, it works the same for Velo, LOOP, Pablo and the rest."
+  - q: "Can I track a Zyn order or Zyn Rewards here?"
+    a: "No, and it is worth separating the two. Shipment tracking and Zyn Rewards points are handled by the retailer and by Zyn's own loyalty programme. Breezer tracks consumption: how many pouches you use, what they cost you, and how that changes."
   - q: "Can I track Zyn with Breezer?"
     a: Yes. Breezer works as a Zyn tracker and supports all nicotine pouch brands including Zyn, Velo, Pablo, LOOP, XQS, and others. You log each pouch with one tap regardless of brand.
-  - q: "What is the best Zyn tracker app?"
-    a: Breezer is the best Zyn tracker, with a one-tap logging system, detailed consumption statistics, spending overview, social rankings, and a built-in quit mode. Free for iOS and Android.
+  - q: "What makes a good Zyn tracker app?"
+    a: "Logging has to be fast enough that you actually do it, which in practice means one tap and no brand menu. Beyond that: daily and weekly totals, cost, a limit you can set, and a path to cutting down if you want one. Breezer covers all of those and is free on iOS and Android."
   - q: "How do I track Zyn in an app?"
     a: In Breezer, you tap the tracking button after each Zyn. The app automatically records the time and counts your total, then calculates your daily costs, usage patterns, and consumption statistics.
 heroImage: ../../../assets/images/screens/new/take-snus.png
@@ -38,6 +44,21 @@ The tracker is part of the broader [Breezer Snus App](/) with social rankings, f
 - Limit reminders when you hit your daily target
 - Lock screen widget for quick logging
 - Global and local social rankings
+
+## Consumption tracking, not order tracking
+
+Worth clearing up, because the same word covers two different things. "Zyn tracking" is searched for in two senses:
+
+- **Order or rewards tracking**, meaning where your shipment is or how many Zyn Rewards points you have. That is handled by the retailer you bought from and by Zyn's own loyalty programme. Breezer has nothing to do with it.
+- **Consumption tracking**, meaning how many pouches you actually get through, what they cost, and whether the number is rising. That is what this page is about.
+
+If you landed here looking for the first one, you want the shop you ordered from. If you are on the second, read on.
+
+## How strong is the can you are logging?
+
+Most people cannot say how much nicotine they take in per day, because the number on the tin is easy to misread. A can labelled 50 does not mean 50 mg in your lip: that figure is usually mg per gram, which works out to roughly 30 mg in a typical 0.6 g pouch.
+
+We wrote that up in detail, including the conversion and what the research says about how much actually reaches your bloodstream: [how strong a nicotine pouch really is](/blog/nicotine-pouch-strength).
 
 ## From tracking to quitting
 Many Zyn users start with tracking and gradually move toward reducing. Breezer supports both. When you're ready, switch to [Quit Mode](/quit-snus) to track withdrawal symptoms, health milestones, and savings, without changing apps.

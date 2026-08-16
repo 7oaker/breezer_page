@@ -7,8 +7,12 @@ lang: de
 slug: zyn-tracker
 translationOf: zyn-tracker
 publishDate: 2026-04-01
-updatedDate: 2026-06-26
+updatedDate: 2026-08-16
 faq:
+  - q: "Gibt es eine Zyn App?"
+    a: "Zyn selbst bietet keine App zum Erfassen des Konsums an. Diese Lücke füllen Apps von Drittanbietern, und Breezer ist eine davon: Sie loggt Zyn genauso wie jede andere Beutelmarke, mit einem Tipp pro Portion. Zyn Rewards ist etwas anderes, nämlich ein Treueprogramm, kein Konsum-Tracking."
+  - q: "Wie stark ist ein Zyn-Beutel?"
+    a: "Zyn liegt üblicherweise zwischen etwa 3 und 16 mg pro Beutel, wobei die 3- und 6-mg-Varianten den Großteil ausmachen. Achte darauf, ob die Dose mg pro Beutel oder mg/g angibt, das sind zwei verschiedene Zahlen und nur die erste ist deine Dosis."
   - q: "Kann ich Zyn mit Breezer tracken?"
     a: "Ja. Breezer funktioniert als Zyn Tracker und unterstützt alle Nikotinbeutel-Marken wie Zyn, Velo, Pablo, LOOP und andere. Du loggst einfach jede Portion, unabhängig von der Marke."
   - q: "Was ist der beste Zyn Tracker?"
@@ -38,6 +42,12 @@ Der Tracker ist Teil der größeren [Breezer Snus App](/de/) mit Rankings, Freun
 - Erinnerungen bei Limit-Überschreitung
 - Lockscreen-Widget für schnelles Loggen
 - Österreichische und globale Rankings
+
+## Wie stark ist die Dose, die du loggst?
+
+Die wenigsten können sagen, wie viel Nikotin sie am Tag aufnehmen, weil die Zahl auf der Dose leicht falsch gelesen wird. Eine Dose mit "50" bedeutet nicht 50 mg unter der Lippe: Das ist meist mg pro Gramm, was bei einem typischen 0,6-Gramm-Beutel etwa 30 mg ergibt.
+
+Die Umrechnung und was die Forschung dazu sagt, wie viel davon überhaupt im Blut ankommt, steht in [wie stark ein Nikotinbeutel wirklich ist](/de/blog/nikotinbeutel-staerke).
 
 ## Nikotinbeutel in Österreich
 Nikotinbeutel sind in Österreich legal und weit verbreitet. Viele Nutzer in Wien, Graz und Salzburg suchen nach Tools, um bewusster zu konsumieren. Breezer bietet genau das: Tracking ohne Urteil, mit Option auf Reduktion oder [komplettes Aufhören](snus-aufhoeren).

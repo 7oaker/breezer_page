@@ -11,6 +11,7 @@ import PhoneShot from '../components/PhoneShot.astro';
 import type { ImageMetadata } from 'astro';
 import { route, type Lang } from '../i18n/routes';
 import { organization, breadcrumbs, faqPage } from '../i18n/schema';
+import { getAuthor } from '../data/authors';
 
 interface Crumb {
   name: string;
@@ -61,9 +62,13 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
 const de = lang === 'de';
 
 const copy = {
-  en: { faqHeading: 'Frequently asked questions', ctaHeading: 'Try Breezer for free', ctaBody: 'Download Breezer and start tracking in under a minute.', updated: 'Updated' },
-  de: { faqHeading: 'Häufige Fragen', ctaHeading: 'Breezer kostenlos testen', ctaBody: 'Lade Breezer und starte in unter einer Minute.', updated: 'Aktualisiert' },
+  en: { faqHeading: 'Frequently asked questions', ctaHeading: 'Try Breezer for free', ctaBody: 'Download Breezer and start tracking in under a minute.', updated: 'Updated', published: 'Published', writtenBy: 'Written by' },
+  de: { faqHeading: 'Häufige Fragen', ctaHeading: 'Breezer kostenlos testen', ctaBody: 'Lade Breezer und starte in unter einer Minute.', updated: 'Aktualisiert', published: 'Veröffentlicht', writtenBy: 'Geschrieben von' },
 }[lang];
+
+// A named person in the registry gets a full Person node and a visible box; an
+// unlisted name falls back to the organisation. See src/data/authors.ts for why.
+const profile = getAuthor(author);
 
 const article = {
   '@type': schemaType,
@@ -77,7 +82,21 @@ const article = {
   // a landscape image, and referencing heroImage.src would make Astro emit the
   // untouched multi-MB original alongside the optimised variants.
   image: `${site}/images/og-image.png`,
-  author: author === 'Breezer Team' ? { '@id': `${site}/#organization` } : { '@type': 'Person', name: author },
+  // Only a real person gets a Person node. An editorial byline points at the
+  // organisation, because claiming a human author that does not exist is the
+  // same false signal as a stock headshot, just machine-readable.
+  author:
+    profile && profile.isPerson
+      ? {
+          '@type': 'Person',
+          name: profile.displayName[lang],
+          url: profile.url,
+          jobTitle: profile.role[lang],
+          description: profile.bio[lang],
+          ...(profile.image ? { image: `${site}${profile.image}` } : {}),
+          ...(profile.sameAs?.length ? { sameAs: profile.sameAs } : {}),
+        }
+      : { '@id': `${site}/#organization` },
   publisher: { '@id': `${site}/#organization` },
 };
 
@@ -119,9 +138,20 @@ const fmt = (d: Date) =>
 
       <h1 class="mb-4 text-3xl font-bold text-black dark:text-white sm:text-[44px]">{heading}</h1>
 
+      {/*
+        Both dates are shown, not just the newer one: a visible publication date
+        alongside the update date is what separates a genuinely maintained page
+        from one that only had its timestamp bumped.
+      */}
       <p class="mb-8 text-sm text-body">
-        <time datetime={iso(updatedDate ?? publishDate)}>{copy.updated} {fmt(updatedDate ?? publishDate)}</time>
-        <span aria-hidden="true"> · </span>{author}
+        <time datetime={iso(publishDate)}>{copy.published} {fmt(publishDate)}</time>
+        {updatedDate && updatedDate.getTime() !== publishDate.getTime() && (
+          <>
+            <span aria-hidden="true"> · </span>
+            <time datetime={iso(updatedDate)}>{copy.updated} {fmt(updatedDate)}</time>
+          </>
+        )}
+        <span aria-hidden="true"> · </span>{profile ? <a href={profile.url} class="hover:text-primary">{profile.displayName[lang]}</a> : author}
       </p>
 
       {
@@ -167,6 +197,31 @@ const fmt = (d: Date) =>
             </div>
           ))}
         </section>
+      )}
+
+      {profile && (
+        <aside class="mt-12 rounded-lg border border-stroke p-6 dark:border-stroke-dark">
+          <p class="mb-1 text-xs uppercase tracking-wide text-body">{copy.writtenBy}</p>
+          <div class="flex items-start gap-4">
+            {profile.image && (
+              <img
+                src={profile.image}
+                alt={profile.displayName[lang]}
+                width="64"
+                height="64"
+                loading="lazy"
+                class="h-16 w-16 shrink-0 rounded-full object-cover"
+              />
+            )}
+            <div class="min-w-0">
+              <p class="text-base font-semibold text-black dark:text-white">
+                <a href={profile.url} class="hover:text-primary">{profile.displayName[lang]}</a>
+              </p>
+              <p class="mb-2 text-sm text-body">{profile.role[lang]}</p>
+              <p class="text-sm leading-relaxed text-body">{profile.bio[lang]}</p>
+            </div>
+          </div>
+        </aside>
       )}
 
       <div class="mt-12 rounded-lg bg-[#F8FAFB] p-8 dark:bg-[#15182B]">
