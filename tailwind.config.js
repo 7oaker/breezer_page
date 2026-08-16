@@ -15,6 +15,9 @@ module.exports = {
       white: '#FFFFFF',
       black: '#161622',
       primary: '#0D6BCD',
+      // The dark-mode counterpart to primary: #0D6BCD only reaches 2.6:1 on the
+      // near-black background, this clears 7:1.
+      'primary-light': '#4FA9F2',
       secondary: '',
       stroke: '#EBEFF4',
       dark: '#1F233A',

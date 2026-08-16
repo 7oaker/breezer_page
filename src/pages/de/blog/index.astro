@@ -65,6 +65,8 @@ const schema = [
       summary: p.data.summary,
       date: p.data.publishDate,
       words: p.body?.split(/\s+/).length ?? 0,
+      image: p.data.heroImage,
+      imageAlt: p.data.heroImageAlt,
     }))}
     guides={guides.map((g) => ({
       href: `/de/${g.data.slug}`,
