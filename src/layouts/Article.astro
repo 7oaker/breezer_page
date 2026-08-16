@@ -162,9 +162,16 @@ const fmt = (d: Date) =>
         page empty and squeezing every table into a scroll container. Floated,
         the prose wraps it and reclaims the full measure below it.
 
-        Below `sm` it is not rendered at all — `display:none` plus `loading=lazy`
+        Below `md` it is not rendered at all — `display:none` plus `loading=lazy`
         means phones never fetch it — and it drops the device frame, which at
-        this size read as a bug rather than as a product shot.
+        this size read as a bug rather than as a product shot. `md` rather than
+        `sm` because the container is only 540px wide in the 575–767px band, and
+        a 220px float plus its margin would leave the prose a 28-character
+        measure for the whole first screen.
+
+        `priority` rather than `eager`: on desktop this is the largest element
+        above the fold, but `eager` would make phones download a shot they never
+        display.
       */}
       <div class="mb-10 after:block after:clear-both after:content-['']">
         {heroImage && (
@@ -172,7 +179,8 @@ const fmt = (d: Date) =>
             src={heroImage}
             alt={heroImageAlt ?? heading}
             frameless
-            class="hidden sm:float-right sm:mb-6 sm:ml-10 sm:block sm:w-[220px] lg:ml-12 lg:w-[260px]"
+            priority
+            class="hidden md:float-right md:mb-6 md:ml-10 md:block md:w-[220px] lg:ml-12 lg:w-[260px]"
             imageClass="border border-stroke shadow-card dark:border-stroke-dark dark:shadow-card-dark"
           />
         )}

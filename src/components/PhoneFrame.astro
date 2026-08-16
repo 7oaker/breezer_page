@@ -22,6 +22,14 @@ interface Props {
   alt: string;
   /** Above-the-fold shots should not be lazy-loaded. */
   eager?: boolean;
+  /**
+   * Raises fetch priority without giving up lazy loading. For a shot that is
+   * above the fold on desktop but `display:none` on phones: `eager` would make
+   * every phone download an image it never shows, while lazy alone leaves the
+   * fetch waiting on layout. This gets the queue position back without the
+   * mobile cost.
+   */
+  priority?: boolean;
   /** Render the screenshot alone, without the device frame around it. */
   frameless?: boolean;
   /**
@@ -37,6 +45,7 @@ const {
   src,
   alt,
   eager = false,
+  priority = false,
   frameless = false,
   screenOnly = false,
   class: className = '',
@@ -57,6 +66,7 @@ const decoding = eager ? 'sync' : 'async';
       class:list={['h-auto max-w-full rounded-[1.75rem]', imageClass, className]}
       loading={loading}
       decoding={decoding}
+      fetchpriority={priority ? 'high' : undefined}
     />
   ) : (
     <div class:list={['relative mx-auto aspect-[295/594] w-full max-w-[295px]', className]}>

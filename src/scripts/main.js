@@ -486,9 +486,10 @@ function breezerInitReveal() {
 breezerInitReveal();
 
 /**
- * Reading progress for article pages. Measures the article element rather than
- * the document so the header, footer and CTA below the text don't count as
- * "unread" and leave the bar short at the end of the piece.
+ * Reading progress for article pages. Measures the <article> element, not the
+ * document, so the site header and footer don't count as unread and leave the
+ * bar short of the end. Everything inside <article> counts, FAQ and CTA
+ * included — the bar tracks the page, not just the prose.
  */
 function breezerInitReadingProgress() {
   const bar = document.getElementById('readingProgress');
@@ -500,8 +501,10 @@ function breezerInitReadingProgress() {
     ticking = false;
     const start = article.offsetTop;
     const distance = article.offsetHeight - window.innerHeight;
+    // An article shorter than the viewport has no progress to report. A full bar
+    // would claim the reader finished something they have not started.
     if (distance <= 0) {
-      bar.style.transform = 'scaleX(1)';
+      bar.style.transform = 'scaleX(0)';
       return;
     }
     const progress = (window.scrollY - start) / distance;

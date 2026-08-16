@@ -13,9 +13,8 @@ interface Props {
   featured?: boolean;
   /** The post's own screenshot, previewed in the card's corner. */
   image?: ImageMetadata;
-  imageAlt?: string;
 }
-const { href, title, summary, date, readingMinutes, lang, featured = false, image, imageAlt } = Astro.props;
+const { href, title, summary, date, readingMinutes, lang, featured = false, image } = Astro.props;
 
 const cardTitle = title.replace(/\s*\|\s*(Breezer|Österreich)\s*$/i, '').trim();
 const fmt = date.toLocaleDateString(lang === 'de' ? 'de-AT' : 'en-GB', {

@@ -202,15 +202,18 @@
 
   /* Screens carousel: the framed slide is the subject, its neighbours are
      context. Scoped to md and up because that is where three slides show at
-     once — below it, `-next` is off-screen and would dim nothing visible. */
+     once — below it, `-next` is off-screen and would dim nothing visible.
+     Scoped to `.swiper-initialized` because Swiper only marks the centre slide
+     once its deferred bundle runs: unscoped, every screenshot sits dimmed until
+     then, and stays dimmed forever if the bundle fails or JS is off. */
   @media (min-width: 768px) {
-    .mySwiper .swiper-slide {
+    .mySwiper.swiper-initialized .swiper-slide {
       opacity: 0.6;
       transform: scale(0.95);
       transition: opacity 0.45s ease, transform 0.45s ease;
     }
 
-    .mySwiper .swiper-slide-next {
+    .mySwiper.swiper-initialized .swiper-slide-next {
       opacity: 1;
       transform: scale(1);
     }
