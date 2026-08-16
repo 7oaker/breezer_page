@@ -21,19 +21,19 @@ const linkClass =
 
 // Off the homepage the section anchors have to jump back to it first.
 const prefix = full ? '' : home === '/' ? '/' : home;
-const anchors = (
-  de
-    ? [
-        { hash: '#about', label: 'Über uns' },
-        { hash: '#work-process', label: "So funktioniert's" },
-        { hash: '#support', label: 'Support' },
-      ]
-    : [
-        { hash: '#about', label: 'About' },
-        { hash: '#work-process', label: 'How It Works' },
-        { hash: '#support', label: 'Support' },
-      ]
-).map((a) => ({ href: `${prefix}${a.hash}`, label: a.label }));
+
+/**
+ * The merch shop took the slot that used to hold "How It Works", and "About"
+ * went with it: both sections explain themselves to anyone already scrolling
+ * the page, so they bought nothing from a nav slot. What is left is the three
+ * destinations you cannot reach by scrolling. `scroll` marks the same-page
+ * jump, which is what the menu-scroll class and its active state key off.
+ */
+const nav = [
+  { href: 'https://shop.breezer.now/', label: 'Shop', scroll: false },
+  { href: `${prefix}#support`, label: 'Support', scroll: true },
+  { href: route('blog', lang), label: 'Blog', scroll: false },
+];
 ---
 
 <header
@@ -78,14 +78,13 @@ const anchors = (
                 class="fixed top-0 left-0 z-[999] flex h-screen w-full items-center justify-center bg-white bg-opacity-95 text-center backdrop-blur-sm dark:bg-black dark:bg-opacity-95 lg:static lg:h-auto lg:w-max lg:bg-transparent lg:backdrop-blur-none lg:dark:bg-transparent"
               >
                 <ul class="items-center space-y-3 lg:flex lg:space-x-8 lg:space-y-0 xl:space-x-10">
-                  {anchors.map((a) => (
+                  {nav.map((item) => (
                     <li class="menu-item">
-                      <a href={a.href} class={`menu-scroll ${linkClass}`}>{a.label}</a>
+                      <a href={item.href} class:list={[item.scroll && 'menu-scroll', linkClass]}>
+                        {item.label}
+                      </a>
                     </li>
                   ))}
-                  <li class="menu-item">
-                    <a href={route('blog', lang)} class={linkClass}>Blog</a>
-                  </li>
                 </ul>
               </nav>
             </div>
