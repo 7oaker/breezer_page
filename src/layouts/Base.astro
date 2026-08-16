@@ -8,40 +8,31 @@ import 'swiper/css';
 import '../styles/style.css';
 import '../styles/animate.css';
 
-type Props = SeoProps & { bodyClass?: string; forceDark?: boolean };
-const { bodyClass = 'bg-white dark:bg-black', forceDark = false, ...seo } = Astro.props;
+type Props = SeoProps & { bodyClass?: string };
+const { bodyClass = 'bg-white dark:bg-black', ...seo } = Astro.props;
 const lang = seo.lang === 'de' ? 'de-AT' : 'en';
+
+// Runs before first paint so the saved/system theme doesn't flash the wrong way
+// for a frame while the deferred bundle loads. Injected via set:html because
+// Astro treats the body of a <script> as raw text: an expression written inline
+// ships as literal source and silently does nothing.
+const themeInit = `(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t === 'dark' || (t !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  } catch (e) {}
+})();`;
 ---
 
 <!doctype html>
-<html lang={lang} class="light">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <Seo {...seo} />
-    {
-      forceDark ? (
-        <script is:inline>
-          {`// Content pages render dark. Deliberately does NOT write localStorage:
-          // the old build did, so opening any subpage silently flipped the
-          // visitor's homepage to dark for good.
-          document.documentElement.classList.add('dark');`}
-        </script>
-      ) : (
-        // Runs before first paint so the saved/system theme doesn't flash light
-        // for a frame while the deferred bundle loads.
-        <script is:inline>
-          {`(function () {
-            try {
-              var t = localStorage.getItem('theme');
-              if (t === 'dark' || (!t && matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-              }
-            } catch (e) {}
-          })();`}
-        </script>
-      )
-    }
+    <script is:inline set:html={themeInit} />
     <slot name="head" />
   </head>
   <body class={bodyClass}>

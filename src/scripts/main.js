@@ -602,12 +602,14 @@ const testimonial = new Swiper('.mySwiper', {
 
 // Theme Vars
 const themeSwitcher = document.getElementById('themeSwitcher'); // Button to toggle theme
-const userTheme = localStorage.getItem('theme'); // Get the saved theme from localStorage
-const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches; // Check system theme
+const systemThemeQuery = window.matchMedia('(prefers-color-scheme: dark)'); // Browser/OS preference
 
-// Initial Theme Check
+// Applies the same rule as the inline pre-paint script in Base.astro: an
+// explicit choice wins, otherwise the browser decides. Read localStorage on
+// every call, not once at module scope, so a toggle mid-session is respected.
 const themeCheck = () => {
-  if (userTheme === 'dark' || (!userTheme && systemTheme)) {
+  const userTheme = localStorage.getItem('theme');
+  if (userTheme === 'dark' || (userTheme !== 'light' && systemThemeQuery.matches)) {
     document.documentElement.classList.add('dark'); // Apply dark mode
   } else {
     document.documentElement.classList.remove('dark'); // Apply light mode
@@ -631,6 +633,10 @@ if (themeSwitcher) {
     themeSwitch();
   });
 }
+
+// Follow the browser switching light/dark while the tab is open. themeCheck
+// ignores this for visitors who made an explicit choice.
+systemThemeQuery.addEventListener('change', themeCheck);
 
 // Invoke Theme Check on Initial Load
 themeCheck();

@@ -164,9 +164,34 @@
   outline-offset: 2px;
 }
 
+/* macOS hides overlay scrollbars until you scroll, so a table that does run wide
+   just looks like it was cut off mid-word. Styling the bar keeps it on screen
+   whenever there is something to scroll to, and reserves nothing when there
+   isn't. Deliberately no `scrollbar-width`/`scrollbar-color`: setting either
+   makes Chrome ignore these rules and fall back to the overlay bar. */
+.table-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.table-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.table-scroll::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background: #c7cdd6;
+}
+
+.dark .table-scroll::-webkit-scrollbar-thumb {
+  background: theme('colors.stroke-dark');
+}
+
 .prose-breezer table {
   width: 100%;
-  min-width: 32rem;
+  /* The article body shares its row with the phone shot, so the text column is
+     narrower than 32rem on desktop. A flat min-width forced every table to
+     scroll there; cap it at the column so only genuinely wide tables do. */
+  min-width: min(32rem, 100%);
   border-collapse: collapse;
   font-size: 0.9375rem;
   text-align: left;

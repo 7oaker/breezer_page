@@ -5,9 +5,10 @@ import LanguageSwitcher from './LanguageSwitcher.astro';
 interface Props {
   lang: Lang;
   /**
-   * The homepage owns the theme toggle. Content pages are forced dark, so a
-   * toggle there would fight the inline script. Navigation itself is identical
-   * everywhere — a different menu per page type just reads as broken.
+   * Set on the homepage, where the section anchors are same-page jumps.
+   * Everywhere else they have to route back to the homepage first. Navigation
+   * itself is identical everywhere — a different menu per page type just reads
+   * as broken.
    */
   full?: boolean;
 }
@@ -91,8 +92,11 @@ const anchors = (
 
       <div class="mr-[60px] flex items-center justify-end gap-3 lg:mr-0">
         <LanguageSwitcher lang={lang} />
-        {full && (
-          <label for="themeSwitcher" class="inline-flex cursor-pointer items-center" aria-label="themeSwitcher">
+        <label
+          for="themeSwitcher"
+          class="inline-flex cursor-pointer items-center"
+          aria-label={de ? 'Farbschema umschalten' : 'Toggle color theme'}
+        >
           <input type="checkbox" name="themeSwitcher" id="themeSwitcher" class="sr-only" />
           <span class="hidden dark:block">
           <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -110,8 +114,7 @@ const anchors = (
           />
           </svg>
           </span>
-          </label>
-        )}
+        </label>
       </div>
 
     </div>
