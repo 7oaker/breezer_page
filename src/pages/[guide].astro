@@ -20,8 +20,11 @@ const d = entry.data;
   summary={d.summary}
   path={`/${d.slug}`}
   altPath={`/de/${d.translationOf}`}
+  {/* See src/pages/de/[guide].astro for why the blog hub is a crumb here
+      even though the URL is /<slug> and not /blog/<slug>. */}
   crumbs={[
     { name: 'Snus App', path: '/' },
+    { name: 'Blog', path: '/blog' },
     { name: d.heading, path: `/${d.slug}` },
   ]}
   publishDate={d.publishDate}

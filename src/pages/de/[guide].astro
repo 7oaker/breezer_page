@@ -20,8 +20,17 @@ const d = entry.data;
   summary={d.summary}
   path={`/de/${d.slug}`}
   altPath={`/${d.translationOf}`}
+  {/*
+    Der Blog-Hub steht bewusst als Zwischenstufe drin, obwohl die URL
+    /de/<slug> lautet und nicht /de/blog/<slug>. Brotkrumen bilden die
+    Seitenhierarchie ab, nicht den Verzeichnispfad, und /de/blog listet
+    diese Guides unter "Guides & Vergleiche". Ohne die Stufe las Google
+    die Guides als direkt an der Startseite hängend, also als zu nichts
+    gehörig. Die URLs bleiben, wo sie sind: sie ranken bereits.
+  */}
   crumbs={[
     { name: 'Snus App', path: '/de' },
+    { name: 'Blog', path: '/de/blog' },
     { name: d.heading, path: `/de/${d.slug}` },
   ]}
   publishDate={d.publishDate}
