@@ -82,38 +82,47 @@ export function track(event, props, options) {
 }
 
 /**
- * store_clicked is the only conversion this site has: the App Store is a hard break, so
- * nothing downstream of the click is knowable from here.
+ * Every link that leaves the site for somewhere we cannot measure. The click is the last
+ * thing knowable from here, so it has to be captured at the boundary.
  *
  * Matched on href rather than a data attribute because the store buttons exist twice,
  * once in StoreButtons.astro and once inlined in the homepage hero. Matching the
  * destination catches both, and catches whatever gets added next without anyone having
  * to remember to tag it.
+ *
+ * The merch shop gets its own event rather than another `platform` value on
+ * store_clicked. store_clicked is the app install funnel and the only conversion this
+ * site is judged on; folding shop traffic into it would inflate exactly the number that
+ * has to stay honest. Separate events also keep the two answerable independently: does
+ * the nav slot the shop occupies earn its place, and does the site drive installs.
  */
-const STORE_HOSTS = {
-  'apps.apple.com': 'ios',
-  'play.google.com': 'android',
+const OUTBOUND = {
+  'apps.apple.com': { event: 'store_clicked', props: { platform: 'ios' } },
+  'play.google.com': { event: 'store_clicked', props: { platform: 'android' } },
+  // Printify storefront. Nothing inside it is instrumentable, so this click is the
+  // entire measurable surface of the shop.
+  'shop.breezer.now': { event: 'shop_clicked', props: {} },
 };
 
-function initStoreLinkTracking() {
+function initOutboundLinkTracking() {
   document.addEventListener(
     'click',
     (e) => {
       const link = e.target instanceof Element ? e.target.closest('a[href]') : null;
       if (!link) return;
 
-      let platform;
+      let target;
       try {
-        platform = STORE_HOSTS[new URL(link.href, window.location.href).hostname];
+        target = OUTBOUND[new URL(link.href, window.location.href).hostname];
       } catch {
         return;
       }
-      if (!platform) return;
+      if (!target) return;
 
       track(
-        'store_clicked',
+        target.event,
         {
-          platform,
+          ...target.props,
           // Which marketing page earned the click. That is the whole question.
           page: window.location.pathname,
           lang: document.documentElement.lang.startsWith('de') ? 'de' : 'en',
@@ -130,7 +139,7 @@ function initStoreLinkTracking() {
 }
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initStoreLinkTracking);
+  document.addEventListener('DOMContentLoaded', initOutboundLinkTracking);
 } else {
-  initStoreLinkTracking();
+  initOutboundLinkTracking();
 }
