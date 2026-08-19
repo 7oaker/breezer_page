@@ -1,0 +1,272 @@
+---
+/**
+ * The landing page every invite link points at: https://breezer.now/invite?ref=USERNAME
+ *
+ * Two audiences on one URL. A phone that already has Breezer never gets here at all,
+ * because the Universal Link in /.well-known/apple-app-site-association matches /invite*
+ * and iOS hands the URL straight to the app. Everyone else lands here, and the page has
+ * one job: put the invite URL on the clipboard and send them to the store, so the app can
+ * read the referral back out on first launch (see react_Breezer/lib/inviteLink.js,
+ * checkDeferredClipboard).
+ *
+ * It lived in public/ as a hand-written .html file until now. That kept it out of the
+ * build, which also kept it out of src/scripts/analytics.js: the single most important
+ * step of the referral loop was the only page on the site nobody could measure. As an
+ * Astro page it gets $pageview and the outbound-link listener for free, and the store
+ * button now reports store_clicked with page=/invite like every other store button.
+ *
+ * Deliberately not using Base.astro. This is an interstitial that redirects within about a
+ * second; the header, footer, cookie banner and font payload would all be paid for and
+ * none of them would be seen. That also means Google Analytics never loads here, which is
+ * correct: it is consent-gated and there is no banner on this page to give consent to.
+ */
+const IOS_URL = 'https://apps.apple.com/at/app/breezer/id6737725511?l=en-GB';
+const ANDROID_URL = 'https://play.google.com/store/apps/details?id=com.breezerapp.breezer';
+
+/**
+ * Unchanged from the static version, and kept `is:inline` on purpose.
+ *
+ * A bundled module would not start until its chunk has downloaded, which would add a
+ * network round trip in front of the clipboard write on exactly the slow connections
+ * where the redirect matters most. So the logic still runs while the document parses, and
+ * it reports what happened by pushing onto a queue that the analytics module below drains
+ * once it exists. Same idea as a dataLayer, for the same reason: the facts are known
+ * before the thing that sends them is loaded.
+ *
+ * The known limit: this page navigates away roughly 1.2 seconds after load, and PostHog
+ * is a dynamic import. On a slow connection the redirect can win, and those events are
+ * lost rather than queued anywhere durable. Raising REDIRECT_MS is the knob if that loss
+ * ever looks big enough to matter, but it is a product decision, not an analytics one.
+ */
+const inviteInit = `(function () {
+  var REDIRECT_MS = 1200;
+  var events = (window.__breezerEvents = window.__breezerEvents || []);
+  function report(event, props) { events.push([event, props]); }
+
+  var params = new URLSearchParams(window.location.search);
+  var ref = params.get('ref');
+
+  if (ref) {
+    document.getElementById('title').textContent = '@' + ref + ' invited you!';
+  }
+
+  var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  var isAndroid = /android/i.test(navigator.userAgent);
+  var platform = isAndroid ? 'android' : (isIOS ? 'ios' : 'desktop');
+
+  // A link that arrives without a ref is a broken share, not an anonymous one: it can
+  // never be attributed to anybody. Worth seeing separately from the ones that work.
+  report('invite_page_viewed', { has_ref: !!ref, platform: platform });
+
+  var storeUrl = isAndroid ? ${JSON.stringify(ANDROID_URL)} : ${JSON.stringify(IOS_URL)};
+  var btn = document.getElementById('store-btn');
+  btn.href = storeUrl;
+
+  // Update button text based on platform
+  var btnText = document.getElementById('btn-text');
+  if (isAndroid) btnText.textContent = 'Get Breezer on Google Play';
+  else if (isIOS) btnText.textContent = 'Get Breezer on the App Store';
+  else {
+    // Desktop: no auto-redirect, just show the button
+    return;
+  }
+
+  // Deferred deep linking: write the invite URL to clipboard before redirecting.
+  // Safari: clipboard write works on page load (no gesture) → auto-redirect fires.
+  // Brave/Chrome: clipboard write requires a user gesture → block auto-redirect,
+  //               write clipboard on button tap instead, then navigate.
+  var clipboardWritten = false;
+  var autoRedirectTimer;
+
+  function navigate(trigger) {
+    if (autoRedirectTimer) clearTimeout(autoRedirectTimer);
+    // Its own event rather than another store_clicked. store_clicked is the install
+    // conversion the whole site is judged on and it means a person chose to go; folding
+    // an automatic redirect into it would inflate exactly the number that has to stay
+    // honest. The button tap is not reported here at all: it is a real click on a link to
+    // apps.apple.com, so the delegated listener in analytics.js already has it.
+    if (trigger === 'auto') report('invite_store_redirect', { platform: platform, has_ref: !!ref });
+    window.location.href = storeUrl;
+  }
+
+  var needsClipboard = !!(ref && navigator.clipboard && navigator.clipboard.writeText);
+
+  if (needsClipboard) {
+    navigator.clipboard.writeText(window.location.href)
+      .then(function () {
+        clipboardWritten = true;
+        // The whole referral loop rests on this one line succeeding, and it fails
+        // silently on browsers that demand a gesture. Reporting both outcomes is what
+        // turns "referrals are low" into either a share problem or a browser problem.
+        report('invite_clipboard_written', { written: true, gesture: false, platform: platform });
+        // Clipboard written silently (Safari) — safe to auto-redirect
+        autoRedirectTimer = setTimeout(function () { navigate('auto'); }, REDIRECT_MS);
+      })
+      .catch(function () {
+        report('invite_clipboard_written', { written: false, gesture: false, platform: platform });
+        // Write failed without a gesture (Brave/Chrome) — wait for button tap
+        // autoRedirectTimer intentionally not set here
+      });
+  } else {
+    // No ref or no clipboard API — auto-redirect as normal
+    autoRedirectTimer = setTimeout(function () { navigate('auto'); }, REDIRECT_MS);
+  }
+
+  btn.addEventListener('click', function (e) {
+    e.preventDefault();
+    if (needsClipboard && !clipboardWritten) {
+      navigator.clipboard.writeText(window.location.href)
+        .then(function () {
+          report('invite_clipboard_written', { written: true, gesture: true, platform: platform });
+          navigate('click');
+        })
+        .catch(function () {
+          report('invite_clipboard_written', { written: false, gesture: true, platform: platform });
+          navigate('click');
+        });
+    } else {
+      navigate('click');
+    }
+  });
+})();`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Join Breezer | Snus App Invite</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#0D6BCD" />
+    <meta
+      name="description"
+      content="You have been invited to Breezer, the social snus app. Download free for iOS and Android."
+    />
+    <meta name="robots" content="noindex, follow" />
+    <link rel="canonical" href="https://breezer.now/invite" />
+    <meta name="apple-itunes-app" content="app-id=6737725511" />
+    <!--
+      is:inline, so the rules stay in the document exactly as they were in the static
+      version. Astro would otherwise extract them into a hashed stylesheet, and a
+      render-blocking round trip is a bad trade on a page that redirects after 1.2s: the
+      card would flash unstyled on the slow connections where it is on screen longest.
+    -->
+    <style is:inline>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        background: #161622;
+        color: #fff;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+      .card {
+        max-width: 380px;
+        width: 100%;
+        text-align: center;
+      }
+      .logo {
+        font-size: 13px;
+        font-weight: 700;
+        color: #1FD9FF;
+        letter-spacing: 4px;
+        margin-bottom: 48px;
+        opacity: 0.9;
+      }
+      .icon-wrap {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: rgba(31, 217, 255, 0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 24px;
+        font-size: 32px;
+      }
+      h1 {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        line-height: 1.3;
+      }
+      .subtitle {
+        font-size: 15px;
+        color: #9ca3af;
+        line-height: 1.6;
+        margin-bottom: 40px;
+      }
+      .btn {
+        display: block;
+        width: 100%;
+        padding: 16px;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        border: none;
+        margin-bottom: 12px;
+        transition: opacity 0.15s;
+      }
+      .btn:active { opacity: 0.8; }
+      .btn-primary {
+        background: #1FD9FF;
+        color: #161622;
+      }
+      .btn-ghost {
+        background: transparent;
+        color: #6b7280;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <p class="logo">BREEZER</p>
+
+      <div class="icon-wrap">🤝</div>
+
+      <h1 id="title">You've been invited!</h1>
+      <p class="subtitle" id="subtitle">
+        Track or quit snus together.<br />Download Breezer to connect.
+      </p>
+
+      <a class="btn btn-primary" id="store-btn" href="#">
+        <span id="btn-text">Download Breezer</span>
+      </a>
+      <a class="btn btn-ghost" href="/">Learn more about Breezer</a>
+    </div>
+
+    <script is:inline set:html={inviteInit} />
+
+    <script>
+      // PostHog, cookieless, same project and configuration as the rest of the site. The
+      // import also installs the outbound-link listener, which is what gives the store
+      // button its store_clicked event without this page knowing anything about it.
+      import { track } from '../scripts/analytics.js';
+
+      type Queued = [string, Record<string, unknown>];
+      const queue = ((window as any).__breezerEvents ||= []) as Queued[];
+
+      // sendBeacon on every one of them: this page exists to navigate away, and the
+      // clipboard result in particular lands moments before the redirect fires.
+      const flush = ([event, props]: Queued) => track(event, props, { transport: 'sendBeacon' });
+
+      // Whatever the inline script recorded while this bundle was still downloading.
+      queue.forEach(flush);
+      queue.length = 0;
+      // From here on it is not a queue any more, it is a direct line. Replacing push is
+      // how the inline script keeps reporting without ever knowing this module exists.
+      queue.push = ((entry: Queued) => {
+        flush(entry);
+        return 0;
+      }) as typeof queue.push;
+    </script>
+  </body>
+</html>
