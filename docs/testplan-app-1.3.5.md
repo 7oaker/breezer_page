@@ -117,8 +117,22 @@ Testaccount, den du für den Referral-Teil ohnehin brauchst.
 - [ ] **A5b.2** Dasselbe auf einem zweiten Screen, zum Beispiel Stats oder Health.
 - [ ] **A5b.3** Auf der Abo-Vergleichsseite (Details, Abo-Status) unten auf
       "kostenlos testen" tippen. Paywall öffnet, wieder schliessen.
+- [ ] **A5b.4** Einen Kauf im Sandbox-Account **wirklich abschliessen**. Erwartet: das
+      Paywall schliesst sich, es klopft einmal (Haptik), und der Willkommens-Screen
+      erscheint mit Konfetti, den drei freigeschalteten Punkten und einem Knopf, dessen
+      Text zur Fläche passt, über die du gekauft hast. Zurück landest du auf genau dem
+      Screen, von dem aus du das Paywall geöffnet hast, jetzt ohne Sperre.
+- [ ] **A5b.5** Auf einem zweiten Gerät oder nach einer Neuinstallation **Kauf
+      wiederherstellen**. Erwartet: derselbe Screen, aber ohne Konfetti und mit
+      "Willkommen zurück".
 
-Drei Dinge, die dabei kein Fehler sind:
+**Der Willkommens-Screen ist gleichzeitig der Test für das Paywall selbst.** Er erscheint
+nur, wenn das native Paywall sich schliesst und sein Ergebnis zurückmeldet. Kommt nach
+einem abgeschlossenen Kauf kein Willkommens-Screen, und war der Kauf nicht bloss
+vorgemerkt (siehe unten), dann hängt die native Ansicht. Das wäre ein Bug und keine
+Kosmetik. Dafür musst du nicht in PostHog nachsehen.
+
+Vier Dinge, die dabei kein Fehler sind:
 
 - **Die Leiste im Feed erscheint erst, wenn genug Beiträge geladen sind.** Wer sie dort
   sofort sucht, findet sie nicht. Weiter scrollen.
@@ -129,6 +143,10 @@ Drei Dinge, die dabei kein Fehler sind:
   Leiste verschwindet danach. Das ist richtig so: die Prüfung erkennt das bestehende Pro
   und öffnet kein Paywall für etwas, das schon bezahlt ist. In PostHog kommt dann bewusst
   kein Event an.
+- **Ein nur vorgemerkter Kauf zeigt keinen Willkommens-Screen.** Bei "Ask to Buy" oder
+  einer verzögerten Zahlung meldet der Store den Kauf, das Abo ist aber noch nicht aktiv.
+  Dann wird bewusst nichts gefeiert, weil auch nichts freigeschaltet ist. `paywall_result`
+  kommt trotzdem an, daran erkennst du diesen Fall.
 
 ### A6. Opt-out
 
