@@ -76,6 +76,14 @@ statically dead so PostHog is never shipped. Keep it dynamic.
 | `scripts/prune-orphan-assets.mjs` | Post-build asset cleanup |
 | `docs/seo-findings.md` | SEO audit log — decisions get recorded here |
 
+## Where things are written down
+
+- **Decisions** go in `docs/decisions.md` — dated, append-only, with the rejected option
+  and why. Never rewritten.
+- **SEO findings and experiments** stay in `docs/seo-findings.md`.
+- **Status** (what is deployed, what is dirty) is derived from git, Vercel and PostHog —
+  never written into a doc, because that is what goes stale.
+
 ## Conventions
 
 - Tailwind 3 + `src/styles/style.css`.
