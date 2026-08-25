@@ -149,7 +149,39 @@ Then check the built output, not the source:
 - The new URLs are in `dist/sitemap.xml`
 - No broken internal links
 
-### 7. After publishing
+### 7. Open a pull request — never publish straight to main
+
+The article is not done when the build passes. It is done when it is reviewable.
+
+Work on a branch from the start: `blog/<slug>`. A PreToolUse hook on this machine
+blocks commits to `main`, so a commit that fails is that guard doing its job, not a
+problem to route around.
+
+```bash
+git switch -c blog/<slug>
+git add src/content/blog/{en,de}/<slug>.md   # plus any page you linked FROM
+git commit          # prose sentence describing intent, not Conventional Commits
+git push
+gh pr create --title "<the article title>" --body "<see below>"
+```
+
+The PR body is the review, so write it for a person reading on a phone:
+
+- **Target query**, and the Search Console numbers that justified it (impressions,
+  current position). If the topic came from Klaus rather than data, say so.
+- **What is in here that is nowhere in the top 10** — the Information Gain claim
+  from playbook §1. If you cannot name it, the article is not ready.
+- **Every source cited**, as author / publication / year, with the finding taken from
+  each. This is where the no-unverified-claims rule gets checked by a human.
+- **Anything you were unsure about**, especially a number you nearly dropped.
+- The pre-publish checklist (playbook §10) with real ticks, and any unticked box named.
+
+Then stop. **Do not merge.** Merging is Klaus's decision, and Vercel deploys from
+`main` on merge, so merging is publishing. If the topic touched product direction,
+pricing, an opinion, or a claim about how Breezer's users behave, say so in the PR
+rather than deciding it yourself.
+
+### 8. After publishing
 
 The playbook's §6 distribution steps are Klaus's job, not this skill's: an
 independent LinkedIn post, one genuine community contribution, the newsletter.
