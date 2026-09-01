@@ -17,9 +17,10 @@ Die Begründungen im Detail stehen in `react_Breezer/docs/analytics-mapping.md`,
 ## 1. Einladungs-Kacheln gegen die neue Definition absichern
 
 **Das Wichtigste auf dieser Liste.** `referral_shared` zählte bis 1.3.5 zwei Flächen, ab 1.3.6
-sind es fünf: Home oben rechts, die leere Freundessuche, die Erfolgskarte und das
-Profil-Abzeichen tragen jetzt ebenfalls den Einladungslink. Vorher verschickten die drei einen
-Store-Link und konnten gar keine Empfehlung auslösen.
+sind es sieben: Home oben rechts, die leere Freundessuche, die Erfolgskarte, das
+Profil-Abzeichen, die Box unter dem Aufhör-Zähler und der Statistik-Screen tragen jetzt
+ebenfalls den Einladungslink. Die ersten drei verschickten vorher einen Store-Link, die
+beiden letzten nur ein Bild ohne jeden Text.
 
 Jede Kachel, die **bewusstes Einladen** über die Zeit misst, braucht deshalb:
 
@@ -27,7 +28,7 @@ Jede Kachel, die **bewusstes Einladen** über die Zeit misst, braucht deshalb:
 AND properties.source IN ('onboarding', 'friends_screen', 'referral_screen')
 ```
 
-- [ ] Kacheln finden, die `referral_shared` benutzen:
+- [x] Kacheln finden, die `referral_shared` benutzen:
 
 ```sql
 SELECT short_id, name FROM system.insights
@@ -35,20 +36,49 @@ WHERE deleted = 0 AND saved = 1
   AND position(toString(query), 'referral_shared') > 0
 ```
 
-- [ ] In jeder davon entscheiden: misst sie **bewusstes Einladen** (dann Filter setzen) oder
+- [x] In jeder davon entscheiden: misst sie **bewusstes Einladen** (dann Filter setzen) oder
       **alles was rausgeht** (dann `kind` als Aufschlüsselung nutzen und die Beschreibung
       anpassen). Beides ist legitim, nur nicht dieselbe Frage.
-- [ ] Beschreibung der Kachel ergänzen: ab wann welche Definition gilt.
+- [x] Beschreibung der Kachel ergänzen: ab wann welche Definition gilt.
+
+**Erledigt am 01.09.2026.** Drei der sieben Kacheln fassen `referral_shared` an:
+
+| Kachel | Entscheidung |
+| --- | --- |
+| `5Tchr0Cy` Referral: wer teilt, und von wo | Stufe 3 und 4 auf die Absicht eingeschränkt |
+| `6E5g8xom` Der Einladungs-Trichter: wo er reisst | Stufe 2 auf die Absicht eingeschränkt |
+| `xVjWRz1t` Wer teilt, und von welcher Flaeche | misst bewusst alles, `kind` als eigene Spalte |
+
+Der Filter ist **nicht** der oben vorgeschlagene `source`-Filter geworden, sondern:
+
+```sql
+AND coalesce(nullIf(toString(properties.kind), ''), 'invite') = 'invite'
+```
+
+Grund: `kind` sagt die Absicht direkt, statt sie aus einer Liste von Flächennamen
+abzuleiten, die bei der nächsten neuen Fläche wieder nachgezogen werden müsste. Das
+`coalesce` ist dabei kein Beiwerk. Vor 1.3.6 gibt es die Property nicht, dort ist die
+Spalte NULL, und ein blankes `kind = 'invite'` würde jede Zeile vor dem Release aus dem
+30- bzw. 90-Tage-Fenster werfen. Der Sprung, den die Liste hier verhindern will, sähe
+dann nicht wie ein Anstieg aus, sondern wie ein Absturz. Vor 1.3.6 war jeder Share ein
+Invite, deshalb ist `invite` der richtige Ersatzwert.
 
 Der Filter ist die Arbeit, die Annotation aus Punkt 3 ist nur die Notiz daneben. Eines ersetzt
 das andere nicht.
+
+**`friends_screen` hört mit 1.3.6 auf zu kommen.** Der dauerhafte Einladen-Knopf auf dem
+Freunde-Screen ist ersatzlos weg, an seine Stelle tritt `search_empty`, das nur nach einer
+Suche ohne Treffer erscheint. Der Filter oben bleibt trotzdem richtig, er hält die alte
+Zeitreihe zusammen. Eine Kachel, die **nur** auf `friends_screen` schaut, läuft ab dem
+Release aus und sollte auf `search_empty` erweitert oder abgelöst werden.
 
 **Neue Werte zur Einordnung:**
 
 | `kind` | `source` | Bedeutung |
 | --- | --- | --- |
-| `invite` | `onboarding`, `friends_screen`, `referral_screen`, `home_topbar`, `search_empty` | jemand lädt bewusst ein |
-| `achievement` | `achievement_card`, `profile_badge` | jemand zeigt etwas her, mit Link dran |
+| `invite` | `onboarding`, `referral_screen`, `home_topbar`, `search_empty` | jemand lädt bewusst ein |
+| | `friends_screen` | endet mit 1.3.6, siehe unten |
+| `achievement` | `achievement_card`, `profile_badge`, `quit_stats_card`, `stats_screen` | jemand zeigt etwas her, mit Link dran |
 
 ---
 
@@ -57,7 +87,7 @@ das andere nicht.
 Der Schritt `referralCheck` existiert nicht mehr, seine zwei Ausgänge sitzen auf
 `friendInvite`. Betroffen sind Kacheln, die auf einen der beiden alten Werte filtern.
 
-- [ ] Kacheln finden:
+- [x] Kacheln finden:
 
 ```sql
 SELECT short_id, name FROM system.insights
@@ -66,12 +96,25 @@ WHERE deleted = 0 AND saved = 1
        OR position(toString(query), 'step_total') > 0)
 ```
 
-- [ ] `step = 'referralCheck'`: läuft ab 1.3.6 leer. Entweder Schritt aus dem Trichter nehmen
+- [x] `step = 'referralCheck'`: läuft ab 1.3.6 leer. Entweder Schritt aus dem Trichter nehmen
       oder den Trichter an der 1.3.6-Annotation abschneiden.
-- [ ] `step_total = 12` als Bedingung: verliert alle neuen Nutzer. Auf 11 ändern oder die
+- [x] `step_total = 12` als Bedingung: verliert alle neuen Nutzer. Auf 11 ändern oder die
       Bedingung streichen.
 - [ ] Ein Trichter, der über beide Versionen läuft, mischt zwei verschiedene Abläufe. Sauberer
       ist ein Schnitt am Releasedatum.
+
+**Geprüft am 01.09.2026, nichts zu tun.** Keine einzige Kachel filtert auf `referralCheck`
+oder auf `step_total`. `WwU6n33t` (Onboarding: Abbrueche und Reibung je Schritt) liest die
+Schrittnamen aus den Daten statt sie aufzuzählen und trägt den Umbau deshalb von allein:
+`referralCheck` verschwindet als Zeile, sobald 1.3.5 ausläuft. Offen bleibt nur der dritte
+Punkt, der Schnitt am Releasedatum, solange beide Versionen im selben Fenster liegen.
+
+**Korrektur an der Annahme oben:** `step_total` ist nicht flach elf. Das Feld ist
+`stepOrder.length` (`OnboardingModal.jsx`), und die Liste hängt am Pfad. Aus dem
+1.3.6-Build gemessen: **11** im Track-Pfad, **10** im Quit-Pfad ohne Datum in der
+Vergangenheit, 11 mit. Eine Bedingung auf `step_total = 11` verliert also still die
+Quit-ab-heute-Nutzer. Der Trichter gehört auf die `step`-Namen gefiltert, so wie es der
+Kommentar an der Trackingstelle selbst sagt.
 
 Was **nicht** kaputtgeht: `referral_checked` mit `outcome: 'skipped'` feuert weiterhin für
 jeden, der weitertippt, ohne "Ich wurde eingeladen" zu benutzen. Diese Zeile bleibt über den
@@ -82,7 +125,7 @@ Umbau hinweg vergleichbar.
 ## 3. Annotation für 1.3.6
 
 - [ ] Annotation auf das Releasedatum legen, mit drei Sätzen: `referral_shared` zählt ab jetzt
-      fünf Flächen statt zwei, der Onboarding-Trichter hat elf Schritte statt zwölf, die
+      sieben Flächen statt zwei, der Onboarding-Trichter hat elf Schritte statt zwölf, die
       Paywall-Ereignisse tragen neu `mode`.
 
 Die Annotation erklärt einen Sprung, sie verhindert ihn nicht. Deshalb steht sie hier an
@@ -98,14 +141,15 @@ Damit jemand ohne dieses Repo weiterkommt, so wie es bei 1.3.5 gemacht wurde.
       `source`-Werte, und der Hinweis auf den Filter aus Punkt 1.
 - [ ] `paywall_shown` und `paywall_result`: neue Property `mode` (`track`, `quit`). Leer heißt
       "vor 1.3.6", nicht `track`.
-- [ ] `onboarding_step_viewed`: `step_total` ist ab 1.3.6 elf, `referralCheck` kommt nicht mehr
-      vor.
+- [ ] `onboarding_step_viewed`: `referralCheck` kommt nicht mehr vor. `step_total` ist ab
+      1.3.6 **10 oder 11**, je nach Pfad, und nicht flach elf: siehe die Korrektur in
+      Abschnitt 2.
 
 ---
 
 ## 5. Nicht vergessen: Testkonten
 
-- [ ] Falls für den 1.3.6-Gerätetest ein **neues** Konto angelegt wurde: dessen `distinct_id`
+- [x] Falls für den 1.3.6-Gerätetest ein **neues** Konto angelegt wurde: dessen `distinct_id`
       in die Abfrage der Kohorte 210940 eintragen. Sonst stecken die eigenen Testläufe wieder
       in genau den Zahlen, die diesmal beobachtet werden sollen, und bei dieser
       Größenordnung verschiebt ein einziges Testkonto das Ergebnis sichtbar.

@@ -36,6 +36,10 @@ Bis 1.3.5 verschickten drei davon den Store-Link, konnten also keine Empfehlung 
       darüber muss ebenfalls in Gerätesprache stehen, nicht mehr "50 snus logged".
 - [ ] **A1.4** Der Einladen-Knopf (Freunde oder Referral-Screen), zur Kontrolle: der hat schon
       vorher funktioniert und darf sich nicht verändert haben.
+- [ ] **A1.5** Im Aufhör-Modus auf der Startseite die Box "Mit einem Freund teilen" unter
+      dem Zähler. Erwartet: Bild **und** Satz **und** Link. Vorher ging dort nur das nackte
+      Bild raus, ohne einen einzigen Zeichen Text.
+- [ ] **A1.6** Statistik-Screen, der Teilen-Knopf. Dasselbe: Bild, Satz, Link.
 
 Einmal davon **abbrechen** statt zu teilen. Erwartet: kein Toast, kein Ereignis, keine
 Fehlermeldung.
@@ -45,12 +49,19 @@ Fehlermeldung.
 - [ ] **A2.1** Freunde, Suche, einen Namen eingeben, den es nicht gibt (mindestens drei
       Zeichen). Erwartet: unter "Keine Nutzer gefunden" steht jetzt eine Zeile und der
       Einladen-Knopf. Knopf antippen, Teilen-Fenster geht auf, Link stimmt.
+- [ ] **A2.2** Suchfeld leeren. Erwartet: der Knopf **verschwindet wieder**. Der dauerhafte
+      Einladen-Knopf, der vorher immer unter der Suchmaske stand, ist bewusst weg: das
+      Angebot gehört zum Moment der erfolglosen Suche und sonst nirgendwohin. Wer ohne Suche
+      einladen will, tut das über den Referral-Screen von der Startseite aus.
 
 ### A3. Onboarding, ein Schritt weniger
 
 Frisches Konto, komplett durchlaufen.
 
-- [ ] **A3.1** Der Fortschritt zählt **elf** Schritte, nicht zwölf.
+- [ ] **A3.1** Der Fortschritt zählt im Track-Pfad **elf** Schritte, nicht zwölf. Im
+      Quit-Pfad sind es **zehn**, und elf nur dann, wenn "ich höre schon auf" mit einem
+      Datum in der Vergangenheit den `quitDate`-Schritt dazuholt. Alle drei Zahlen sind
+      richtig, `stepOrder` hängt am Pfad.
 - [ ] **A3.2** Der Einladungsschritt hat zwei Ausgänge: den Einladen-Knopf und darunter die
       Zeile "Ich wurde eingeladen".
 - [ ] **A3.3** Auf "Weiter" tippen, ohne die Zeile zu benutzen. Erwartet: **kein**
@@ -99,8 +110,10 @@ ORDER BY quelle
 ```
 
 **So sieht richtig aus:** `home_topbar` und `search_empty` mit `absicht = invite`,
-`achievement_card` und `profile_badge` mit `absicht = achievement`, der Einladen-Knopf
-weiterhin mit seinem alten Wert (`friends_screen` oder `referral_screen`).
+`achievement_card`, `profile_badge`, `quit_stats_card` und `stats_screen` mit
+`absicht = achievement`, der Einladen-Knopf weiterhin mit `referral_screen` oder `onboarding`.
+`friends_screen` darf aus einem 1.3.6-Build **nicht** mehr kommen, den Knopf gibt es dort
+nicht mehr.
 
 **Zwei Dinge, die ein Befund wären:**
 
@@ -108,10 +121,18 @@ weiterhin mit seinem alten Wert (`friends_screen` oder `referral_screen`).
 - Ein Abbruch aus A1, der hier trotzdem auftaucht. Dann würde jedes weggewischte
   Teilen-Fenster als verschickte Einladung gezählt.
 
-**Wichtig für die Auswertung danach:** dieses Ereignis zählt ab 1.3.6 fünf Flächen statt zwei.
-Kacheln, die bewusstes Einladen über die Zeit messen, brauchen den Filter auf die drei alten
-`source`-Werte, sonst steigt die Kurve allein durch die neue Definition. Steht in
-`react_Breezer/docs/analytics-mapping.md` im Abschnitt zu 1.3.6.
+**Wichtig für die Auswertung danach:** dieses Ereignis zählt ab 1.3.6 sieben Flächen statt
+zwei. Kacheln, die bewusstes Einladen über die Zeit messen, brauchen einen Filter, sonst
+steigt die Kurve allein durch die neue Definition. Am 01.09.2026 gesetzt, und zwar auf die
+Absicht statt auf eine Liste von Flächennamen:
+
+```sql
+AND coalesce(nullIf(toString(properties.kind), ''), 'invite') = 'invite'
+```
+
+Das `coalesce` hält die Zeit vor 1.3.6 in der Reihe, wo es die Property noch nicht gibt.
+Welche Kachel was bekommen hat, steht in
+[`posthog-nacharbeit-1.3.6.md`](posthog-nacharbeit-1.3.6.md) Abschnitt 1.
 
 ### B2. Trägt die Paywall jetzt den Modus?
 
@@ -132,8 +153,18 @@ Leere `modus`-Zeilen von Geräten auf 1.3.5 sind normal, die Property gibt es do
 ### B3. Der Onboarding-Trichter
 
 Keine Abfrage, ein Blick: `onboarding_step_viewed` darf ab dieser Version kein
-`step = 'referralCheck'` mehr enthalten, und `step_total` steht auf **11**. Kacheln, die auf
-einen der beiden alten Werte filtern, laufen ab jetzt leer und gehören nachgezogen.
+`step = 'referralCheck'` mehr enthalten.
+
+`step_total` ist dabei **nicht** flach elf, wie hier ursprünglich stand. Das Feld ist
+`stepOrder.length`, und die Liste hängt am Pfad: **11** im Track-Pfad, **10** im Quit-Pfad,
+und 11 im Quit-Pfad, wenn jemand "ich höre schon auf" mit einem Datum in der Vergangenheit
+wählt und dadurch den `quitDate`-Schritt bekommt. Am 01.09.2026 aus dem 1.3.6-Build so
+gemessen. Wer auf `step_total = 11` filtert, verliert also still die Quit-ab-heute-Nutzer;
+der Trichter gehört auf die `step`-Namen gefiltert.
+
+Kacheln, die auf einen der alten Werte filtern, laufen ab jetzt leer und gehören
+nachgezogen. Am 01.09.2026 geprüft: keine tut das, siehe
+[`posthog-nacharbeit-1.3.6.md`](posthog-nacharbeit-1.3.6.md) Abschnitt 2.
 
 ---
 
