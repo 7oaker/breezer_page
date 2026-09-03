@@ -67,7 +67,9 @@ Ein Beutel ist also insgesamt keine mildere Dosis. Er ist eine ähnliche Dosis, 
 
 **Wenn du eine erste Stärke wählst**, nimm die unterste des Sortiments, 3 bis 6 mg pro Beutel. Die Toleranz steigt schnell und lässt sich nur unangenehm zurückdrehen. Die billigste Entscheidung in diesem Thema ist die erste.
 
-**Wenn du reduzieren willst**, reicht es selten, nur die Stärke zu senken. Die meisten gleichen das mit mehr Beuteln aus, wodurch die Tagesmenge Nikotin gleich bleibt, während die Dose schwächer aussieht. Die ehrliche Kennzahl ist die Anzahl der Beutel pro Tag, und genau die zu senken ist die Veränderung, die sich zeigt.
+**Wenn du reduzieren willst**, reicht es selten, nur die Stärke zu senken. Die meisten gleichen das mit mehr Beuteln aus, wodurch die Tagesmenge Nikotin gleich bleibt, während die Dose schwächer aussieht. Die ehrliche Kennzahl ist die Anzahl der Beutel pro Tag, und genau die zu senken ist die Veränderung, die sich zeigt. Genau das macht der [21-Tage-Plan zum Reduzieren](/de/blog/nikotinbeutel-reduzieren), nach Schema statt nach Gefühl.
+
+**Wenn du von Zigaretten umgestiegen bist**, ist der Vergleich, der dir verkauft wurde, dünner als er wirkt. Was die Studien dazu hergeben, steht in [Nikotinbeutel statt Zigaretten](/de/blog/nikotinbeutel-statt-rauchen).
 
 **Wenn du Marken vergleichst**, rechne zuerst alles auf mg pro Beutel um. Sonst vergleichst du eine Konzentration mit einer Dosis.
 

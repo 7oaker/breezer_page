@@ -67,7 +67,9 @@ So a pouch is not a milder dose overall. It is a similar total dose delivered sl
 
 **If you are choosing a first strength**, start at the bottom of the range, 3 to 6 mg per pouch. Tolerance climbs quickly and is uncomfortable to reverse, so the cheapest decision you will ever make here is the first one.
 
-**If you are trying to cut down**, lowering the strength alone rarely works. People compensate by using more pouches, which is why total daily nicotine often stays flat while the can looks weaker. Counting pouches per day is the honest measure, and lowering that number is the change that shows up.
+**If you are trying to cut down**, lowering the strength alone rarely works. People compensate by using more pouches, which is why total daily nicotine often stays flat while the can looks weaker. Counting pouches per day is the honest measure, and lowering that number is the change that shows up. The [21-day step-down plan](/blog/taper-nicotine-pouches) does exactly that, on a schedule.
+
+**If you switched from cigarettes**, the comparison you were sold is thinner than it looks. What the trials do and do not show is in [nicotine pouches to quit smoking](/blog/nicotine-pouches-quit-smoking).
 
 **If you are comparing brands**, convert everything to mg per pouch before you compare anything. Otherwise you are comparing a concentration to a dose.
 

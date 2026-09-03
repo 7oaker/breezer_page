@@ -103,6 +103,8 @@ From Breezer's own data we see a pattern on the second question: people who brin
 
 In Breezer you can run either and switch mid-way: lower a daily limit in the [snus tracker](/snus-tracker) first, then turn on Quit Mode when you are ready.
 
+If you pick the cutting-down route, do it on a schedule rather than by intention. The trials that found a benefit used a fixed step-down with a target for every third day, and the people who drifted off that schedule did worse than those who never had one. The [21-day plan for tapering off nicotine pouches](/blog/taper-nicotine-pouches) sets out the numbers.
+
 ## Know your number before you lower it
 
 Step one gets skipped most often, and it is the only one that costs nothing. Estimates are almost always too low, because pouches are used in the gaps of a day rather than at set times.

@@ -111,6 +111,8 @@ Aus den Breezer-Daten sehen wir zur zweiten Frage ein Muster: Wer vorher mit ein
 
 In Breezer kannst du deshalb beides fahren und mittendrin wechseln: erst mit einem Tageslimit im [Snus Tracker](/de/snus-tracker) reduzieren und den Quit-Modus einschalten, wenn du so weit bist.
 
+Wenn du reduzierst, dann nach Plan und nicht nach Vorsatz. Die Studien, die einen Nutzen fanden, arbeiteten mit einem festen Schema und einem Ziel für jeden dritten Tag. Wer vom Schema abwich, stand schlechter da als jemand ganz ohne Schema. Die Zahlen dazu stehen im [21-Tage-Plan zum Reduzieren](/de/blog/nikotinbeutel-reduzieren).
+
 ## Die Zahl kennen, bevor du sie senkst
 
 Der erste Schritt aus der Liste oben wird am häufigsten übersprungen, dabei ist er der einzige, der nichts kostet. Fast niemand kennt seinen tatsächlichen Verbrauch, weil Beutel in Lücken konsumiert werden und nicht zu festen Zeiten. Geschätzt wird fast immer zu niedrig.
