@@ -60,6 +60,8 @@ Nicotine is a stimulant. Disrupted sleep and restlessness appear both as effects
 
 The second cost is the dependence itself. A habit built around training sessions is a habit anchored to a schedule you repeat several times a week, which is exactly the structure that makes it hard to break later.
 
+The sleep claim is worth checking rather than taking on trust. Measured across 5,164 nights, nicotine within four hours of bedtime cost sleep efficiency while caffeine, in the same study, cost nothing measurable. The numbers are in [nicotine pouches and sleep](/blog/nicotine-pouches-sleep).
+
 ## If you already use them, measure it
 
 None of this is an argument that you should feel bad about a can in your bag. It is an argument that the useful number is not the strength on the tin, it is how many you get through in a week, and almost nobody knows that figure without measuring it.

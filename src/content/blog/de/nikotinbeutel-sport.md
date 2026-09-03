@@ -60,6 +60,8 @@ Nikotin ist ein Stimulans. Gestörter Schlaf und Unruhe treten sowohl als Wirkun
 
 Der zweite Preis ist die Abhängigkeit selbst. Eine Gewohnheit, die sich um Trainingseinheiten legt, hängt an einem Zeitplan, den du mehrmals pro Woche wiederholst. Genau diese Struktur macht es später schwer, sie loszuwerden.
 
+Die Sache mit dem Schlaf sollte man nachprüfen statt sie zu glauben. Über 5.164 gemessene Nächte kostete Nikotin in den vier Stunden vor dem Zubettgehen Schlafeffizienz, während Koffein in derselben Studie nichts Messbares kostete. Die Zahlen stehen in [Nikotinbeutel und Schlaf](/de/blog/nikotinbeutel-schlaf).
+
 ## Wenn du sie ohnehin nutzt, miss es
 
 Nichts davon ist ein Argument, wegen einer Dose in der Sporttasche ein schlechtes Gewissen zu haben. Es ist ein Argument dafür, dass die nützliche Zahl nicht die Stärke auf der Dose ist, sondern wie viele du in einer Woche durchbringst. Und die kennt fast niemand, ohne sie zu messen.

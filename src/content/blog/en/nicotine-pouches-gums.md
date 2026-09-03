@@ -71,6 +71,8 @@ The one relationship the research does support is a dose relationship: severity 
 
 You cannot change how a pouch interacts with your gums. You can change how many hours a day there is one in your mouth, and that is the variable the research keeps pointing at.
 
+The mouth is one effect among several, and they do not all rest on the same quality of evidence. [Nicotine pouch side effects, ranked by the evidence](/blog/nicotine-pouch-side-effects) sorts each one by what actually establishes it.
+
 Most people underestimate their own count substantially, because pouches get used in gaps, not at mealtimes. Breezer logs each one with a single tap and shows the weekly pattern, so the figure stops being a guess. From there you can set a daily limit in the [snus tracker](/snus-tracker), or move to [Quit Mode](/quit-snus) if you would rather bring it to zero.
 
 If the goal is simply less contact per day, it also helps to know that the strength on the can is often not the dose you think it is. That is covered in [how strong a nicotine pouch really is](/blog/nicotine-pouch-strength). Brand-specific logging lives on the [Zyn tracker](/zyn-tracker) page.

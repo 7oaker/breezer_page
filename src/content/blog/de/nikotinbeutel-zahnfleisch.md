@@ -75,4 +75,6 @@ Die meisten unterschätzen ihre eigene Zahl deutlich, weil Beutel in Lücken kon
 
 Wenn es dir um weniger Kontakt pro Tag geht, hilft außerdem zu wissen, dass die Stärke auf der Dose oft nicht die Dosis ist, die du vermutest. Das steht in [wie stark ein Nikotinbeutel wirklich ist](/de/blog/nikotinbeutel-staerke). Markenspezifisches Loggen findest du auf der [Zyn Tracker Seite](/de/zyn-tracker).
 
+Der Mund ist eine Wirkung von mehreren, und sie stehen nicht alle auf gleich guter Evidenz. [Nikotinbeutel Nebenwirkungen: was wirklich belegt ist](/de/blog/nikotinbeutel-nebenwirkungen) sortiert jede einzelne danach, was sie tatsächlich belegt.
+
 **Quelle:** Rungraungrayabkul D, Gaewkhiew P, Vichayanrat T, Shrestha B, Buajeeb W. *What is the impact of nicotine pouches on oral health: a systematic review.* BMC Oral Health. 2024 Aug 3;24:889.
