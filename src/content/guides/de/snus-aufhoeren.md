@@ -137,6 +137,8 @@ Die folgenden Muster tauchen in Aussteigerberichten immer wieder auf, etwa im Fo
 
 **Rückfälle sind die Regel, nicht das Ende.** Von den zitierten Berichten hatte einer drei bis vier gescheiterte Versuche vor dem erfolgreichen, ein anderer war nach einem geglückten Ausstieg wieder eingestiegen und hat es erneut geschafft. Die meisten Versuche scheitern in Woche zwei bis drei, also genau dann, wenn der körperliche Teil abklingt.
 
+**"Aber es beruhigt mich" ist der Einwand, den man prüfen sollte.** Über 102 Studien mit mehr als 169.500 Menschen hinweg sanken Angst und Stress nach dem Aufhören, sie stiegen nicht. Warum sich der Beutel trotzdem wie Entlastung anfühlt, steht in [Nikotinbeutel und Stress](/de/blog/nikotinbeutel-stress).
+
 **Erst den Beutel, dann das Nikotin.** Ein Nutzer, der es zuvor nie über Tag zwei hinaus geschafft hatte, ist zuerst nur von den Beuteln weg und eine Woche lang auf Kaugummi und Pastillen geblieben, danach vom Nikotin. Das ist die Alltagsversion des Nikotinersatzes aus der Tabelle oben, mit der schwächsten, aber vorhandenen Evidenz (Risikoverhältnis 1,18). Der Gedanke dahinter: Ritual und Substanz einzeln angehen statt beides gleichzeitig.
 
 Und der Klassiker, der trotzdem gilt: **ein akutes Verlangen dauert wenige Minuten.** Es fühlt sich nur nicht so an.

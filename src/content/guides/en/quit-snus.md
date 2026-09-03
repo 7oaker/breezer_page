@@ -129,6 +129,8 @@ The patterns below recur across quit accounts, for example in the r/QuittingZyn 
 
 **Relapse is the norm, not the end.** Among these accounts, one had three or four failed attempts before the one that stuck, and another relapsed after a successful quit and did it again. Most attempts fail in weeks two and three, right when the physical part fades.
 
+**"But it keeps me calm" is the objection worth checking.** Across 102 studies and over 169,500 people, anxiety and stress went down after quitting, not up. Why the pouch still feels like relief anyway is in [nicotine pouches and stress](/blog/nicotine-pouches-stress).
+
 And the old advice that still holds: **an acute craving lasts a few minutes.** It just does not feel that way.
 
 ## Why your environment matters more than willpower
