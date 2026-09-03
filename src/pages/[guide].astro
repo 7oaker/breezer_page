@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Article from '../layouts/Article.astro';
+import { mobileApp } from '../i18n/schema';
 
 export async function getStaticPaths() {
   const guides = await getCollection('guides', (g) => g.data.lang === 'en' && !g.data.draft);
@@ -10,6 +11,15 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 const d = entry.data;
+
+/**
+ * The tracker pages are the app's own money terms ("snus tracker", "zyn
+ * tracker"), so the MobileApplication entity belongs on them rather than only
+ * on the two homepages. The comparison and quit pages are editorial, and
+ * claiming the app entity there would dilute what the node means.
+ */
+const APP_PAGES = ['snus-tracker', 'zyn-tracker'];
+const extraSchema = APP_PAGES.includes(d.slug) ? [mobileApp as unknown as Record<string, unknown>] : [];
 ---
 
 <Article
@@ -27,6 +37,7 @@ const d = entry.data;
     { name: 'Blog', path: '/blog' },
     { name: d.heading, path: `/${d.slug}` },
   ]}
+  extraSchema={extraSchema}
   publishDate={d.publishDate}
   updatedDate={d.updatedDate}
   faq={d.faq}

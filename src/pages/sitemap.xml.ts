@@ -1,11 +1,12 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
-import { routePairs } from '../i18n/routes';
+import { routes } from '../i18n/routes';
+import { hreflangLinks, localeCodes, type LocalePaths } from '../i18n/locales';
 
 /**
- * Hand-rolled instead of @astrojs/sitemap because the EN and DE slugs differ
+ * Hand-rolled instead of @astrojs/sitemap because slugs differ per language
  * (/quit-snus <-> /de/snus-aufhoeren). The integration assumes a shared path
- * per locale and therefore emits those two pages with no alternates at all.
+ * per locale and therefore emits those pages with no alternates at all.
  *
  * Driven by src/i18n/routes.ts + the content collections, so a new page or post
  * appears here automatically with a real lastmod.
@@ -18,8 +19,8 @@ interface Entry {
   lastmod: string;
   changefreq: string;
   priority: string;
-  /** EN/DE counterpart paths, when a translation genuinely exists. */
-  alt?: { en: string; de: string };
+  /** Counterpart paths per locale, only where a translation genuinely exists. */
+  alt?: LocalePaths;
 }
 
 const iso = (d: Date) => d.toISOString().slice(0, 10);
@@ -36,9 +37,12 @@ export const GET: APIRoute = async () => {
   const entries: Entry[] = [];
 
   // Homepages
-  const homeAlt = { en: routePairs.home.en, de: routePairs.home.de };
-  entries.push({ path: routePairs.home.en, lastmod: iso(new Date()), changefreq: 'weekly', priority: '1.0', alt: homeAlt });
-  entries.push({ path: routePairs.home.de, lastmod: iso(new Date()), changefreq: 'weekly', priority: '1.0', alt: homeAlt });
+  const homeAlt: LocalePaths = routes.home;
+  for (const locale of localeCodes) {
+    const path = homeAlt[locale];
+    if (!path) continue;
+    entries.push({ path, lastmod: iso(new Date()), changefreq: 'weekly', priority: '1.0', alt: homeAlt });
+  }
 
   // Guides — paired through the guide's own translationOf slug.
   for (const g of guides) {
@@ -55,11 +59,13 @@ export const GET: APIRoute = async () => {
   }
 
   // Blog hubs
-  const blogAlt = { en: routePairs.blog.en, de: routePairs.blog.de };
-  for (const lang of ['en', 'de'] as const) {
+  const blogAlt: LocalePaths = routes.blog;
+  for (const lang of localeCodes) {
+    const hub = blogAlt[lang];
+    if (!hub) continue;
     const langPosts = posts.filter((p) => p.data.lang === lang);
     entries.push({
-      path: routePairs.blog[lang],
+      path: hub,
       lastmod: latest(langPosts.map((p) => p.data.updatedDate ?? p.data.publishDate)),
       changefreq: 'weekly',
       priority: '0.8',
@@ -88,13 +94,14 @@ export const GET: APIRoute = async () => {
 
   const body = entries
     .map((e) => {
-      const links = e.alt
-        ? [
-            `    <xhtml:link rel="alternate" hreflang="en" href="${esc(url(e.alt.en))}" />`,
-            `    <xhtml:link rel="alternate" hreflang="de-AT" href="${esc(url(e.alt.de))}" />`,
-            `    <xhtml:link rel="alternate" hreflang="de" href="${esc(url(e.alt.de))}" />`,
-            `    <xhtml:link rel="alternate" hreflang="x-default" href="${esc(url(e.alt.en))}" />`,
-          ].join('\n')
+      const alt = e.alt ? hreflangLinks(e.alt) : [];
+      const links = alt.length
+        ? alt
+            .map(
+              (l) =>
+                `    <xhtml:link rel="alternate" hreflang="${l.hreflang}" href="${esc(url(l.path))}" />`
+            )
+            .join('\n')
         : null;
       return [
         '  <url>',

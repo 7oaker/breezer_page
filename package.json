@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "astro build && node scripts/prune-orphan-assets.mjs",
+    "build": "astro build && node scripts/prune-orphan-assets.mjs && node scripts/seo-audit.mjs",
     "dev": "astro dev",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "audit": "node scripts/seo-audit.mjs"
   },
   "homepage": "https://breezer.now",
   "keywords": [],

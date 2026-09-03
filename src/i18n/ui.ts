@@ -1,9 +1,16 @@
 /**
  * Homepage copy, keyed. Generated once from the old EN/DE HTML pair; edit by
- * hand from here on. Adding a key to `en` without adding it to `de` is a
- * type error, which is the whole point — the old string-replacement translator
- * could silently ship English text on the German page.
+ * hand from here on. Adding a key to `en` without adding it to every other
+ * locale is a type error, which is the whole point — the old
+ * string-replacement translator could silently ship English text on the
+ * German page.
+ *
+ * `satisfies Record<Locale, ...>` at the bottom is what makes adding a locale
+ * to the registry fail the build until its strings exist. An untranslated
+ * language version is worse than no language version: it competes with the
+ * original for the same query and carries none of its own.
  */
+import type { Locale } from './locales';
 
 export const ui = {
   en: {
@@ -282,7 +289,12 @@ export const ui = {
   },
 } as const;
 
-export type Lang = keyof typeof ui;
+/** Every registered locale must appear in `ui`, and with the full key set. */
+const _completeness: Record<Locale, UI> = ui;
+void _completeness;
+
+/** Historical name for Locale. Kept because most components import it. */
+export type Lang = Locale;
 export type UI = (typeof ui)['en'];
 
 export const languages: Record<Lang, string> = { en: 'English', de: 'Deutsch' };

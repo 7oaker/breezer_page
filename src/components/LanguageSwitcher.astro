@@ -1,13 +1,26 @@
 ---
-import type { Lang } from '../i18n/routes';
+import { DEFAULT_LOCALE, locales, localeCodes, type Locale, type LocalePaths } from '../i18n/locales';
+import { routes } from '../i18n/routes';
 
 interface Props {
-  lang: Lang;
-  /** Where each language should point. Defaults to the two homepages. */
+  lang: Locale;
+  /**
+   * Where each language should point for the current page. A locale left out
+   * falls back to that language's homepage rather than disappearing: sending
+   * someone to the wrong page in the right language beats offering them
+   * nothing, and the legal pages exist in only two languages on purpose.
+   */
+  hrefs?: LocalePaths;
+  /** @deprecated two-locale shorthand; use `hrefs`. */
   enHref?: string;
+  /** @deprecated two-locale shorthand; use `hrefs`. */
   deHref?: string;
 }
-const { lang, enHref = '/', deHref = '/de' } = Astro.props;
+const { lang, hrefs, enHref, deHref } = Astro.props;
+
+const shorthand: LocalePaths = { en: enHref, de: deHref };
+const homeOf = (code: Locale) => routes.home[code] ?? routes.home[DEFAULT_LOCALE]!;
+const hrefFor = (code: Locale) => hrefs?.[code] ?? shorthand[code] ?? homeOf(code);
 
 const base =
   'lang-switcher-btn rounded-md px-2.5 py-1.5 text-xs font-semibold leading-none transition-colors hover:text-primary dark:hover:text-primary';
@@ -21,6 +34,9 @@ const idle = 'text-body dark:text-white/70';
   role="group"
   aria-label="Language"
 >
-  <a href={enHref} hreflang="en" data-set-lang="en" data-lang="en" class:list={[base, lang === 'en' ? active : idle]}>EN</a>
-  <a href={deHref} hreflang="de-AT" data-set-lang="de" data-lang="de" class:list={[base, lang === 'de' ? active : idle]}>DE</a>
+  {
+    localeCodes.map((code) => (
+      <a href={hrefFor(code)} hreflang={locales[code].hreflang[0]} data-set-lang={code} data-lang={code} class:list={[base, code === lang ? active : idle]}>{locales[code].label}</a>
+    ))
+  }
 </div>

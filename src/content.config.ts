@@ -1,5 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { localeCodes, type Locale } from './i18n/locales';
 
 /**
  * Content is authored as Markdown with typed frontmatter. The schema is
@@ -21,7 +22,11 @@ const seoFields = {
   description: z.string().min(50).max(175),
   /** og:description + the card text on listing pages. */
   summary: z.string().min(40).max(200),
-  lang: z.enum(['en', 'de']),
+  /**
+   * Derived from the locale registry, so a new language does not need a second
+   * edit here to be authorable.
+   */
+  lang: z.enum(localeCodes as [Locale, ...Locale[]]),
   publishDate: z.coerce.date(),
   updatedDate: z.coerce.date().optional(),
   /**

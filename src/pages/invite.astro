@@ -147,6 +147,33 @@ const inviteInit = `(function () {
     <meta name="robots" content="noindex, follow" />
     <link rel="canonical" href="https://breezer.now/invite" />
     <meta name="apple-itunes-app" content="app-id=6737725511" />
+
+    {/*
+      Open Graph on a noindex page is not an SEO tag, it is a conversion tag.
+      Every invite is shared into a chat, and a link with no preview card
+      converts worse than one with a title, a line of copy and an image. This
+      page is the referral loop's only public surface, so it is the last place
+      that should render as a bare URL.
+    */}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Breezer" />
+    <meta property="og:title" content="Join me on Breezer" />
+    <meta
+      property="og:description"
+      content="Track every pouch with one tap, compare with friends, and quit with a guided Quit Mode. Free on iOS and Android."
+    />
+    <meta property="og:url" content="https://breezer.now/invite" />
+    <meta property="og:image" content="https://breezer.now/images/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Breezer, the social snus app" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Join me on Breezer" />
+    <meta
+      name="twitter:description"
+      content="Track every pouch with one tap, compare with friends, and quit with a guided Quit Mode."
+    />
+    <meta name="twitter:image" content="https://breezer.now/images/og-image.png" />
     <!--
       is:inline, so the rules stay in the document exactly as they were in the static
       version. Astro would otherwise extract them into a hashed stylesheet, and a

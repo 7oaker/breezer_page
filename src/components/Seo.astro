@@ -5,15 +5,23 @@
  * (GPTBot, ClaudeBot, PerplexityBot, …) do not execute JavaScript, so nothing
  * SEO-relevant may be added client-side.
  */
-import type { Lang } from '../i18n/ui';
+import { hreflangLinks, locales, type Locale, type LocalePaths } from '../i18n/locales';
 
 export interface Props {
-  lang: Lang;
+  lang: Locale;
   title: string;
   description: string;
-  /** Path without origin, e.g. "/snus-tracker". The EN route. */
+  /** This page's own path, without origin, e.g. "/snus-tracker". */
   path: string;
-  /** The matching DE route, e.g. "/de/snus-tracker". Omit if untranslated. */
+  /**
+   * Where this same page lives in the other languages, keyed by locale. The
+   * current locale is filled in from `path`, so callers only pass the others.
+   * A locale left out is a locale this page does not exist in, and nothing is
+   * claimed for it. Google throws away the whole cluster when one alternate
+   * does not point back, so absence has to be honest.
+   */
+  alternates?: LocalePaths;
+  /** @deprecated single-counterpart shorthand; use `alternates`. */
   altPath?: string;
   ogType?: 'website' | 'article';
   image?: string;
@@ -30,6 +38,7 @@ const {
   title,
   description,
   path,
+  alternates,
   altPath,
   ogType = 'website',
   image = '/images/og-image.png',
@@ -44,9 +53,20 @@ const site = Astro.site?.origin ?? 'https://breezer.now';
 const abs = (p: string) => new URL(p, site).href;
 
 const canonical = abs(path);
-const enHref = lang === 'en' ? canonical : altPath ? abs(altPath) : null;
-const deHref = lang === 'de' ? canonical : altPath ? abs(altPath) : null;
-const hasPair = Boolean(enHref && deHref);
+
+// The page's own locale is never passed in, it is what `path` already is.
+// Deriving it here means a caller cannot accidentally omit itself from its own
+// alternate set, which is the single most common way hreflang gets broken.
+const others: LocalePaths = { ...alternates };
+if (altPath) {
+  const other = (Object.keys(locales) as Locale[]).find((code) => code !== lang);
+  if (other && !others[other]) others[other] = altPath;
+}
+const localePaths: LocalePaths = { ...others, [lang]: path };
+const links = hreflangLinks(localePaths).map((l) => ({ ...l, href: abs(l.path) }));
+const otherOgLocales = (Object.keys(locales) as Locale[])
+  .filter((code) => code !== lang && localePaths[code])
+  .map((code) => locales[code].ogLocale);
 ---
 
 <title>{title}</title>
@@ -65,16 +85,7 @@ const hasPair = Boolean(enHref && deHref);
 />
 <link rel="canonical" href={canonical} />
 
-{
-  hasPair && (
-    <>
-      <link rel="alternate" hreflang="en" href={enHref} />
-      <link rel="alternate" hreflang="de-AT" href={deHref} />
-      <link rel="alternate" hreflang="de" href={deHref} />
-      <link rel="alternate" hreflang="x-default" href={enHref} />
-    </>
-  )
-}
+{links.map((l) => <link rel="alternate" hreflang={l.hreflang} href={l.href} />)}
 
 <meta property="og:type" content={ogType} />
 <meta property="og:title" content={title} />
@@ -85,8 +96,8 @@ const hasPair = Boolean(enHref && deHref);
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content={imageAlt ?? title} />
-<meta property="og:locale" content={lang === 'de' ? 'de_AT' : 'en_US'} />
-<meta property="og:locale:alternate" content={lang === 'de' ? 'en_US' : 'de_AT'} />
+<meta property="og:locale" content={locales[lang].ogLocale} />
+{otherOgLocales.map((l) => <meta property="og:locale:alternate" content={l} />)}
 {publishedTime && <meta property="article:published_time" content={publishedTime} />}
 {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
 

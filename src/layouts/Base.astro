@@ -1,5 +1,6 @@
 ---
 import Seo, { type Props as SeoProps } from '../components/Seo.astro';
+import { DEFAULT_LOCALE, locales, localeCodes } from '../i18n/locales';
 // Self-hosted Inter. Google's font CDN is a live GDPR exposure for an Austrian
 // operator (German/Austrian rulings treat the IP transfer as a violation), and
 // it also cost a render-blocking round trip to a third-party origin.
@@ -10,40 +11,49 @@ import '../styles/animate.css';
 
 type Props = SeoProps & { bodyClass?: string };
 const { bodyClass = 'bg-white dark:bg-black', ...seo } = Astro.props;
-const lang = seo.lang === 'de' ? 'de-AT' : 'en';
+const lang = locales[seo.lang].htmlLang;
 
 /**
- * Sends a visitor whose browser prefers German to the German counterpart of the
- * page they asked for, once, before anything paints.
+ * Sends a visitor whose browser prefers another language to that language's
+ * counterpart of the page they asked for, once, before anything paints.
  *
- * Deliberately one-way, EN to DE only. Googlebot crawls with an English
- * Accept-Language, so a two-way rule would bounce it off every German URL and
- * out of the index. The target comes from the hreflang alternate already in the
- * head, so this works on any page that has a counterpart and needs no second
- * map to maintain. An explicit click on the language switcher writes
- * `breezer_lang`, and that always wins from then on.
+ * Deliberately one-way: it only ever moves someone *off* the default locale.
+ * Googlebot crawls with an English Accept-Language, so a two-way rule would
+ * bounce it off every localised URL and out of the index. The targets come
+ * from the hreflang alternates already in the head, so this works on any page
+ * that has counterparts and needs no second map to maintain. An explicit click
+ * on the language switcher writes `breezer_lang`, and that always wins.
+ *
+ * The locale list is interpolated from the registry rather than hard-coded, so
+ * adding a language does not mean remembering to edit a string of inline JS.
  *
  * Injected via set:html because Astro treats the body of a <script> as raw
  * text: an expression written inline ships as literal source and does nothing.
  */
+const redirectLocales = localeCodes.filter((code) => code !== DEFAULT_LOCALE);
 const langInit = `(function () {
   try {
+    if (${JSON.stringify(seo.lang !== DEFAULT_LOCALE)}) return;
     if (localStorage.getItem('breezer_lang')) return;
-    if ((document.documentElement.lang || '').toLowerCase().indexOf('de') === 0) return;
 
+    var targets = ${JSON.stringify(redirectLocales)};
     var prefs = navigator.languages && navigator.languages.length
       ? navigator.languages
       : [navigator.language || ''];
-    var wantsGerman = false;
-    for (var i = 0; i < prefs.length; i++) {
-      var tag = (prefs[i] || '').toLowerCase();
-      // Whichever of the two ranks higher decides; anything else is ignored.
-      if (tag.indexOf('de') === 0) { wantsGerman = true; break; }
-      if (tag.indexOf('en') === 0) break;
-    }
-    if (!wantsGerman) return;
 
-    var alt = document.querySelector('link[rel="alternate"][hreflang^="de"]');
+    var want = null;
+    for (var i = 0; i < prefs.length && !want; i++) {
+      var tag = (prefs[i] || '').toLowerCase();
+      // The default locale ranking first means stay put; anything unknown is
+      // skipped so a third preference can still decide.
+      if (tag.indexOf(${JSON.stringify(DEFAULT_LOCALE)}) === 0) return;
+      for (var j = 0; j < targets.length; j++) {
+        if (tag.indexOf(targets[j]) === 0) { want = targets[j]; break; }
+      }
+    }
+    if (!want) return;
+
+    var alt = document.querySelector('link[rel="alternate"][hreflang^="' + want + '"]');
     if (!alt) return;
     // Only the path is taken from the alternate. Those hrefs are absolute
     // production URLs, so following one wholesale would throw a visitor on a
