@@ -46,14 +46,6 @@ export interface Author {
    * silhouette.
    */
   tinted?: boolean;
-  /**
-   * A second crop for the byline bubble. The same drawing scaled down loses
-   * its features at that size, so this one is cropped to the face alone and
-   * carries heavier strokes. Two files rather than one because an avatar and a
-   * favicon-sized mark are different jobs, and tuning one to serve both makes
-   * both worse.
-   */
-  imageSmall?: string;
   role: Record<Lang, string>;
   /** Answers one question only: why is this the byline you can trust here. */
   bio: Record<Lang, string>;
@@ -77,7 +69,6 @@ export const authors: Record<string, Author> = {
     isPerson: true,
     url: 'https://breezer.now/imprint',
     image: '/images/author-klaus.png',
-    imageSmall: '/images/author-klaus-face.png',
     tinted: true,
     role: {
       de: 'Gründer von Breezer',
