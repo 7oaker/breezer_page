@@ -24,3 +24,6 @@ Desktop.ini
 # Temporary files
 *.swp
 .vercel
+
+# Scratch notes for pull request descriptions, not part of the site
+PR-BODY*.md
