@@ -15,11 +15,19 @@ import './analytics.js';
 const BREEZER_GA_MEASUREMENT_ID = 'G-F1DFG9VDZQ';
 const BREEZER_COOKIE_CONSENT_KEY = 'breezer_cookie_consent_v1';
 
-function breezerIsGermanPage() {
+/**
+ * Which locale this page is in, for the strings this script renders itself.
+ * Derived from <html lang> with the URL prefix as a fallback, so a language
+ * added to the site does not need a branch here. Unknown locales fall back to
+ * English rather than showing a key.
+ */
+function breezerPageLocale() {
   const lang = (document.documentElement.lang || '').toLowerCase();
-  if (lang.startsWith('de')) return true;
-  const path = window.location.pathname.replace(/\/index\.html$/i, '/');
-  return path === '/de' || path.startsWith('/de/');
+  const known = Object.keys(BREEZER_UI);
+  const byLang = known.filter((code) => lang.indexOf(code) === 0)[0];
+  if (byLang) return byLang;
+  const seg = window.location.pathname.replace(/\/index\.html$/i, '/').split('/')[1];
+  return known.indexOf(seg) !== -1 ? seg : 'en';
 }
 
 function breezerPrivacyPolicyUrl() {
@@ -84,11 +92,38 @@ const BREEZER_UI = {
     formSuccess: 'Danke für deine Nachricht! Wir melden uns bald bei dir.',
     formError: 'Etwas ist schiefgelaufen. Bitte versuche es später erneut.',
   },
+  sv: {
+    cookiesTitle: 'Cookies och integritet',
+    cookiesIntro:
+      'Vi använder <strong>nödvändig lagring</strong> för grundfunktioner (tema och språkval när du gör ett) och, med ditt samtycke, <strong>Google Analytics</strong> för att mäta användningen och förbättra webbplatsen. Vi använder även <strong>PostHog</strong>, som körs utan cookies och inte lagrar något på din enhet.',
+    cookiesHint:
+      'Du kan ändra ditt val när som helst via <strong>Cookieinställningar</strong> i sidfoten.',
+    learnMore: 'Läs mer',
+    acceptAnalytics: 'Acceptera analys',
+    reject: 'Neka',
+    customize: 'Anpassa',
+    essential: 'Nödvändiga',
+    essentialHint: 'Krävs för grundfunktioner och inställningar (tema och språk när du valt ett).',
+    alwaysOn: 'Alltid på',
+    analytics: 'Analys',
+    analyticsHint:
+      'Google Analytics för att förstå användningen och förbättra webbplatsen. Sätter cookies.',
+    enable: 'Aktivera',
+    saveSelection: 'Spara val',
+    cookieSettings: 'Cookieinställningar',
+    cookieSettingsIntro:
+      'Välj om vi får använda Google Analytics. Nödvändig lagring (tema och språk när du valt ett) och vår cookiefria analys är alltid aktiva.',
+    close: 'Stäng',
+    rejectAnalytics: 'Neka analys',
+    save: 'Spara',
+    formSending: 'Skickar…',
+    formSuccess: 'Tack för att du hörde av dig! Vi återkommer snart.',
+    formError: 'Något gick fel. Försök igen senare.',
+  },
 };
 
 function breezerUi(key) {
-  const locale = breezerIsGermanPage() ? 'de' : 'en';
-  return BREEZER_UI[locale][key];
+  return BREEZER_UI[breezerPageLocale()][key];
 }
 const BREEZER_COOKIE_CONSENT_MAX_AGE_SECONDS = 60 * 60 * 24 * 365; // 12 months
 
@@ -813,24 +848,41 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  /**
+   * The switcher itself is the list of languages: it renders one anchor per
+   * locale with data-lang. Reading that instead of hard-coding a pair means a
+   * new language works here without touching this file, which is exactly what
+   * went wrong when Swedish was added and the highlight stayed on English.
+   */
+  var langSwitcher = document.getElementById('lang-switcher');
+  var knownLangs = langSwitcher
+    ? Array.prototype.map.call(langSwitcher.querySelectorAll('[data-lang]'), function (b) {
+        return b.getAttribute('data-lang');
+      })
+    : [];
+
   document.querySelectorAll('[data-set-lang]').forEach(function (link) {
     link.addEventListener('click', function () {
       var lang = link.getAttribute('data-set-lang');
-      if (lang === 'en' || lang === 'de') {
-        try {
-          localStorage.setItem('breezer_lang', lang);
-        } catch (e) {
-          // Ignore if storage is unavailable.
-        }
+      if (knownLangs.indexOf(lang) === -1) return;
+      try {
+        localStorage.setItem('breezer_lang', lang);
+      } catch (e) {
+        // Ignore if storage is unavailable.
       }
     });
   });
 
-  var langSwitcher = document.getElementById('lang-switcher');
   if (langSwitcher) {
     var htmlLang = (document.documentElement.lang || '').toLowerCase();
-    var onDe = htmlLang.indexOf('de') === 0 || window.location.pathname.indexOf('/de') === 0;
-    var activeLang = onDe ? 'de' : 'en';
+    // <html lang> is regional for some locales (de-AT), so match on the prefix.
+    var pathLang = window.location.pathname.split('/')[1];
+    var activeLang =
+      knownLangs.filter(function (code) {
+        return htmlLang.indexOf(code) === 0;
+      })[0] ||
+      (knownLangs.indexOf(pathLang) !== -1 ? pathLang : null) ||
+      knownLangs[0];
     var activeClasses = ['bg-primary', 'text-white', 'pointer-events-none'];
     var inactiveClasses = ['text-body', 'dark:text-white/70'];
 

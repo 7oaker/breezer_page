@@ -1,5 +1,6 @@
 ---
-import { footerNav, navFor, route, type Lang } from '../i18n/routes';
+import { footerNav, navFor, route, routes, type Lang } from '../i18n/routes';
+import { locales, localeCodes } from '../i18n/locales';
 
 interface Props {
   lang: Lang;
@@ -9,11 +10,23 @@ const de = lang === 'de';
 
 // Legal links are noindex pages but must stay reachable — app stores and the
 // Austrian ECG/MedienG disclosure rules both expect them in the footer.
+/**
+ * Labelled in the reader's language even where the target page is not
+ * translated. The label says what the page is; the language it happens to be
+ * in is a separate fact, and an English label in a Swedish footer just reads
+ * as an oversight.
+ */
+const t = {
+  en: { privacySite: 'Privacy Policy Website', privacyApp: 'Privacy Policy App', terms: 'Terms and conditions', imprint: 'Imprint', cookies: 'Cookie settings', guides: 'Snus App Guides', legal: 'Legal' },
+  de: { privacySite: 'Datenschutz Website', privacyApp: 'Datenschutz App', terms: 'AGB', imprint: 'Impressum', cookies: 'Cookie-Einstellungen', guides: 'Snus App Guides', legal: 'Rechtliches' },
+  sv: { privacySite: 'Integritetspolicy webbplats', privacyApp: 'Integritetspolicy app', terms: 'Villkor', imprint: 'Imprint', cookies: 'Cookieinställningar', guides: 'Guider', legal: 'Juridik' },
+}[lang];
+
 const legal = [
-  { href: '/privacy-policy-website', label: de ? 'Datenschutz Website' : 'Privacy Policy Website' },
-  { href: '/privacy-policy', label: de ? 'Datenschutz App' : 'Privacy Policy App' },
-  { href: '/eula', label: de ? 'AGB' : 'Terms and conditions' },
-  { href: route('imprint', lang), label: de ? 'Impressum' : 'Imprint' },
+  { href: '/privacy-policy-website', label: t.privacySite },
+  { href: '/privacy-policy', label: t.privacyApp },
+  { href: '/eula', label: t.terms },
+  { href: route('imprint', lang), label: t.imprint },
 ];
 ---
 
@@ -23,12 +36,12 @@ const legal = [
       <div class="-mx-3 flex flex-wrap items-center gap-y-4">
         <div class="w-full px-3 lg:w-1/3">
           <p class="text-center text-sm text-white lg:text-left">
-            &#169; {new Date().getFullYear()} Breezer. {de ? 'Made in Austria.' : 'Made in Austria.'}
+            &#169; {new Date().getFullYear()} Breezer. Made in Austria.
           </p>
         </div>
         <div class="w-full px-3 lg:w-1/3">
           <nav
-            aria-label={de ? 'Snus App Guides' : 'Snus App Guides'}
+            aria-label={t.guides}
             class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs text-white"
           >
             {navFor(footerNav, lang).map((item) => (
@@ -38,11 +51,23 @@ const legal = [
         </div>
         <div class="w-full px-3 lg:w-1/3">
           <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs text-white lg:justify-end">
-            {de
-              ? <a href="/" data-set-lang="en" class="hover:opacity-80">English</a>
-              : <a href="/de" data-set-lang="de" class="hover:opacity-80">Deutsch</a>}
+            {/*
+              One link per other language, named in that language. The old
+              version offered exactly one alternative, which on a third locale
+              meant Swedish readers were offered German and nothing else.
+            */}
+            {localeCodes
+              .filter((code) => code !== lang)
+              .map((code) => (
+                <a
+                  href={routes.home[code] ?? '/'}
+                  hreflang={locales[code].hreflang[0]}
+                  data-set-lang={code}
+                  class="hover:opacity-80"
+                >{locales[code].name}</a>
+              ))}
             <a href="javascript:void(0)" data-cookie-settings class="hover:opacity-80">
-              {de ? 'Cookie-Einstellungen' : 'Cookie settings'}
+              {t.cookies}
             </a>
           </div>
         </div>
@@ -50,7 +75,7 @@ const legal = [
 
       <div class="mt-4 border-t border-white/20 pt-4">
         <nav
-          aria-label={de ? 'Rechtliches' : 'Legal'}
+          aria-label={t.legal}
           class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs text-white/80"
         >
           {legal.map((item) => <a href={item.href} class="hover:text-white">{item.label}</a>)}

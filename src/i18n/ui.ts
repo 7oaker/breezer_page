@@ -369,7 +369,7 @@ export const ui = {
   breezer_quit_mode_quitters_ranking_and: "Breezer Quit-läge – topplista och social motivation",
   what_breezers_say: "Vad användarna säger",
   user_review: "Användarrecension",
-  nbsp_48_27_reviews_on_app: "&nbsp;4,8 · 27 recensioner i App Store och Google Play",
+  nbsp_48_27_reviews_on_app: "  4,8 · 27 recensioner i App Store och Google Play",
   best_application_on_appstore: "\"Best application on AppStore\"",
   adrianrwtp: "AdrianR.WTP",
   poland_app_store_feb_2026: "Polen · App Store · feb 2026",
