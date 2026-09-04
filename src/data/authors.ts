@@ -54,9 +54,17 @@ export interface Author {
 
 export const authors: Record<string, Author> = {
   'Klaus Siebeneicher': {
+    /**
+     * First name only, and the same string goes into schema.org Person.name.
+     * The full name and address are in the imprint, one click away through
+     * `url`, so nothing is hidden. What it costs is entity resolution: "Klaus"
+     * cannot be matched against mentions elsewhere the way a full name can.
+     * The alternative, showing one name and marking up another, is a
+     * visible/markup mismatch and worse than either choice on its own.
+     */
     displayName: {
-      de: 'Klaus Siebeneicher',
-      en: 'Klaus Siebeneicher',
+      de: 'Klaus',
+      en: 'Klaus',
     },
     isPerson: true,
     url: 'https://breezer.now/imprint',

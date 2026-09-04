@@ -165,7 +165,26 @@ const fmt = (d: Date) =>
             <time datetime={iso(updatedDate)}>{copy.updated} {fmt(updatedDate)}</time>
           </>
         )}
-        <span aria-hidden="true"> · </span>{profile ? <a href={profile.url} class="hover:text-primary">{profile.displayName[lang]}</a> : author}
+        <span aria-hidden="true"> · </span>{
+          profile ? (
+            /*
+              A monogram rather than the portrait. The author illustration is a
+              line drawing, and at byline size its strokes collapse into a
+              smudge; a letter in the same gradient stays crisp at any size and
+              reads as a deliberate mark instead of a failed thumbnail. The
+              drawing itself runs at 64px in the author box, where it holds up.
+            */
+            <span class="inline-flex items-center gap-1.5 align-middle">
+              <span
+                aria-hidden="true"
+                class="bg-gradient-1 inline-flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold leading-none text-white"
+              >{profile.displayName[lang].charAt(0)}</span>
+              <a href={profile.url} class="hover:text-primary">{profile.displayName[lang]}</a>
+            </span>
+          ) : (
+            author
+          )
+        }
       </p>
 
       {/*
