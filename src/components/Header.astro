@@ -1,5 +1,6 @@
 ---
 import { route, routes, type Lang } from '../i18n/routes';
+import type { LocalePaths } from '../i18n/locales';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 
 interface Props {
@@ -11,8 +12,14 @@ interface Props {
    * as broken.
    */
   full?: boolean;
+  /**
+   * Where this same page lives in the other languages. Without it the switcher
+   * falls back to each language's homepage, which throws away the translation
+   * the reader just asked for and is the classic multilingual papercut.
+   */
+  alternates?: LocalePaths;
 }
-const { lang, full = false } = Astro.props;
+const { lang, full = false, alternates } = Astro.props;
 
 const home = route('home', lang);
 const de = lang === 'de';
@@ -93,7 +100,7 @@ const nav = [
             </div>
 
       <div class="mr-[60px] flex items-center justify-end gap-3 lg:mr-0">
-        <LanguageSwitcher lang={lang} />
+        <LanguageSwitcher lang={lang} hrefs={alternates} />
         <label
           for="themeSwitcher"
           class="inline-flex cursor-pointer items-center"

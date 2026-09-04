@@ -137,7 +137,7 @@ const fmt = (d: Date) =>
   modifiedTime={iso(updatedDate ?? publishDate)}
   schema={schema}
 >
-  <Header lang={lang} />
+  <Header lang={lang} alternates={{ ...alternates, [lang]: path }} />
   {/* Progress through the article body, not the document: see breezerInitReadingProgress. */}
   <div id="readingProgress" class="reading-progress bg-gradient-1" aria-hidden="true"></div>
   <main class="pt-[120px] pb-16">
