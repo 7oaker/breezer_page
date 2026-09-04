@@ -12,7 +12,7 @@ import PhoneFrame from '../components/PhoneFrame.astro';
 import type { ImageMetadata } from 'astro';
 import { route, type Lang } from '../i18n/routes';
 import { organization, breadcrumbs, faqPage } from '../i18n/schema';
-import { locales } from '../i18n/locales';
+import { locales, type LocalePaths } from '../i18n/locales';
 import { getAuthor } from '../data/authors';
 
 interface Crumb {
@@ -33,6 +33,7 @@ interface Props {
   updatedDate?: Date;
   faq?: { q: string; a: string }[];
   /** 'BlogPosting' for posts, 'Article' for evergreen guides. */
+  alternates?: LocalePaths;
   schemaType?: 'Article' | 'BlogPosting';
   /**
    * Extra JSON-LD nodes merged into this page's graph. The tracker pages use it
@@ -58,6 +59,7 @@ const {
   publishDate,
   updatedDate,
   faq = [],
+  alternates,
   schemaType = 'Article',
   extraSchema = [],
   author = 'Breezer Team',
@@ -126,6 +128,7 @@ const fmt = (d: Date) =>
   title={title}
   description={description}
   path={path}
+  alternates={alternates}
   altPath={altPath}
   ogType="article"
   imageAlt={heading}

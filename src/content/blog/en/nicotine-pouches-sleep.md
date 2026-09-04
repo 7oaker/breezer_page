@@ -5,7 +5,7 @@ description: "Nicotine within four hours of bed cost 42 minutes of sleep in peop
 summary: "Measured across 5,164 nights, nicotine before bed cut sleep efficiency and added time awake. Caffeine in the same study showed no effect at all. What that means for the pouch you take at 10pm."
 lang: en
 publishDate: 2026-09-03
-translationOf: nikotinbeutel-schlaf
+translationKey: nicotine-pouches-sleep
 author: Breezer Redakteur
 heroImage: ../../../assets/images/screens/new/take-snus.png
 heroImageAlt: Logging a nicotine pouch with one tap in Breezer, timestamped

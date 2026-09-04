@@ -5,7 +5,7 @@ description: "Breezer and Smoke Free compared, as of August 2026. The difference
 summary: "Breezer against Smoke Free: why a genuinely good stop-smoking app can still be the wrong choice for pouch users, and when it is the right one."
 lang: en
 slug: vs-smoke-free
-translationOf: vs-smoke-free
+translationKey: vs-smoke-free
 publishDate: 2026-07-31
 updatedDate: 2026-08-18
 faq:

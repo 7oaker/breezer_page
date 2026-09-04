@@ -1,19 +1,117 @@
+# breezer.now
+#
+# Two kinds of automated visitor matter here and they are listed separately on
+# purpose, because they are different decisions.
+#
+# 1. Answer and agent crawlers. These are how the site gets cited in AI answers
+#    and how an agent reads it when a person asks one to look something up.
+#    Blocking them removes the site from that surface entirely. All allowed.
+# 2. Training crawlers. These take content to train models and do not send
+#    traffic or citations back. Allowed here as well, because a quit-nicotine
+#    page is more useful inside a model than outside one, but this is the group
+#    to change if that judgement ever changes.
+#
+# Nothing on this site is gated, so there is no crawl-budget reason to narrow
+# any of it.
+
 User-agent: *
 Allow: /
+
+# --- Search and answer engines -----------------------------------------
+
+# OpenAI: search index, and the fetcher used when a user asks ChatGPT to browse
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+# Google: GoogleOther covers non-Search fetches, Google-Extended governs whether
+# the content may ground Gemini answers. Absence would be read as allowed today,
+# but stating it means a future default cannot quietly change the answer.
+User-agent: GoogleOther
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# Anthropic: index crawler, and the fetcher behind a user-initiated lookup
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+# Perplexity: index crawler and user-initiated fetcher
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+# Apple Intelligence and Siri
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Meta AI
+User-agent: meta-externalagent
+Allow: /
+
+User-agent: Meta-ExternalFetcher
+Allow: /
+
+# Microsoft Copilot rides the Bing index, which also backs ChatGPT search
+User-agent: bingbot
+Allow: /
+
+User-agent: BingPreview
+Allow: /
+
+# Others that surface content in answers
+User-agent: Amazonbot
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+User-agent: PetalBot
+Allow: /
+
+# --- Training crawlers -------------------------------------------------
+# Change this block, not the one above, if the position on training changes.
 
 User-agent: GPTBot
 Allow: /
 
-User-agent: OAI-SearchBot
+User-agent: anthropic-ai
 Allow: /
 
-User-agent: PerplexityBot
+User-agent: CCBot
 Allow: /
 
-User-agent: ClaudeBot
+User-agent: Bytespider
 Allow: /
 
-User-agent: GoogleOther
+User-agent: cohere-ai
 Allow: /
 
+User-agent: Diffbot
+Allow: /
+
+User-agent: omgili
+Allow: /
+
+User-agent: Timpibot
+Allow: /
+
+# The per-language feeds are discoverable through <link rel="alternate"> in the
+# page head, which is where feed readers and agents look. They are deliberately
+# not listed as sitemaps: a feed only carries recent items, and sitemap.xml
+# already carries every URL with a real lastmod.
 Sitemap: https://breezer.now/sitemap.xml

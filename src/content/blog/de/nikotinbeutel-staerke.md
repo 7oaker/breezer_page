@@ -5,7 +5,7 @@ description: "Die Zahl auf der Dose kann zwei völlig verschiedene Dinge bedeute
 summary: "Zwei Dosen, dieselbe Zahl, doppelte Dosis. Was mg/g von mg pro Beutel unterscheidet, wie du umrechnest und wie viel Nikotin laut Forschung wirklich im Blut landet."
 lang: de
 publishDate: 2026-08-16
-translationOf: nicotine-pouch-strength
+translationKey: nicotine-pouch-strength
 author: Breezer Redakteur
 heroImage: ../../../assets/images/screens/new/take-snus.png
 heroImageAlt: Einen Nikotinbeutel mit einem Tipp in Breezer loggen

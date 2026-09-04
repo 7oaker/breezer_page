@@ -5,7 +5,7 @@ description: "Weiße Flecken, wunde Stellen, Rückgang: Was die Forschung zu Nik
 summary: "Der ehrliche Stand der Evidenz zu Beuteln und Mundgesundheit: Was das eine systematische Review fand, was Nutzer berichten, und welche Fragen niemand beantworten kann."
 lang: de
 publishDate: 2026-08-16
-translationOf: nicotine-pouches-gums
+translationKey: nicotine-pouches-gums
 author: Breezer Redakteur
 heroImage: ../../../assets/images/screens/new/quitting-health.png
 heroImageAlt: Gesundheits-Meilensteine im Breezer Quit-Modus

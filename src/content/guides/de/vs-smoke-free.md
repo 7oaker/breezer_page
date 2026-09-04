@@ -5,7 +5,7 @@ description: "Breezer und Smoke Free im Vergleich, Stand August 2026. Der Unters
 summary: "Breezer gegen Smoke Free: warum eine sehr gute Rauchstopp-App für Beutel-Nutzer trotzdem die falsche Wahl sein kann, und wann sie die richtige ist."
 lang: de
 slug: vs-smoke-free
-translationOf: vs-smoke-free
+translationKey: vs-smoke-free
 publishDate: 2026-07-31
 updatedDate: 2026-08-18
 faq:

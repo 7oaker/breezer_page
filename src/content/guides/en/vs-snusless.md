@@ -5,7 +5,7 @@ description: "Breezer and Snusless compared as of August 2026: features, price, 
 summary: "Breezer against Snusless: what both apps say they do, where the price difference sits, and which goal each one is actually designed for."
 lang: en
 slug: vs-snusless
-translationOf: vs-snusless
+translationKey: vs-snusless
 publishDate: 2026-01-01
 updatedDate: 2026-08-18
 faq:

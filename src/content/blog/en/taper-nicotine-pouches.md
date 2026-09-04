@@ -5,7 +5,7 @@ description: "A 21-day step-down schedule from a trial of 916 smokers, what Coch
 summary: "Cutting down and stopping outright produce the same quit rates. What changed the outcome in trials was a fixed schedule, and the people who drifted off it did worse than those who never started one."
 lang: en
 publishDate: 2026-09-03
-translationOf: nikotinbeutel-reduzieren
+translationKey: taper-nicotine-pouches
 author: Breezer Redakteur
 heroImage: ../../../assets/images/screens/new/snus-stats.png
 heroImageAlt: A week of pouch counts against a daily limit in Breezer, with the split by strength below

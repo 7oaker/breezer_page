@@ -5,7 +5,7 @@ description: "Quitting is associated with less anxiety, not more, across 102 stu
 summary: "The largest review of the question covers 102 studies and over 169,500 people. Every mental-health measure moved in favour of quitting. The relief you feel is real, and it is not what you think."
 lang: en
 publishDate: 2026-09-04
-translationOf: nikotinbeutel-stress
+translationKey: nicotine-pouches-stress
 author: Breezer Redakteur
 heroImage: ../../../assets/images/screens/new/quitting-home.png
 heroImageAlt: Breezer Quit Mode showing days snus-free and money saved

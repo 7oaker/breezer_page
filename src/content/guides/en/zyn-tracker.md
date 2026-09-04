@@ -5,7 +5,7 @@ description: "Zyn has no official app for tracking use. What a Zyn tracker does,
 summary: "Tracking Zyn: why your estimate is almost always too low, how to read mg per pouch versus mg/g, and the honest evidence on app-based tracking."
 lang: en
 slug: zyn-tracker
-translationOf: zyn-tracker
+translationKey: zyn-tracker
 publishDate: 2026-06-26
 updatedDate: 2026-08-18
 faq:

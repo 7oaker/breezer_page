@@ -5,7 +5,7 @@ description: "Cochrane hat die Frage im Oktober 2025 geprüft und vier Studien m
 summary: "Das erste systematische Review zu Nikotinbeuteln beim Rauchstopp fand vier kleine Studien mit zusammen 284 Teilnehmenden. Gegen 29.044 bei der E-Zigarette heißt die ehrliche Antwort: niemand weiß es."
 lang: de
 publishDate: 2026-09-03
-translationOf: nicotine-pouches-quit-smoking
+translationKey: nicotine-pouches-quit-smoking
 author: Breezer Redakteur
 heroImage: ../../../assets/images/screens/new/quitting-achievements.png
 heroImageAlt: Snusfreie Meilensteine und gespartes Geld im Breezer Quit-Modus

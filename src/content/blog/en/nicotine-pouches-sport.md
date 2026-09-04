@@ -5,7 +5,7 @@ description: "Nicotine is not banned in sport, and one in five professional foot
 summary: "Nicotine sits on WADA's monitoring programme, not the banned list, and pouches are widespread in professional sport. What the trials found, and the dependence figures nobody quotes."
 lang: en
 publishDate: 2026-08-16
-translationOf: nikotinbeutel-sport
+translationKey: nicotine-pouches-sport
 author: Breezer Redakteur
 heroImage: ../../../assets/images/screens/new/snus-stats.png
 heroImageAlt: Weekly nicotine pouch consumption pattern in Breezer

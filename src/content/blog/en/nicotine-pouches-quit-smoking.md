@@ -5,7 +5,7 @@ description: "Cochrane reviewed the question in October 2025 and found four tria
 summary: "The first systematic review of pouches for quitting smoking found four small trials and 284 participants. Set against 29,044 for e-cigarettes, the honest answer is that nobody knows yet."
 lang: en
 publishDate: 2026-09-03
-translationOf: nikotinbeutel-statt-rauchen
+translationKey: nicotine-pouches-quit-smoking
 author: Breezer Redakteur
 heroImage: ../../../assets/images/screens/new/quitting-achievements.png
 heroImageAlt: Snus-free milestones and money saved unlocking in Breezer Quit Mode

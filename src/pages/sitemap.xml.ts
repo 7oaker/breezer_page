@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { routes } from '../i18n/routes';
 import { hreflangLinks, localeCodes, type LocalePaths } from '../i18n/locales';
+import { guideSets, postSets, postPath, postSlug, guidePath, setFor } from '../i18n/translations';
 
 /**
  * Hand-rolled instead of @astrojs/sitemap because slugs differ per language
@@ -44,17 +45,17 @@ export const GET: APIRoute = async () => {
     entries.push({ path, lastmod: iso(new Date()), changefreq: 'weekly', priority: '1.0', alt: homeAlt });
   }
 
-  // Guides — paired through the guide's own translationOf slug.
+  // Guides — grouped by translationKey, so every language version of a page
+  // lists every other one without this file knowing how many there are.
+  const guideAlt = await guideSets();
   for (const g of guides) {
     const d = g.data;
-    const self = d.lang === 'en' ? `/${d.slug}` : `/de/${d.slug}`;
-    const other = d.lang === 'en' ? `/de/${d.translationOf}` : `/${d.translationOf}`;
     entries.push({
-      path: self,
+      path: guidePath(d.lang, d.slug),
       lastmod: iso(d.updatedDate ?? d.publishDate),
       changefreq: 'monthly',
       priority: '0.9',
-      alt: d.lang === 'en' ? { en: self, de: other } : { en: other, de: self },
+      alt: setFor(guideAlt, d.translationKey),
     });
   }
 
@@ -73,22 +74,17 @@ export const GET: APIRoute = async () => {
     });
   }
 
-  // Posts — hreflang only when a counterpart is actually declared.
+  // Posts — hreflang only when a counterpart genuinely exists. hreflangLinks
+  // drops a set of one, so a single-language post emits no alternates.
+  const postAlt = await postSets();
   for (const p of posts) {
     const d = p.data;
-    const slug = p.id.split('/').pop() as string;
-    const self = d.lang === 'en' ? `/blog/${slug}` : `/de/blog/${slug}`;
-    const other = d.translationOf
-      ? d.lang === 'en'
-        ? `/de/blog/${d.translationOf}`
-        : `/blog/${d.translationOf}`
-      : null;
     entries.push({
-      path: self,
+      path: postPath(d.lang, postSlug(p)),
       lastmod: iso(d.updatedDate ?? d.publishDate),
       changefreq: 'monthly',
       priority: '0.7',
-      alt: other ? (d.lang === 'en' ? { en: self, de: other } : { en: other, de: self }) : undefined,
+      alt: setFor(postAlt, d.translationKey),
     });
   }
 

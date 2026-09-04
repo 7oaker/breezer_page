@@ -5,7 +5,7 @@ description: "Nikotin in den vier Stunden vor dem Zubettgehen kostete Menschen m
 summary: "Über 5.164 Nächte gemessen: Nikotin vor dem Schlafengehen senkte die Schlafeffizienz und verlängerte die Wachzeit. Koffein zeigte keinen Effekt. Was das für den Beutel um 22 Uhr heißt."
 lang: de
 publishDate: 2026-09-03
-translationOf: nicotine-pouches-sleep
+translationKey: nicotine-pouches-sleep
 author: Breezer Redakteur
 heroImage: ../../../assets/images/screens/new/take-snus.png
 heroImageAlt: Einen Nikotinbeutel mit einem Tipp in Breezer loggen, mit Uhrzeit

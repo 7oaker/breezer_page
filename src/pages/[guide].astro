@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Article from '../layouts/Article.astro';
 import { mobileApp } from '../i18n/schema';
+import { guideSets, setFor } from '../i18n/translations';
 
 export async function getStaticPaths() {
   const guides = await getCollection('guides', (g) => g.data.lang === 'en' && !g.data.draft);
@@ -20,6 +21,8 @@ const d = entry.data;
  */
 const APP_PAGES = ['snus-tracker', 'zyn-tracker'];
 const extraSchema = APP_PAGES.includes(d.slug) ? [mobileApp as unknown as Record<string, unknown>] : [];
+
+const alternates = setFor(await guideSets(), d.translationKey);
 ---
 
 <Article
@@ -29,7 +32,7 @@ const extraSchema = APP_PAGES.includes(d.slug) ? [mobileApp as unknown as Record
   description={d.description}
   summary={d.summary}
   path={`/${d.slug}`}
-  altPath={`/de/${d.translationOf}`}
+  alternates={alternates}
   {/* See src/pages/de/[guide].astro for why the blog hub is a crumb here
       even though the URL is /<slug> and not /blog/<slug>. */}
   crumbs={[

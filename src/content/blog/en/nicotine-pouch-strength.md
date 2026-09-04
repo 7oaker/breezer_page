@@ -5,7 +5,7 @@ description: "The number on the can can mean two very different things. How to r
 summary: "Two cans, same number, very different dose. How mg/g and mg per pouch differ, how to convert between them, and what the research says about how much nicotine you actually absorb."
 lang: en
 publishDate: 2026-08-16
-translationOf: nikotinbeutel-staerke
+translationKey: nicotine-pouch-strength
 author: Breezer Redakteur
 heroImage: ../../../assets/images/screens/new/take-snus.png
 heroImageAlt: Logging a nicotine pouch with one tap in Breezer

@@ -5,7 +5,7 @@ description: "A snus tracker for people who want to know their use without quitt
 summary: "Track snus without an app pushing you to quit: what the weekly view reveals, what it costs, and the honest evidence on tracking apps."
 lang: en
 slug: snus-tracker
-translationOf: snus-tracker
+translationKey: snus-tracker
 publishDate: 2026-06-26
 updatedDate: 2026-08-18
 faq:

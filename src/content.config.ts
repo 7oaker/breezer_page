@@ -53,8 +53,12 @@ const guides = defineCollection({
       ...seoFields,
       /** URL segment, e.g. "snus-tracker". */
       slug: z.string(),
-      /** The other language's slug, for hreflang. */
-      translationOf: z.string(),
+      /**
+       * Shared id across every language version of this page. Same value on
+       * en/quit-snus.md and de/snus-aufhoeren.md. Required on guides because a
+       * guide with no counterpart would be a money page with no hreflang.
+       */
+      translationKey: z.string(),
       /** Screenshot shown beside the intro, in the device frame. */
       heroImage: image().optional(),
       heroImageAlt: z.string().optional(),
@@ -76,8 +80,12 @@ const blog = defineCollection({
   schema: ({ image }) =>
     z.object({
       ...seoFields,
-      /** Slug of the counterpart post in the other language, if it exists. */
-      translationOf: z.string().optional(),
+      /**
+       * Shared id across every language version of this post. Optional: a post
+       * may legitimately exist in one language only, and then it must claim no
+       * alternates at all.
+       */
+      translationKey: z.string().optional(),
       heroImage: image().optional(),
       heroImageAlt: z.string().optional(),
       gallery: z

@@ -5,7 +5,7 @@ description: "Wie lange der Snus-Entzug dauert, was im Körper passiert und was 
 summary: "Snus aufhören: der Entzugsverlauf nach Studienlage, ein Ablauf in sechs Schritten und die Frage, was nachweislich wirkt. Dazu Schlussstrich gegen schrittweise reduzieren."
 lang: de
 slug: snus-aufhoeren
-translationOf: quit-snus
+translationKey: quit-snus
 publishDate: 2026-04-01
 updatedDate: 2026-08-18
 faq:

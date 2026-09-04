@@ -5,7 +5,7 @@ description: "Ein Snus Tracker für alle, die ihren Konsum kennen wollen, ohne s
 summary: "Snus tracken, ohne dass die App dich zum Aufhören drängt: was die Wochenansicht zeigt, was es kostet, und die ehrliche Studienlage zu Tracking-Apps."
 lang: de
 slug: snus-tracker
-translationOf: snus-tracker
+translationKey: snus-tracker
 publishDate: 2026-04-01
 updatedDate: 2026-08-18
 faq:

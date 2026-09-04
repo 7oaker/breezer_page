@@ -5,7 +5,7 @@ description: "Every side effect sorted by what shows it: randomised trials, weak
 summary: "The whole randomised evidence base for nicotine pouches is a few hundred people over a few weeks. Here is every reported effect, sorted by whether anything actually establishes it."
 lang: en
 publishDate: 2026-09-03
-translationOf: nikotinbeutel-nebenwirkungen
+translationKey: nicotine-pouch-side-effects
 author: Breezer Redakteur
 heroImage: ../../../assets/images/screens/new/quitting-health.png
 heroImageAlt: Health recovery milestones tracked in Breezer Quit Mode

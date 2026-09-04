@@ -5,7 +5,7 @@ description: "Ein Reduktionsplan über 21 Tage aus einer Studie mit 916 Teilnehm
 summary: "Reduzieren und Schlussstrich führen zur selben Erfolgsquote. Was in den Studien den Unterschied machte, war ein fixer Plan. Und wer vom Plan abwich, stand schlechter da als ohne Plan."
 lang: de
 publishDate: 2026-09-03
-translationOf: taper-nicotine-pouches
+translationKey: taper-nicotine-pouches
 author: Breezer Redakteur
 heroImage: ../../../assets/images/screens/new/snus-stats.png
 heroImageAlt: Eine Woche Beutel gegen das Tageslimit in Breezer, darunter die Aufteilung nach Stärke

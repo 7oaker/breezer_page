@@ -5,7 +5,7 @@ description: "Aufhören geht über 102 Studien hinweg mit weniger Angst einher, 
 summary: "Das größte Review dazu umfasst 102 Studien und über 169.500 Menschen. Jeder Wert zur psychischen Gesundheit sprach fürs Aufhören. Die Entlastung ist echt, nur nicht die, für die man sie hält."
 lang: de
 publishDate: 2026-09-04
-translationOf: nicotine-pouches-stress
+translationKey: nicotine-pouches-stress
 author: Breezer Redakteur
 heroImage: ../../../assets/images/screens/new/quitting-home.png
 heroImageAlt: Breezer Quit-Modus mit snusfreien Tagen und gespartem Geld

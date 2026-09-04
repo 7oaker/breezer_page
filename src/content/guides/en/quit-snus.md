@@ -5,7 +5,7 @@ description: "How long snus withdrawal lasts, the symptoms that are clinically d
 summary: "Quitting snus: the withdrawal timeline from the research, the clinical symptom list, and what the evidence says actually helps. Plus cold turkey versus cutting down."
 lang: en
 slug: quit-snus
-translationOf: snus-aufhoeren
+translationKey: quit-snus
 publishDate: 2026-06-26
 updatedDate: 2026-08-18
 faq:

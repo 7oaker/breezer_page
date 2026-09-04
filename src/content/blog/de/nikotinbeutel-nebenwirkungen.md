@@ -5,7 +5,7 @@ description: "Jede Nebenwirkung sortiert danach, was sie belegt: randomisierte S
 summary: "Die gesamte randomisierte Datenlage zu Nikotinbeuteln umfasst ein paar hundert Menschen über wenige Wochen. Hier steht jede berichtete Wirkung, sortiert danach, ob sie überhaupt belegt ist."
 lang: de
 publishDate: 2026-09-03
-translationOf: nicotine-pouch-side-effects
+translationKey: nicotine-pouch-side-effects
 author: Breezer Redakteur
 heroImage: ../../../assets/images/screens/new/quitting-health.png
 heroImageAlt: Gesundheits-Meilensteine im Breezer Quit-Modus

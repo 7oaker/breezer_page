@@ -5,7 +5,7 @@ description: "Nikotin ist im Sport nicht verboten, und jeder fünfte Profifußba
 summary: "Nikotin steht auf WADAs Monitoring-Programm, nicht auf der Verbotsliste. Was die Studien zur Leistung ergaben, und die Abhängigkeitszahlen, die niemand zitiert."
 lang: de
 publishDate: 2026-08-16
-translationOf: nicotine-pouches-sport
+translationKey: nicotine-pouches-sport
 author: Breezer Redakteur
 heroImage: ../../../assets/images/screens/new/snus-stats.png
 heroImageAlt: Wochenmuster des Nikotinbeutel-Konsums in Breezer

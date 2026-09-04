@@ -17,7 +17,7 @@ publishDate: 2026-01-01
 # updatedDate: 2026-02-01
 # Slug of the counterpart post in the other language. Omit if not translated —
 # hreflang tags are only emitted when a real pair exists.
-# translationOf: mein-slug
+# translationKey: gemeinsamer-schluessel-aller-sprachversionen
 # author: Breezer Team
 
 # Optional. Rendered as a visible FAQ section AND as FAQPage schema from this

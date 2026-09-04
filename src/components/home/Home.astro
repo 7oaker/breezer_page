@@ -133,6 +133,20 @@ const home = lang === 'de' ? '/de/' : '/';
                     </a>
                   </div>
 
+                  {/*
+                    The rating is rendered because it is also marked up as
+                    aggregateRating on the MobileApplication node. Google's
+                    structured data policy requires marked-up ratings to match
+                    content a visitor can actually see; markup without the
+                    visible counterpart is what gets flagged as misleading.
+                    Rendering it also lifts click-through, so the compliant
+                    version is the better one anyway.
+                  */}
+                  <p class="mt-4 flex w-full items-center gap-2 text-sm text-body dark:text-white/70">
+                    <span class="text-[#F5A623]" aria-hidden="true">★★★★★</span>
+                    <span>{t.rating_summary}</span>
+                  </p>
+
                 </div>
               </div>
             </div>

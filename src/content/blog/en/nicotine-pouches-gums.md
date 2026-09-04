@@ -5,7 +5,7 @@ description: "White patches, soreness, receding gums: what research has actually
 summary: "The honest state of the evidence on pouches and oral health: what the one systematic review found, what users consistently report, and the questions nobody can answer yet."
 lang: en
 publishDate: 2026-08-16
-translationOf: nikotinbeutel-zahnfleisch
+translationKey: nicotine-pouches-gums
 author: Breezer Redakteur
 heroImage: ../../../assets/images/screens/new/quitting-health.png
 heroImageAlt: Health recovery milestones tracked in Breezer

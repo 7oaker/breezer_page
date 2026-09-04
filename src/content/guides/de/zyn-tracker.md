@@ -5,7 +5,7 @@ description: "Zyn selbst hat keine App zum Erfassen des Konsums. Was ein Zyn Tra
 summary: "Zyn tracken: warum die geschätzte Zahl fast immer zu niedrig liegt, wie die Stärkeangabe zu lesen ist und was die Evidenz zu App-basiertem Tracking hergibt."
 lang: de
 slug: zyn-tracker
-translationOf: zyn-tracker
+translationKey: zyn-tracker
 publishDate: 2026-04-01
 updatedDate: 2026-08-18
 faq:

@@ -5,7 +5,7 @@
  * (GPTBot, ClaudeBot, PerplexityBot, …) do not execute JavaScript, so nothing
  * SEO-relevant may be added client-side.
  */
-import { hreflangLinks, locales, type Locale, type LocalePaths } from '../i18n/locales';
+import { hreflangLinks, locales, localeCodes, type Locale, type LocalePaths } from '../i18n/locales';
 
 export interface Props {
   lang: Locale;
@@ -106,6 +106,31 @@ const otherOgLocales = (Object.keys(locales) as Locale[])
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={abs(image)} />
 <meta name="twitter:site" content="@breezerapp" />
+
+{/*
+  Feed discovery. A reader or an agent looks for this in the head, not in
+  robots.txt. The current language's feed comes first so a client that takes
+  only the first one takes the right one.
+*/}
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  title={`Breezer Blog (${locales[lang].label})`}
+  href={abs(`${locales[lang].prefix}/feed.xml`)}
+/>
+{
+  localeCodes
+    .filter((code) => code !== lang)
+    .map((code) => (
+      <link
+        rel="alternate"
+        type="application/rss+xml"
+        title={`Breezer Blog (${locales[code].label})`}
+        href={abs(`${locales[code].prefix}/feed.xml`)}
+        hreflang={locales[code].hreflang[0]}
+      />
+    ))
+}
 
 <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
 <link rel="manifest" href="/site.webmanifest" />

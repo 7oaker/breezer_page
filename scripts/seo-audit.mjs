@@ -254,6 +254,22 @@ if (!existsSync(sitemapFile)) {
   if (dupes.length) err('sitemap.xml', `duplicate entries: ${[...new Set(dupes)].join(', ')}`);
 }
 
+// ------------------------------------------------------------ feeds
+
+for (const feed of walk(DIST).filter((f) => f.endsWith('feed.xml'))) {
+  const xml = readFileSync(feed, 'utf8');
+  const rel = `/${relative(DIST, feed).split(sep).join('/')}`;
+  const links = [...xml.matchAll(/<link>([^<]*)<\/link>/g)].map((m) => stripOrigin(m[1]));
+  if (links.length < 2) warn(rel, 'feed has no items');
+  for (const l of links) {
+    if (!pages.has(l)) err(rel, `feed links to ${l}, which is not built`);
+  }
+  if (!xml.includes('rel="self"')) warn(rel, 'no atom:link rel="self"');
+  // Every page should advertise the feed, or nothing will find it.
+  const advertised = [...pages.values()].some((p) => p.html.includes(`${rel}"`));
+  if (!advertised) warn(rel, 'no page links to this feed with <link rel="alternate">');
+}
+
 // ------------------------------------------------------------ robots.txt
 
 const robotsFile = join(DIST, 'robots.txt');
