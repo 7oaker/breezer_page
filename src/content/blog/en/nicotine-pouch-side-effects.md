@@ -6,7 +6,7 @@ summary: "The whole randomised evidence base for nicotine pouches is a few hundr
 lang: en
 publishDate: 2026-09-03
 translationKey: nicotine-pouch-side-effects
-author: Breezer Redakteur
+author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/quitting-health.png
 heroImageAlt: Health recovery milestones tracked in Breezer Quit Mode
 faq:

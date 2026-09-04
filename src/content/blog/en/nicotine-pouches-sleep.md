@@ -6,7 +6,7 @@ summary: "Measured across 5,164 nights, nicotine before bed cut sleep efficiency
 lang: en
 publishDate: 2026-09-03
 translationKey: nicotine-pouches-sleep
-author: Breezer Redakteur
+author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/take-snus.png
 heroImageAlt: Logging a nicotine pouch with one tap in Breezer, timestamped
 faq:

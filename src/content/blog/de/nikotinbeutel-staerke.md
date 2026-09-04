@@ -6,7 +6,7 @@ summary: "Zwei Dosen, dieselbe Zahl, doppelte Dosis. Was mg/g von mg pro Beutel 
 lang: de
 publishDate: 2026-08-16
 translationKey: nicotine-pouch-strength
-author: Breezer Redakteur
+author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/take-snus.png
 heroImageAlt: Einen Nikotinbeutel mit einem Tipp in Breezer loggen
 faq:

@@ -6,7 +6,7 @@ summary: "Cutting down and stopping outright produce the same quit rates. What c
 lang: en
 publishDate: 2026-09-03
 translationKey: taper-nicotine-pouches
-author: Breezer Redakteur
+author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/snus-stats.png
 heroImageAlt: A week of pouch counts against a daily limit in Breezer, with the split by strength below
 faq:

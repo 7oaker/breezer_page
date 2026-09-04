@@ -6,7 +6,7 @@ summary: "The largest review of the question covers 102 studies and over 169,500
 lang: en
 publishDate: 2026-09-04
 translationKey: nicotine-pouches-stress
-author: Breezer Redakteur
+author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/quitting-home.png
 heroImageAlt: Breezer Quit Mode showing days snus-free and money saved
 faq:

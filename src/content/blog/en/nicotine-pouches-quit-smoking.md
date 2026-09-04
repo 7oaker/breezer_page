@@ -6,7 +6,7 @@ summary: "The first systematic review of pouches for quitting smoking found four
 lang: en
 publishDate: 2026-09-03
 translationKey: nicotine-pouches-quit-smoking
-author: Breezer Redakteur
+author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/quitting-achievements.png
 heroImageAlt: Snus-free milestones and money saved unlocking in Breezer Quit Mode
 faq:

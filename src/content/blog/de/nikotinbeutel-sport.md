@@ -6,7 +6,7 @@ summary: "Nikotin steht auf WADAs Monitoring-Programm, nicht auf der Verbotslist
 lang: de
 publishDate: 2026-08-16
 translationKey: nicotine-pouches-sport
-author: Breezer Redakteur
+author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/snus-stats.png
 heroImageAlt: Wochenmuster des Nikotinbeutel-Konsums in Breezer
 faq:

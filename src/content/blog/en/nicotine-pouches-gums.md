@@ -6,7 +6,7 @@ summary: "The honest state of the evidence on pouches and oral health: what the 
 lang: en
 publishDate: 2026-08-16
 translationKey: nicotine-pouches-gums
-author: Breezer Redakteur
+author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/quitting-health.png
 heroImageAlt: Health recovery milestones tracked in Breezer
 faq:

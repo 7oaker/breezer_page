@@ -6,7 +6,7 @@ summary: "Nicotine sits on WADA's monitoring programme, not the banned list, and
 lang: en
 publishDate: 2026-08-16
 translationKey: nicotine-pouches-sport
-author: Breezer Redakteur
+author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/snus-stats.png
 heroImageAlt: Weekly nicotine pouch consumption pattern in Breezer
 faq:

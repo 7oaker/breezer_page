@@ -6,7 +6,7 @@ summary: "Der ehrliche Stand der Evidenz zu Beuteln und Mundgesundheit: Was das 
 lang: de
 publishDate: 2026-08-16
 translationKey: nicotine-pouches-gums
-author: Breezer Redakteur
+author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/quitting-health.png
 heroImageAlt: Gesundheits-Meilensteine im Breezer Quit-Modus
 faq:

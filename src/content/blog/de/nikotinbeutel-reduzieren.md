@@ -6,7 +6,7 @@ summary: "Reduzieren und Schlussstrich führen zur selben Erfolgsquote. Was in d
 lang: de
 publishDate: 2026-09-03
 translationKey: taper-nicotine-pouches
-author: Breezer Redakteur
+author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/snus-stats.png
 heroImageAlt: Eine Woche Beutel gegen das Tageslimit in Breezer, darunter die Aufteilung nach Stärke
 faq:

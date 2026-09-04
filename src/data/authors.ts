@@ -15,6 +15,18 @@ import type { Lang } from '../i18n/ui';
  * there is no stock or AI-generated headshot here: an invented face on health
  * content is a fabricated trust signal, and Google treats it as one.
  *
+ * That rule is about *invented* faces. A line drawing of a real, named person
+ * is not one, and it is the reason the personal byline carries an illustration
+ * rather than a photograph: the accountability is real, the biometric exposure
+ * is not. § 5 ECG already publishes the same name in the imprint, so the
+ * byline adds no identifiability, only attribution.
+ *
+ * The bios say how the articles are made, including the AI involvement. That
+ * belongs in the bio and not in the byline: a byline is an accountability
+ * claim, and a model cannot be held to one. Putting a model in `author` would
+ * also be a false statement in the structured data, which is the same defect
+ * as an invented headshot wearing a different hat.
+ *
  * Names not listed fall back to the organisation with no visible box, which is
  * the right behaviour for the evergreen guide pages: they describe the product
  * rather than carrying a viewpoint.
@@ -28,6 +40,12 @@ export interface Author {
   url: string;
   /** Path under /public. Omit rather than inventing a face. */
   image?: string;
+  /**
+   * Paint the image through a CSS mask in the brand gradient. Only for line
+   * art on a transparent background: a photograph masked this way becomes a
+   * silhouette.
+   */
+  tinted?: boolean;
   role: Record<Lang, string>;
   /** Answers one question only: why is this the byline you can trust here. */
   bio: Record<Lang, string>;
@@ -35,6 +53,27 @@ export interface Author {
 }
 
 export const authors: Record<string, Author> = {
+  'Klaus Siebeneicher': {
+    displayName: {
+      de: 'Klaus Siebeneicher',
+      en: 'Klaus Siebeneicher',
+    },
+    isPerson: true,
+    url: 'https://breezer.now/imprint',
+    image: '/images/author-klaus.png',
+    tinted: true,
+    role: {
+      de: 'Gründer von Breezer',
+      en: 'Founder of Breezer',
+    },
+    bio: {
+      de: 'Baut Breezer allein in Niederösterreich, liest die Studien hinter diesen Artikeln selbst und benennt dünne Evidenz, statt sie aufzurunden. Recherche und Rohentwurf entstehen mit KI-Unterstützung; jede zitierte Quelle wird einzeln geöffnet und geprüft, und die Einschätzung am Ende ist seine.',
+      en: 'Builds Breezer single-handed in Lower Austria, reads the studies behind these articles himself, and says where the evidence is thin instead of rounding it up. Research and first drafts are produced with AI assistance; every cited source is opened and checked individually, and the judgement at the end is his.',
+    },
+    // sameAs is deliberately empty until the real profile URLs are known. A
+    // guessed URL here is a machine-readable claim that this person is that
+    // account, which is the same class of defect as an invented headshot.
+  },
   'Breezer Redakteur': {
     displayName: {
       de: 'Breezer Redakteur',

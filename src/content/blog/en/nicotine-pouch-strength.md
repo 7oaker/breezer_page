@@ -6,7 +6,7 @@ summary: "Two cans, same number, very different dose. How mg/g and mg per pouch 
 lang: en
 publishDate: 2026-08-16
 translationKey: nicotine-pouch-strength
-author: Breezer Redakteur
+author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/take-snus.png
 heroImageAlt: Logging a nicotine pouch with one tap in Breezer
 faq:

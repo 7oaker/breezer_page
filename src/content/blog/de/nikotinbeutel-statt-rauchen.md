@@ -6,7 +6,7 @@ summary: "Das erste systematische Review zu Nikotinbeuteln beim Rauchstopp fand 
 lang: de
 publishDate: 2026-09-03
 translationKey: nicotine-pouches-quit-smoking
-author: Breezer Redakteur
+author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/quitting-achievements.png
 heroImageAlt: Snusfreie Meilensteine und gespartes Geld im Breezer Quit-Modus
 faq:

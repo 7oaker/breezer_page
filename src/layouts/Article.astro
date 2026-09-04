@@ -230,16 +230,31 @@ const fmt = (d: Date) =>
         <aside class="wow fadeInUp mt-12 rounded-lg border border-stroke p-6 dark:border-stroke-dark">
           <p class="mb-1 text-xs uppercase tracking-wide text-body">{copy.writtenBy}</p>
           <div class="flex items-start gap-4">
-            {profile.image && (
-              <img
-                src={profile.image}
-                alt={profile.displayName[lang]}
-                width="64"
-                height="64"
-                loading="lazy"
-                class="h-16 w-16 shrink-0 rounded-full object-cover"
-              />
-            )}
+            {profile.image &&
+              (profile.tinted ? (
+                /*
+                  A line drawing on a transparent background, painted through a
+                  CSS mask so the outline picks up the brand gradient instead of
+                  the palette it was drawn in. Kept as a mask rather than a
+                  recoloured export so there is one image file to maintain and
+                  it follows the theme. aria-hidden because the name sits right
+                  next to it; announcing the portrait twice helps nobody.
+                */
+                <span
+                  aria-hidden="true"
+                  class="h-16 w-16 shrink-0 rounded-full border border-stroke bg-gradient-1 dark:border-stroke-dark"
+                  style={`-webkit-mask:url(${profile.image}) center/88% no-repeat;mask:url(${profile.image}) center/88% no-repeat;`}
+                />
+              ) : (
+                <img
+                  src={profile.image}
+                  alt={profile.displayName[lang]}
+                  width="64"
+                  height="64"
+                  loading="lazy"
+                  class="h-16 w-16 shrink-0 rounded-full object-cover"
+                />
+              ))}
             <div class="min-w-0">
               <p class="text-base font-semibold text-black dark:text-white">
                 <a href={profile.url} class="hover:text-primary">{profile.displayName[lang]}</a>

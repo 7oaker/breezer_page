@@ -6,7 +6,7 @@ summary: "Über 5.164 Nächte gemessen: Nikotin vor dem Schlafengehen senkte die
 lang: de
 publishDate: 2026-09-03
 translationKey: nicotine-pouches-sleep
-author: Breezer Redakteur
+author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/take-snus.png
 heroImageAlt: Einen Nikotinbeutel mit einem Tipp in Breezer loggen, mit Uhrzeit
 faq:

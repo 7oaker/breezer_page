@@ -6,7 +6,7 @@ summary: "Die gesamte randomisierte Datenlage zu Nikotinbeuteln umfasst ein paar
 lang: de
 publishDate: 2026-09-03
 translationKey: nicotine-pouch-side-effects
-author: Breezer Redakteur
+author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/quitting-health.png
 heroImageAlt: Gesundheits-Meilensteine im Breezer Quit-Modus
 faq:
