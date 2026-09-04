@@ -1,5 +1,5 @@
 ---
-import { footerNav, route, type Lang } from '../i18n/routes';
+import { footerNav, navFor, route, type Lang } from '../i18n/routes';
 
 interface Props {
   lang: Lang;
@@ -31,7 +31,7 @@ const legal = [
             aria-label={de ? 'Snus App Guides' : 'Snus App Guides'}
             class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs text-white"
           >
-            {footerNav.map((item) => (
+            {navFor(footerNav, lang).map((item) => (
               <a href={route(item.key, lang)} class="hover:opacity-80">{item.label[lang]}</a>
             ))}
           </nav>

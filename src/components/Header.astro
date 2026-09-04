@@ -1,5 +1,5 @@
 ---
-import { route, type Lang } from '../i18n/routes';
+import { route, routes, type Lang } from '../i18n/routes';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 
 interface Props {
@@ -32,7 +32,10 @@ const prefix = full ? '' : home === '/' ? '/' : home;
 const nav = [
   { href: 'https://shop.breezer.now/', label: 'Shop', scroll: false },
   { href: `${prefix}#support`, label: 'Support', scroll: true },
-  { href: route('blog', lang), label: 'Blog', scroll: false },
+  // Dropped in a language that has no blog. Linking a Swedish reader into the
+  // English blog from the main nav is the thin-locale pattern: a page that
+  // presents as Swedish while its links lead somewhere else.
+  ...(routes.blog[lang] ? [{ href: route('blog', lang), label: 'Blog', scroll: false }] : []),
 ];
 ---
 

@@ -8,17 +8,17 @@ import { homeFaq } from '../../i18n/faq';
 import { website, organization, mobileApp, faqPage } from '../../i18n/schema';
 import { routes } from '../../i18n/routes';
 
-const lang = 'de' as const;
+const lang = 'sv' as const;
 const t = useTranslations(lang);
 ---
 
 <Base
   lang={lang}
-  title="Breezer: Soziale Snus App – Tracken, Ranken & Aufhören"
-  description="Breezer ist die soziale Snus App: Konsum tracken, Rankings, Freunde und Quit-Modus. Kostenloser Snus Tracker für iOS und Android."
-  path="/de"
+  title="Breezer: social snusapp – tracka, ranka och sluta"
+  description="Breezer är den sociala snusappen: tracka din konsumtion, tävla med vänner och sluta snusa med Quit-läget. Gratis snus tracker för iOS och Android."
+  path="/sv"
   alternates={routes.home}
-  imageAlt="Breezer: Soziale Snus App – Tracken, Ranken & Aufhören"
+  imageAlt="Breezer: social snusapp – tracka, ranka och sluta"
   schema={[website, organization, mobileApp, faqPage(homeFaq[lang])]}
 >
   <Header lang={lang} full />

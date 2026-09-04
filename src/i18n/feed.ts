@@ -25,11 +25,13 @@ const esc = (s: string) =>
 const TITLES: Record<Locale, string> = {
   en: 'Breezer Blog',
   de: 'Breezer Blog',
+  sv: 'Breezer Blogg',
 };
 
 const DESCRIPTIONS: Record<Locale, string> = {
   en: 'Evidence on nicotine pouches: what the research establishes, what it does not, and how to cut down or stop.',
   de: 'Studienlage zu Nikotinbeuteln: was belegt ist, was nicht, und wie Reduzieren oder Aufhören tatsächlich funktioniert.',
+  sv: 'Forskningsläget om snus och nikotinpåsar: vad som är belagt, vad som inte är det, och hur man trappar ner eller slutar.',
 };
 
 export async function feed(lang: Locale): Promise<Response> {

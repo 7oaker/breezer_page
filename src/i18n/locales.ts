@@ -34,6 +34,11 @@ export interface LocaleDef {
   label: string;
   /** Endonym, shown in the switcher's accessible name. */
   name: string;
+  /**
+   * Whether this locale has a blog and therefore an RSS feed. Advertising a
+   * feed that would be empty is worse than advertising none.
+   */
+  feed: boolean;
 }
 
 export const locales = {
@@ -44,6 +49,7 @@ export const locales = {
     ogLocale: 'en_US',
     label: 'EN',
     name: 'English',
+    feed: true,
   },
   de: {
     prefix: '/de',
@@ -52,6 +58,24 @@ export const locales = {
     ogLocale: 'de_AT',
     label: 'DE',
     name: 'Deutsch',
+    feed: true,
+  },
+  /**
+   * Sweden is the largest snus market in the world and the only one besides
+   * DACH where Search Console shows native-language demand: seven queries about
+   * the withdrawal timeline, every one of them sitting between position 75 and
+   * 96 because there was nothing in Swedish to rank. The locale deliberately
+   * starts small, with the homepage and the one guide that demand is for,
+   * rather than a machine-translated copy of everything.
+   */
+  sv: {
+    prefix: '/sv',
+    htmlLang: 'sv',
+    hreflang: ['sv'],
+    ogLocale: 'sv_SE',
+    label: 'SV',
+    name: 'Svenska',
+    feed: false,
   },
 } as const satisfies Record<string, LocaleDef>;
 

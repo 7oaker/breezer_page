@@ -22,9 +22,9 @@ export type Lang = Locale;
  * no impressions, so translating them would add maintenance and nothing else.
  */
 export const routes = {
-  home: { en: '/', de: '/de' },
+  home: { en: '/', de: '/de', sv: '/sv' },
   snusTracker: { en: '/snus-tracker', de: '/de/snus-tracker' },
-  quitSnus: { en: '/quit-snus', de: '/de/snus-aufhoeren' },
+  quitSnus: { en: '/quit-snus', de: '/de/snus-aufhoeren', sv: '/sv/sluta-snusa' },
   zynTracker: { en: '/zyn-tracker', de: '/de/zyn-tracker' },
   vsSnusless: { en: '/vs-snusless', de: '/de/vs-snusless' },
   vsSmokeFree: { en: '/vs-smoke-free', de: '/de/vs-smoke-free' },
@@ -59,20 +59,32 @@ export const altRoute = (key: RouteKey, locale: Locale): string | undefined => {
  * Labels are a full record rather than a partial one: a route may legitimately
  * be missing in a locale, but an active locale with untranslated navigation is
  * always a mistake, so the compiler should say so.
+ *
+ * The nav is filtered per locale at render time by `navFor`. A locale that has
+ * only some of these pages should not link to the rest in another language:
+ * that is the thin-locale pattern where a page presents as Swedish and every
+ * link off it is English, and it reads to a crawler exactly as badly as it
+ * reads to a visitor.
  */
 export const nav: { key: RouteKey; label: Record<Locale, string> }[] = [
-  { key: 'snusTracker', label: { en: 'Snus Tracker', de: 'Snus Tracker' } },
-  { key: 'quitSnus', label: { en: 'Quit Snus', de: 'Snus aufhören' } },
-  { key: 'zynTracker', label: { en: 'Zyn Tracker', de: 'Zyn Tracker' } },
-  { key: 'blog', label: { en: 'Blog', de: 'Blog' } },
+  { key: 'snusTracker', label: { sv: 'Snus Tracker', en: 'Snus Tracker', de: 'Snus Tracker' } },
+  { key: 'quitSnus', label: { sv: 'Sluta snusa', en: 'Quit Snus', de: 'Snus aufhören' } },
+  { key: 'zynTracker', label: { sv: 'Zyn Tracker', en: 'Zyn Tracker', de: 'Zyn Tracker' } },
+  { key: 'blog', label: { sv: 'Blogg', en: 'Blog', de: 'Blog' } },
 ];
 
+/** Only the entries that genuinely exist in this locale. */
+export const navFor = (
+  items: { key: RouteKey; label: Record<Locale, string> }[],
+  locale: Locale
+) => items.filter((item) => (routes[item.key] as LocalePaths)[locale]);
+
 export const footerNav: { key: RouteKey; label: Record<Locale, string> }[] = [
-  { key: 'home', label: { en: 'Snus App', de: 'Snus App' } },
-  { key: 'snusTracker', label: { en: 'Snus Tracker', de: 'Snus Tracker' } },
-  { key: 'quitSnus', label: { en: 'Quit Snus', de: 'Snus aufhören' } },
-  { key: 'zynTracker', label: { en: 'Zyn Tracker', de: 'Zyn Tracker' } },
-  { key: 'vsSnusless', label: { en: 'Breezer vs Snusless', de: 'Breezer vs Snusless' } },
-  { key: 'vsSmokeFree', label: { en: 'Breezer vs Smoke Free', de: 'Breezer vs Smoke Free' } },
-  { key: 'blog', label: { en: 'Blog', de: 'Blog' } },
+  { key: 'home', label: { sv: 'Snus App', en: 'Snus App', de: 'Snus App' } },
+  { key: 'snusTracker', label: { sv: 'Snus Tracker', en: 'Snus Tracker', de: 'Snus Tracker' } },
+  { key: 'quitSnus', label: { sv: 'Sluta snusa', en: 'Quit Snus', de: 'Snus aufhören' } },
+  { key: 'zynTracker', label: { sv: 'Zyn Tracker', en: 'Zyn Tracker', de: 'Zyn Tracker' } },
+  { key: 'vsSnusless', label: { sv: 'Breezer vs Snusless', en: 'Breezer vs Snusless', de: 'Breezer vs Snusless' } },
+  { key: 'vsSmokeFree', label: { sv: 'Breezer vs Smoke Free', en: 'Breezer vs Smoke Free', de: 'Breezer vs Smoke Free' } },
+  { key: 'blog', label: { sv: 'Blogg', en: 'Blog', de: 'Blog' } },
 ];

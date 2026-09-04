@@ -65,6 +65,7 @@ export const authors: Record<string, Author> = {
     displayName: {
       de: 'Klaus',
       en: 'Klaus',
+      sv: 'Klaus',
     },
     isPerson: true,
     url: 'https://breezer.now/imprint',
@@ -73,10 +74,12 @@ export const authors: Record<string, Author> = {
     role: {
       de: 'Gründer von Breezer',
       en: 'Founder of Breezer',
+      sv: 'Grundare av Breezer',
     },
     bio: {
       de: 'Baut Breezer allein in Niederösterreich, liest die Studien hinter diesen Artikeln selbst und benennt dünne Evidenz, statt sie aufzurunden. Recherche und Rohentwurf entstehen mit KI-Unterstützung; jede zitierte Quelle wird einzeln geöffnet und geprüft, und die Einschätzung am Ende ist seine.',
       en: 'Builds Breezer single-handed in Lower Austria, reads the studies behind these articles himself, and says where the evidence is thin instead of rounding it up. Research and first drafts are produced with AI assistance; every cited source is opened and checked individually, and the judgement at the end is his.',
+      sv: 'Bygger Breezer på egen hand i Niederösterreich, läser själv studierna bakom artiklarna och skriver ut när underlaget är tunt i stället för att runda uppåt. Research och utkast tas fram med AI-stöd; varje källa som citeras öppnas och kontrolleras var för sig, och bedömningen på slutet är hans.',
     },
     // sameAs is deliberately empty until the real profile URLs are known. A
     // guessed URL here is a machine-readable claim that this person is that
@@ -86,6 +89,7 @@ export const authors: Record<string, Author> = {
     displayName: {
       de: 'Breezer Redakteur',
       en: 'Breezer Editorial',
+      sv: 'Breezer Redaktion',
     },
     isPerson: false,
     // The imprint carries the legally required identity, so it is the honest
@@ -95,10 +99,12 @@ export const authors: Record<string, Author> = {
     role: {
       de: 'Redaktion von Breezer',
       en: 'Editorial team at Breezer',
+      sv: 'Breezers redaktion',
     },
     bio: {
       de: 'Hinter Breezer steht eine Person in Niederösterreich, die die App baut, die Studien für diese Artikel selbst liest und dünne Evidenz benennt, statt sie aufzurunden.',
       en: 'Breezer is built by one person in Lower Austria, who also reads the studies behind these articles and says where the evidence is thin instead of rounding it up.',
+      sv: 'Breezer byggs av en person i Niederösterreich, som också läser studierna bakom artiklarna och skriver ut när underlaget är tunt i stället för att runda uppåt.',
     },
   },
 };

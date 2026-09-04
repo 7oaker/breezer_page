@@ -112,15 +112,17 @@ const otherOgLocales = (Object.keys(locales) as Locale[])
   robots.txt. The current language's feed comes first so a client that takes
   only the first one takes the right one.
 */}
-<link
-  rel="alternate"
-  type="application/rss+xml"
-  title={`Breezer Blog (${locales[lang].label})`}
-  href={abs(`${locales[lang].prefix}/feed.xml`)}
-/>
+{locales[lang].feed && (
+  <link
+    rel="alternate"
+    type="application/rss+xml"
+    title={`Breezer Blog (${locales[lang].label})`}
+    href={abs(`${locales[lang].prefix}/feed.xml`)}
+  />
+)}
 {
   localeCodes
-    .filter((code) => code !== lang)
+    .filter((code) => code !== lang && locales[code].feed)
     .map((code) => (
       <link
         rel="alternate"

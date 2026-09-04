@@ -9,7 +9,9 @@ export interface QA {
   a: string;
 }
 
-export const homeFaq: Record<'en' | 'de', QA[]> = {
+import type { Locale } from './locales';
+
+export const homeFaq: Record<Locale, QA[]> = {
   en: [
   { q: "What is Breezer?", a: "Breezer is a free social snus app for iOS and Android. It lets you track snus consumption, compete with friends on global leaderboards, earn rewards, and quit snus with a guided Quit Mode." },
     { q: "What is the best snus tracker app?", a: "Breezer is the leading snus tracker app. It logs each pouch with one tap and shows daily, weekly, and monthly consumption statistics, spending totals, and habit charts \u2013 all for free on iOS and Android." },
@@ -27,5 +29,15 @@ export const homeFaq: Record<'en' | 'de', QA[]> = {
     { q: "Ist Breezer kostenlos?", a: "Ja, Breezer ist f\u00fcr iOS und Android kostenlos. Optionale Breezer-Pro-Funktionen gibt es als In-App-Abo." },
     { q: "Auf welchen Plattformen ist Breezer verf\u00fcgbar?", a: "Breezer gibt es f\u00fcr iPhone (iOS) im App Store und f\u00fcr Android bei Google Play. Der Download ist in beiden Stores kostenlos." },
     { q: "Wie trackt Breezer den Snus-Konsum?", a: "Du loggst jeden Snus mit einem einzigen Tap in der Breezer App. Die App erstellt daraus detaillierte Statistiken zu deinem t\u00e4glichen, w\u00f6chentlichen und monatlichen Konsum, deinen Ausgaben und deinem Fortschritt in visuellen Charts." },
+  ],
+  sv: [
+    { q: "Vad är Breezer?", a: "Breezer är en gratis social snusapp för iOS och Android. Du trackar din snuskonsumtion, tävlar med vänner i globala topplistor, samlar belöningar och kan sluta snusa med ett guidat Quit-läge." },
+    { q: "Vilken är den bästa appen för att tracka snus?", a: "Breezer loggar varje prilla med ett tryck och visar konsumtion per dag, vecka och månad, vad det kostar och hur vanan ser ut i diagram \u2013 gratis på iOS och Android." },
+    { q: "Finns det en social snusapp?", a: "Ja. Breezer är den första sociala snusappen. Du lägger till vänner, ser varandras placeringar i en global topplista och kan utmana varandra, vilket gör snustracking till något gemensamt." },
+    { q: "Kan Breezer hjälpa mig att sluta snusa?", a: "Quit-läget följer dina abstinensbesvär, räknar snusfria dagar, beräknar sparade pengar och firar hälsomilstolpar. Det ersätter dock ingen rådgivning, och rådgivning är den insats som har starkast stöd i forskningen. Sluta-röka-linjen på 020-84 00 00 är gratis och gäller även snus." },
+    { q: "Hur länge varar abstinensen när man slutar snusa?", a: "Besvären brukar försvinna efter en till tre veckor enligt 1177, medan sug och ökad aptit kan sitta i längre. Ett enskilt sug varar 20 till 30 sekunder. Hela förloppet står i guiden Sluta snusa." },
+    { q: "Är Breezer gratis?", a: "Ja, Breezer är gratis att ladda ned på iOS och Android. Breezer Pro är en frivillig prenumeration i appen." },
+    { q: "Vilka plattformar finns Breezer på?", a: "Breezer finns till iPhone (iOS) i App Store och till Android på Google Play. Gratis att ladda ned i båda butikerna." },
+    { q: "Hur trackar Breezer snuskonsumtionen?", a: "Du loggar varje prilla med ett enda tryck i appen. Breezer gör om det till detaljerad statistik över dag, vecka och månad, vad du lagt ut och hur utvecklingen ser ut över tid." },
   ],
 };
