@@ -4,7 +4,7 @@ heading: "Do Nicotine Pouches Actually Calm You Down?"
 description: "Quitting is associated with less anxiety, not more, across 102 studies. Why the pouch still feels like relief, and what that feeling actually is."
 summary: "The largest review of the question covers 102 studies and over 169,500 people. Every mental-health measure moved in favour of quitting. The relief you feel is real, and it is not what you think."
 lang: en
-publishDate: 2026-09-04
+publishDate: 2026-09-03
 translationKey: nicotine-pouches-stress
 author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/quitting-home.png

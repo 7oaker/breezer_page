@@ -4,7 +4,7 @@ heading: "Helfen Nikotinbeutel beim Rauchstopp?"
 description: "Cochrane hat die Frage im Oktober 2025 geprüft und vier Studien mit 284 Personen gefunden. Was das neben der Datenlage zu E-Zigarette und Nikotinersatz bedeutet."
 summary: "Das erste systematische Review zu Nikotinbeuteln beim Rauchstopp fand vier kleine Studien mit zusammen 284 Teilnehmenden. Gegen 29.044 bei der E-Zigarette heißt die ehrliche Antwort: niemand weiß es."
 lang: de
-publishDate: 2026-09-03
+publishDate: 2026-08-22
 translationKey: nicotine-pouches-quit-smoking
 author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/quitting-achievements.png

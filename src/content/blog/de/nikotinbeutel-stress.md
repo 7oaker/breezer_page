@@ -4,7 +4,7 @@ heading: "Beruhigen Nikotinbeutel wirklich?"
 description: "Aufhören geht über 102 Studien hinweg mit weniger Angst einher, nicht mit mehr. Warum sich der Beutel trotzdem wie Entlastung anfühlt und was das wirklich ist."
 summary: "Das größte Review dazu umfasst 102 Studien und über 169.500 Menschen. Jeder Wert zur psychischen Gesundheit sprach fürs Aufhören. Die Entlastung ist echt, nur nicht die, für die man sie hält."
 lang: de
-publishDate: 2026-09-04
+publishDate: 2026-09-03
 translationKey: nicotine-pouches-stress
 author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/quitting-home.png

@@ -4,7 +4,7 @@ heading: "Cutting Down on Nicotine Pouches, Day by Day"
 description: "A 21-day step-down schedule from a trial of 916 smokers, what Cochrane found on cutting down versus stopping, and why an abandoned plan is worse than none."
 summary: "Cutting down and stopping outright produce the same quit rates. What changed the outcome in trials was a fixed schedule, and the people who drifted off it did worse than those who never started one."
 lang: en
-publishDate: 2026-09-03
+publishDate: 2026-08-19
 translationKey: taper-nicotine-pouches
 author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/snus-stats.png

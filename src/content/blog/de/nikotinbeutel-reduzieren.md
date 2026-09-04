@@ -4,7 +4,7 @@ heading: "Snus reduzieren, Tag für Tag"
 description: "Ein Reduktionsplan über 21 Tage aus einer Studie mit 916 Teilnehmenden, was Cochrane zu Reduzieren gegen Schlussstrich fand, und woran ein Plan scheitert."
 summary: "Reduzieren und Schlussstrich führen zur selben Erfolgsquote. Was in den Studien den Unterschied machte, war ein fixer Plan. Und wer vom Plan abwich, stand schlechter da als ohne Plan."
 lang: de
-publishDate: 2026-09-03
+publishDate: 2026-08-19
 translationKey: taper-nicotine-pouches
 author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/snus-stats.png

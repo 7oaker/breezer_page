@@ -4,7 +4,7 @@ heading: "Ruinieren Nikotinbeutel den Schlaf?"
 description: "Nikotin in den vier Stunden vor dem Zubettgehen kostete Menschen mit Schlafproblemen 42 Minuten Schlaf. Koffein kostete in derselben Studie nichts Messbares."
 summary: "Über 5.164 Nächte gemessen: Nikotin vor dem Schlafengehen senkte die Schlafeffizienz und verlängerte die Wachzeit. Koffein zeigte keinen Effekt. Was das für den Beutel um 22 Uhr heißt."
 lang: de
-publishDate: 2026-09-03
+publishDate: 2026-08-24
 translationKey: nicotine-pouches-sleep
 author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/take-snus.png

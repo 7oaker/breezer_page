@@ -4,7 +4,7 @@ heading: "What Nicotine Pouches Actually Do to You"
 description: "Every side effect sorted by what shows it: randomised trials, weak observational research, or nothing but self-report. Including the one with hard numbers."
 summary: "The whole randomised evidence base for nicotine pouches is a few hundred people over a few weeks. Here is every reported effect, sorted by whether anything actually establishes it."
 lang: en
-publishDate: 2026-09-03
+publishDate: 2026-08-28
 translationKey: nicotine-pouch-side-effects
 author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/quitting-health.png

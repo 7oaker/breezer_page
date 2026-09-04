@@ -4,7 +4,7 @@ heading: "Do Nicotine Pouches Help You Quit Smoking?"
 description: "Cochrane reviewed the question in October 2025 and found four trials with 284 people. What that means next to the evidence behind e-cigarettes and NRT."
 summary: "The first systematic review of pouches for quitting smoking found four small trials and 284 participants. Set against 29,044 for e-cigarettes, the honest answer is that nobody knows yet."
 lang: en
-publishDate: 2026-09-03
+publishDate: 2026-08-22
 translationKey: nicotine-pouches-quit-smoking
 author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/quitting-achievements.png

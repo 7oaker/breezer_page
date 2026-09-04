@@ -4,7 +4,7 @@ heading: "Do Nicotine Pouches Wreck Your Sleep?"
 description: "Nicotine within four hours of bed cost 42 minutes of sleep in people with insomnia symptoms. Caffeine, in the same study, cost nothing measurable."
 summary: "Measured across 5,164 nights, nicotine before bed cut sleep efficiency and added time awake. Caffeine in the same study showed no effect at all. What that means for the pouch you take at 10pm."
 lang: en
-publishDate: 2026-09-03
+publishDate: 2026-08-24
 translationKey: nicotine-pouches-sleep
 author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/take-snus.png

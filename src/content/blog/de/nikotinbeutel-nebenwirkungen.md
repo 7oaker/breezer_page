@@ -4,7 +4,7 @@ heading: "Was Nikotinbeutel wirklich anrichten"
 description: "Jede Nebenwirkung sortiert danach, was sie belegt: randomisierte Studien, schwache Beobachtungsdaten oder nur Selbstauskunft. Samt der einen mit harten Zahlen."
 summary: "Die gesamte randomisierte Datenlage zu Nikotinbeuteln umfasst ein paar hundert Menschen über wenige Wochen. Hier steht jede berichtete Wirkung, sortiert danach, ob sie überhaupt belegt ist."
 lang: de
-publishDate: 2026-09-03
+publishDate: 2026-08-28
 translationKey: nicotine-pouch-side-effects
 author: Klaus Siebeneicher
 heroImage: ../../../assets/images/screens/new/quitting-health.png
