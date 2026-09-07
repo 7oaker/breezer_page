@@ -1,0 +1,437 @@
+---
+/**
+ * The app's Weekly Stats screen, rebuilt as real DOM so the period selector at
+ * the bottom actually works.
+ *
+ * This replaced a flat screenshot. The screen's whole claim is that you can
+ * slice your consumption by day, week, month and year, and a still can only
+ * ever show one of those — so the one control worth having is the one the
+ * picture could not carry.
+ *
+ * Everything is taken from `react_Breezer/app/(tabs)/stats.jsx` rather than
+ * eyeballed: the bar gradients and their over-limit variant, the 4-section y
+ * scale, the dotted limit line on Week and Month only, the donut's colours and
+ * its oversized hole, the `peakInsights` quips, and the segmented control's
+ * track. Geometry follows AppScreen's contract — see that file; landmarks here
+ * were measured off `screens/new/snus-stats.png` and should be changed by
+ * re-measuring, not by nudging.
+ *
+ * Rendered complete at its seeded Week values, so with JS off this is a
+ * faithful still and nothing shifts when the behaviour attaches. That behaviour
+ * lives in `src/scripts/stats-phone.js`, reached through `data-stats-phone`.
+ */
+import AppScreen from './AppScreen.astro';
+import type { UI } from '../../i18n/ui';
+import { fill } from '../../i18n/ui';
+import type { Lang } from '../../i18n/routes';
+
+interface Props {
+  t: UI;
+  lang: Lang;
+  class?: string;
+}
+const { t, lang, class: className = '' } = Astro.props;
+
+/**
+ * The app's own daily limit for this account. 7 is what makes the seeded week
+ * read the way the screenshot does: MO 8 breaches it and turns red, TU 7 sits
+ * exactly on the dotted line.
+ */
+const DAILY_LIMIT = 7;
+
+/**
+ * Dummy consumption per period. Week matches the screenshot exactly (8+7+2 = 17,
+ * the total it prints). The others are invented but kept in the same spirit: a
+ * couple of heavy buckets, a long tail of light ones.
+ *
+ * `stats-phone.js` holds an identical copy — it has to, because it recomputes
+ * everything on a period switch — and the two are checked against each other by
+ * the seeded Week render matching what the script produces for Week.
+ */
+const SERIES = {
+  // Peaks at 18:00 so the Day caption ("Evening unwinding") is the one the app
+  // would actually pick, and sums to 6 against the limit of 7 — a day inside
+  // the limit, which is the state worth showing on a page selling the app.
+  day: [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 3, 0, 0, 0, 0, 0],
+  week: [8, 7, 2, 0, 0, 0, 0],
+  month: [
+    5, 6, 4, 7, 3, 2, 5, 8, 6, 4, 3, 5, 7, 2, 4, 6, 5, 3, 4, 7, 6, 2, 3, 5, 4, 6, 3, 2, 4, 5, 3,
+  ],
+  // Three months clear the yearly threshold (dailyLimit * 30 = 210) so the
+  // over-limit red the app paints is actually visible here — the old seed
+  // topped out at 195 and every bar came out blue. The peak is March, which is
+  // the bucket the seeded "Winter peaks" quip belongs to.
+  year: [180, 165, 245, 150, 140, 175, 160, 155, 230, 145, 185, 215],
+};
+
+/**
+ * The app labels the week MO..SU in hard-coded ASCII rather than localising it,
+ * and prints Year as bare month numbers. Both reproduced.
+ */
+const WEEK_LABELS = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
+
+/** Bar geometry per period, from the app's `barChartUtils.js` at 0.6641. */
+const BAR = {
+  day: { width: 7, gap: 1 },
+  week: { width: 17, gap: 10 },
+  month: { width: 5, gap: 1 },
+  year: { width: 12, gap: 3 },
+};
+
+/** The plot area, measured off the screenshot: app `height={130}` at 0.6641. */
+const PLOT_HEIGHT = 86;
+
+const now = new Date();
+const weekIndex = (now.getDay() + 6) % 7; // Monday-first, as the app's week is
+
+/**
+ * The seeded week is shown whole, not clipped at today. Masking the buckets
+ * after the current weekday was the first instinct — a Monday should not claim
+ * a full week of pouches — but it leaves the chart with a single bar every
+ * Monday, which reads as broken rather than as honest. The seed's own shape
+ * (three days with data, four empty) already reads as mid-week whenever anyone
+ * looks at it.
+ */
+const week = SERIES.week;
+
+const total = week.reduce((sum, v) => sum + v, 0);
+const limit = DAILY_LIMIT * 7;
+const percentage = (total / limit) * 100;
+
+/** The app: `max(...values, dailyLimit)` over four sections, ticks truncated. */
+const maxValue = Math.max(...week, DAILY_LIMIT);
+const ticks = [0, 1, 2, 3, 4].map((i) => Math.trunc(maxValue - (maxValue / 4) * i));
+
+const RADIUS = 15.9155; // circumference 100, so dasharray reads as a percentage
+const donutPct = Math.min(100, percentage);
+
+/**
+ * The range the header prints. Derived from today rather than frozen at the
+ * screenshot's "15 Jun - 21 Jun", so the mockup never looks like a stale
+ * snapshot of some particular week in 2025.
+ */
+const monthShort = new Intl.DateTimeFormat(lang, { month: 'short' });
+const weekStart = new Date(now);
+weekStart.setDate(now.getDate() - weekIndex);
+const weekEnd = new Date(weekStart);
+weekEnd.setDate(weekStart.getDate() + 6);
+const rangeText = `${weekStart.getDate()} ${monthShort.format(weekStart)} - ${weekEnd.getDate()} ${monthShort.format(weekEnd)}`;
+
+const periods = [
+  { id: 'day', label: t.app_period_day },
+  { id: 'week', label: t.app_period_week },
+  { id: 'month', label: t.app_period_month },
+  { id: 'year', label: t.app_period_year },
+];
+
+/** Handed to the script so the seed lives in exactly one place. */
+const CONFIG = { dailyLimit: DAILY_LIMIT, series: SERIES, bar: BAR, plotHeight: PLOT_HEIGHT };
+
+/**
+ * Every string a period switch can produce, resolved here rather than in the
+ * script. Interpolation and the locale table stay on the server side, and
+ * `stats-phone.js` never carries a second copy of anything translated.
+ */
+const periodWord = {
+  day: t.app_stats_period_daily,
+  week: t.app_stats_period_weekly,
+  month: t.app_stats_period_monthly,
+  year: t.app_stats_period_yearly,
+};
+const STRINGS = {
+  title_day: t.app_stats_title_day,
+  title_week: t.app_stats_title_week,
+  title_month: t.app_stats_title_month,
+  title_year: t.app_stats_title_year,
+  caption_day: t.app_stats_caption_day,
+  caption_week: t.app_stats_caption_week,
+  caption_month: t.app_stats_caption_month,
+  caption_year: t.app_stats_caption_year,
+  within_limit: t.app_stats_within_limit,
+  limit_exceeded: t.app_stats_limit_exceeded,
+  ...Object.fromEntries(
+    (['day', 'week', 'month', 'year'] as const).flatMap((id) => [
+      [`total_${id}`, fill(t.app_stats_total_consumption, { period: periodWord[id] })],
+      [`brand_${id}`, fill(t.app_stats_share_by_brand, { period: periodWord[id] })],
+      [`strength_${id}`, fill(t.app_stats_share_by_strength, { period: periodWord[id] })],
+    ]),
+  ),
+};
+---
+
+<AppScreen
+  class={className}
+  data-stats-phone
+  data-config={JSON.stringify(CONFIG)}
+  data-strings={JSON.stringify(STRINGS)}
+>
+  <p class="sr-only">{t.app_stats_demo_caption}</p>
+
+  {/* Status bar */}
+  <div
+    class="flex h-[26px] shrink-0 items-start justify-between px-[14px] pt-[13px] text-[10px] font-semibold leading-[11px] text-white"
+    aria-hidden="true"
+  >
+    <span>06:54</span>
+    <span class="flex items-center gap-[3px]">
+      <svg width="14" height="9" viewBox="0 0 14 9" fill="currentColor"
+        ><rect x="0" y="6" width="2.4" height="3" rx=".6"></rect><rect
+          x="3.6"
+          y="4"
+          width="2.4"
+          height="5"
+          rx=".6"></rect><rect x="7.2" y="2" width="2.4" height="7" rx=".6"></rect><rect
+          x="10.8"
+          y="0"
+          width="2.4"
+          height="9"
+          rx=".6"></rect></svg
+      >
+      <svg width="12" height="9" viewBox="0 0 16 12" fill="none" stroke="currentColor"
+        ><path d="M1 4a10 10 0 0 1 14 0" stroke-width="1.6" stroke-linecap="round"></path><path
+          d="M4 7a6 6 0 0 1 8 0"
+          stroke-width="1.6"
+          stroke-linecap="round"></path><circle cx="8" cy="10.2" r="1.1" fill="currentColor"
+          stroke="none"></circle></svg
+      >
+      <span class="rounded-[3px] border border-white/50 px-[3px] text-[8px] font-bold leading-[10px]"
+        >100</span
+      >
+    </span>
+  </div>
+
+  {/* Header. Title follows the period, as in the app. */}
+  <div class="mt-[22px] flex h-[20px] shrink-0 items-center justify-between px-[8px]">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#CDCDE0" stroke-width="2" aria-hidden="true"
+      ><path d="M20 12H4M4 12l6-6M4 12l6 6" stroke-linecap="round" stroke-linejoin="round"
+      ></path></svg
+    >
+    <span class="text-[16px] font-semibold leading-none text-white" data-stats-title>
+      {t.app_stats_title_week}
+    </span>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="#CDCDE0" aria-hidden="true"
+      ><rect x="3" y="10" width="4.5" height="10" rx="1.6"></rect><rect
+        x="9.75"
+        y="4"
+        width="4.5"
+        height="16"
+        rx="1.6"></rect><rect x="16.5" y="7" width="4.5" height="13" rx="1.6"></rect></svg
+    >
+  </div>
+
+  {/* Share pill. Horizontal gradient, unlike the cards' diagonal one. */}
+  <div
+    class="mx-[8px] mt-[14px] flex h-[15px] shrink-0 items-center justify-center gap-[5px] rounded-[11px] bg-gradient-to-r from-[#1E1E2D] to-[#232533]"
+  >
+    <span class="text-[9px] font-medium leading-none text-[#d1d5db]">{t.app_share_with_friend}</span>
+    <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="2" aria-hidden="true"
+      ><path d="M12 3v12M12 3 8 7M12 3l4 4" stroke-linecap="round" stroke-linejoin="round"
+      ></path><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" stroke-linecap="round"></path></svg
+    >
+  </div>
+
+  {/* Summary card: range, total, donut. */}
+  <div
+    class="mx-[8px] mt-[20px] flex h-[110px] shrink-0 items-center justify-between rounded-[11px] bg-gradient-to-br from-[#1E1E2D] to-[#232533] px-[10px]"
+    aria-live="polite"
+  >
+    <div class="min-w-0 flex-1">
+      <div class="flex items-center">
+        {/* Decorative: wiring these means a dummy dataset per period per offset,
+            and the period selector already makes the point. */}
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2.5" aria-hidden="true"
+          ><path d="m15 5-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg
+        >
+        <span class="mx-[5px] text-[10px] font-semibold leading-none text-white" data-stats-range
+          >{rangeText}</span
+        >
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2.5" aria-hidden="true"
+          ><path d="m9 5 7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg
+        >
+      </div>
+      <p class="mt-[4px] text-[9px] leading-[11px] text-[#9ca3af]" data-stats-total-label>
+        {fill(t.app_stats_total_consumption, { period: t.app_stats_period_weekly })}
+      </p>
+      <p class="mt-[2px] text-[26px] font-extrabold leading-[30px] text-white" data-stats-total>{total}</p>
+    </div>
+
+    {/* Donut. Outer 93px, hole 37px — the app passes donutInnerRadius but the
+        component ignores it, so the real hole is radius/2.5 and the caption
+        spills over the ring. Reproduced, hole included. */}
+    <div class="relative h-[93px] w-[93px] shrink-0">
+      <svg viewBox="0 0 46 46" class="h-full w-full -rotate-90">
+        <circle cx="23" cy="23" r={RADIUS} fill="none" stroke="#4b5563" stroke-width="13.7"></circle>
+        <circle
+          cx="23"
+          cy="23"
+          r={RADIUS}
+          fill="none"
+          stroke="#66cfff"
+          stroke-width="13.7"
+          stroke-dasharray={`${donutPct} 100`}
+          class="stats-phone__arc"
+          data-stats-arc></circle>
+      </svg>
+      <div
+        class="absolute inset-0 flex flex-col items-center justify-center"
+      >
+        <span class="text-[13px] font-bold leading-none text-white" data-stats-percent
+          >{Math.round(percentage)}%</span
+        >
+        <span class="mt-[2px] text-[8px] leading-none text-[#9ca3af]" data-stats-limit-label
+          >{percentage > 100 ? t.app_stats_limit_exceeded : t.app_stats_within_limit}</span
+        >
+      </div>
+    </div>
+  </div>
+
+  {/* Chart card */}
+  <div
+    class="mx-[8px] mt-[17px] h-[190px] shrink-0 rounded-[11px] bg-gradient-to-br from-[#1E1E2D] to-[#232533] p-[10px]"
+  >
+    <div class="flex" style={`height: ${PLOT_HEIGHT}px`}>
+      {/* Y axis: four sections, labels truncated to integers as the app does. */}
+      <div
+        class="flex w-[14px] shrink-0 flex-col justify-between text-right text-[9px] leading-[9px] text-white"
+        data-stats-ticks
+      >
+        {ticks.map((tick) => <span>{tick}</span>)}
+      </div>
+
+      <div class="relative ml-[4px] flex-1">
+        {/* Dotted limit line. Week and Month only — the app hides it for Day and
+            Year, where a per-day limit means nothing against the buckets. */}
+        <span
+          class="pointer-events-none absolute left-0 right-0 border-t border-dotted border-[#1FD9FF]"
+          style={`top: ${(1 - DAILY_LIMIT / maxValue) * PLOT_HEIGHT}px`}
+          data-stats-limit-line
+          aria-hidden="true"></span>
+
+        <div
+          class="absolute bottom-0 left-0 flex items-end"
+          style={`gap: ${BAR.week.gap}px`}
+          data-stats-bars
+        >
+          {
+            week.map((value) => (
+              <span
+                class="stats-phone__bar block rounded-[4px]"
+                style={`width: ${BAR.week.width}px; height: ${Math.max(2, (value / maxValue) * PLOT_HEIGHT)}px; background: ${value > DAILY_LIMIT ? 'linear-gradient(135deg,#ff3b29,#c71606)' : 'linear-gradient(135deg,#1FD9FF,#0D6BCD)'}`}
+              />
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    {/* X labels, aligned to the same track as the bars. */}
+    <div
+      class="ml-[18px] mt-[4px] flex text-[9px] leading-[9px] text-white"
+      style={`gap: ${BAR.week.gap}px`}
+      data-stats-labels
+    >
+      {
+        WEEK_LABELS.map((label) => (
+          <span class="text-center" style={`width: ${BAR.week.width}px`}>
+            {label}
+          </span>
+        ))
+      }
+    </div>
+
+    <p class="mt-[17px] px-[2px] text-[9px] italic leading-[11px] text-[#9ca3af]" data-stats-caption>
+      {t.app_stats_caption_week}
+    </p>
+
+    {/* The period selector: the one control on this screen. Track colour is
+        sampled from the screenshot rather than the `#020917` the app passes,
+        because iOS composites its own translucency over that. */}
+    <div class="mt-[13px] flex h-[27px] items-center rounded-[8px] bg-[#1D2330] p-[2px]" role="group">
+      {
+        periods.map((period) => (
+          <button
+            type="button"
+            class="stats-phone__period h-[23px] flex-1 rounded-[11px] text-[9px] font-medium leading-none transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1FD9FF] focus-visible:ring-offset-1 focus-visible:ring-offset-[#1D2330]"
+            data-stats-period={period.id}
+            aria-pressed={period.id === 'week' ? 'true' : 'false'}
+          >
+            {period.label}
+          </button>
+        ))
+      }
+    </div>
+  </div>
+
+  {/* Distribution. Clipped by the frame's bottom edge, which is how much of it
+      the phone shows too. */}
+  <div
+    class="mx-[8px] mt-[18px] shrink-0 rounded-[11px] bg-gradient-to-br from-[#1E1E2D] to-[#232533] p-[10px]"
+  >
+    <p class="text-[9px] font-semibold leading-none text-white">{t.app_stats_distribution}</p>
+    <div class="mt-[9px] flex">
+      <div class="w-1/2 border-r border-[#374151]/60 pr-[6px]">
+        <p class="text-[8px] leading-[10px] text-[#6b7280]" data-stats-brand-label>
+          {fill(t.app_stats_share_by_brand, { period: t.app_stats_period_weekly })}
+        </p>
+        <div class="mt-[6px] flex justify-center">
+          <svg viewBox="0 0 46 46" class="h-[45px] w-[45px] -rotate-90">
+            <circle cx="23" cy="23" r={RADIUS} fill="none" stroke="#0D6BCD" stroke-width="13.7"
+            ></circle>
+            <circle
+              cx="23"
+              cy="23"
+              r={RADIUS}
+              fill="none"
+              stroke="#1FD9FF"
+              stroke-width="13.7"
+              stroke-dasharray="88 100"></circle>
+          </svg>
+        </div>
+      </div>
+      <div class="w-1/2 pl-[6px]">
+        <p class="text-[8px] leading-[10px] text-[#6b7280]" data-stats-strength-label>
+          {fill(t.app_stats_share_by_strength, { period: t.app_stats_period_weekly })}
+        </p>
+        <div class="mt-[6px] flex justify-center">
+          <svg viewBox="0 0 46 46" class="h-[45px] w-[45px] -rotate-90">
+            <circle cx="23" cy="23" r={RADIUS} fill="none" stroke="#22c55e" stroke-width="13.7"
+            ></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</AppScreen>
+
+<style>
+  .stats-phone__period {
+    color: #ffffff;
+  }
+  .stats-phone__period[aria-pressed='true'] {
+    background-color: #1fd9ff;
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* The app remounts its chart on every period switch, so the bars re-grow
+       from zero — that part is the app's behaviour, not decoration, which is why
+       the transition is on height rather than a keyframe.
+       The timing is not the app's: it uses 500ms linear, which lands hard. An
+       ease-out over 900ms settles instead of stopping, and at this size the
+       chart is being watched rather than glanced at. */
+    /* `:global` because the bars are rebuilt by `stats-phone.js` on every
+       switch, and elements created in JS never get Astro's scoping attribute —
+       a plain scoped rule matches the server-rendered bars and silently stops
+       applying the moment the first switch replaces them. */
+    :global(.stats-phone__bar) {
+      transition: height 900ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    /* The donut is the other deliberate embellishment: the app swaps it
+       instantly, but against bars that take most of a second an instant arc
+       reads as a glitch. Same curve so the two land together. */
+    .stats-phone__arc {
+      transition: stroke-dasharray 900ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+  }
+</style>

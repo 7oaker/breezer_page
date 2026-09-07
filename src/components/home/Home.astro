@@ -3,12 +3,15 @@ import { Image } from 'astro:assets';
 import LanguageSwitcher from '../LanguageSwitcher.astro';
 import Icon from '../Icon.astro';
 import PhoneFrame from '../PhoneFrame.astro';
+import PressPhone from './PressPhone.astro';
+import StatsPhone from './StatsPhone.astro';
+import QuitPhone from './QuitPhone.astro';
 import type { UI } from '../../i18n/ui';
+import type { Lang } from '../../i18n/routes';
 import img_author_04 from '../../assets/images/testimonials/author-04.png';
 import img_author_1 from '../../assets/images/testimonials/author-1.png';
 import img_author_2 from '../../assets/images/testimonials/author-2.png';
 import img_author_3 from '../../assets/images/testimonials/author-3.png';
-import img_hero_light from '../../assets/images/hero/hero-light.png';
 import img_mobile_frame from '../../assets/images/screens/mobile-frame.png';
 import img_notification from '../../assets/images/screens/new/notification.png';
 import img_quitting_achievements from '../../assets/images/screens/new/quitting-achievements.png';
@@ -30,10 +33,9 @@ import img_widget_track_2 from '../../assets/images/screens/widget/widget_track_
 
 interface Props {
   t: UI;
-  lang: 'en' | 'de';
+  lang: Lang;
 }
 const { t, lang } = Astro.props;
-const home = lang === 'de' ? '/de/' : '/';
 ---
 <main>
       
@@ -156,12 +158,14 @@ const home = lang === 'de' ? '/de/' : '/';
                 class="wow fadeInUp relative z-10 mx-auto w-full max-w-[530px] pt-8 lg:mr-0"
                 data-wow-delay=".3s"
               >
-                <Image src={img_hero_light} width={376} height={546}
-                  alt={t.breezer_app_press_snus}
-                  class="float-slow mx-auto max-w-full"
-                  fetchpriority="high"
-                  loading="eager"
-                  decoding="sync" />
+                {/*
+                  Was a flat screenshot of an older build. It is the app's own
+                  tracking screen as real markup now, so the PRESS button in the
+                  hero is the product's one-tap claim rather than a picture of
+                  it. `float-slow` still drifts the device; PressPhone pauses
+                  that while someone is aiming at the button.
+                */}
+                <PressPhone t={t} lang={lang} class="float-slow" />
                 <div
                   class="max-auto absolute top-0 left-0 right-0 pointer-events-none -z-10 aspect-square w-full rounded-full bg-gradient-1"
                 >
@@ -455,15 +459,17 @@ const home = lang === 'de' ? '/de/' : '/';
             <div
               class="-mx-4 flex flex-wrap items-center justify-between"
             >
-              <div class="order-last w-full px-4 lg:order-first lg:w-1/2 hidden md:block">
+              <div class="order-last w-full px-4 lg:order-first lg:w-1/2">
                 <div
                   class="wow fadeInLeft relative z-10 mx-auto mb-14 w-full max-w-[470px] pb-6 lg:mx-0 lg:mb-0"
                   data-wow-delay=".2s"
                 >
-                  <PhoneFrame
-                    src={img_snus_stats}
-                    alt={t.breezer_weekly_snus_consumption_statistics_and}
-                  />
+                  {/*
+                    Was a screenshot of one week. The screen's claim is that you
+                    can slice consumption by day, week, month and year, which a
+                    still can only ever show one of — so the selector is live.
+                  */}
+                  <StatsPhone t={t} lang={lang} />
 
                   <div class="absolute top-0 right-5 pointer-events-none -z-10">
                     <svg
@@ -705,17 +711,17 @@ const home = lang === 'de' ? '/de/' : '/';
                 </div>
               </div>
 
-              <div
-                class="order-last w-full px-4 lg:order-last lg:w-1/2 hidden md:block"
-              >
+              <div class="order-last w-full px-4 lg:order-last lg:w-1/2">
                 <div
                   class="wow fadeInRight relative z-10 mx-auto mb-14 w-full max-w-[470px] pb-6 lg:mr-0 lg:mb-0"
                   data-wow-delay=".3s"
                 >
-                  <PhoneFrame
-                    src={img_quitting_home}
-                    alt={t.breezer_quit_mode_days_snusfree_savings}
-                  />
+                  {/*
+                    Was a screenshot, which froze the one thing that sells quit
+                    mode: a number moving in your favour every second. This one
+                    runs.
+                  */}
+                  <QuitPhone t={t} />
 
                   <div class="absolute top-0 right-5 pointer-events-none -z-10">
                     <svg

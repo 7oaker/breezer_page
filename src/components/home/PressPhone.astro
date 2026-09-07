@@ -1,0 +1,692 @@
+---
+/**
+ * The hero device: the app's tracking screen, rebuilt as real DOM so the PRESS
+ * button actually presses.
+ *
+ * This replaced a flat PNG of an older build. Two reasons it is markup now.
+ * The screenshot had drifted from the shipped app, and a picture of a button
+ * cannot demonstrate the one thing the product claims — that logging a pouch is
+ * a single tap. Everything here is lifted from `react_Breezer` rather than
+ * eyeballed: colours from its `tailwind.config.js`, strings from its
+ * `locales/*.json`, the press arithmetic from `TrackingView.jsx`, the push copy
+ * from `functions/notify-on-snus`. Where a number is seeded (3632 overall,
+ * 726.40 cost) it comes from `screens/new/take-snus.png`, so the implied unit
+ * price of 0.20 is what a press has to add for the two to stay consistent.
+ *
+ * PROPORTIONS. The screen is laid out at 261x566 — the frame PNG's window at
+ * full size — and take-snus.png is 1179x2556 of that same screen, so one maps
+ * onto the other at 261/1179. Every size and offset below was measured off that
+ * screenshot rather than judged by eye, which is why they are odd pixel values
+ * and why they should be changed by re-measuring rather than by nudging. The
+ * app's own type scale converts the same way: its points are 393 wide, so an
+ * app `text-sm` (14) is 14 * 261/393 = 9px here.
+ *
+ * Rendered complete and correct at its seeded values: with JS off this is a
+ * faithful still of the app, and nothing shifts when the behaviour attaches.
+ * The behaviour itself lives in `src/scripts/press-phone.js`, reached through
+ * the `data-press-phone` hook.
+ */
+import { Image } from 'astro:assets';
+import AppScreen from './AppScreen.astro';
+import type { UI } from '../../i18n/ui';
+import type { Lang } from '../../i18n/routes';
+import pressButton from '../../assets/images/app/press-button-big.png';
+import pressButtonGray from '../../assets/images/app/press-button-big-gray.png';
+import appIcon from '../../assets/images/app/app-icon-dark.png';
+
+interface Props {
+  t: UI;
+  lang: Lang;
+  class?: string;
+}
+const { t, lang, class: className = '' } = Astro.props;
+
+/**
+ * Seeded state, matching take-snus.png. The script reads these back out of the
+ * markup rather than carrying its own copy, so there is one source for them.
+ */
+const SEED = {
+  today: 2,
+  limit: 7,
+  overall: 3632,
+  cost: 726.4,
+  minutes: 21_120, // 14d 16h
+  sinceLast: 20, // minutes
+  streak: 64,
+  rank: 1,
+  friends: 14,
+  activity: 2,
+};
+
+/**
+ * The app's `${d}d ${h}h ${m}min` with zero parts dropped, cut to the two most
+ * significant units. The app itself keeps all three and lets the label ellipsis
+ * take the overflow, but it has half again this much width to play with — at
+ * 261px "14d 16h 30min" truncates to "14d 16h …" the moment anyone presses,
+ * which reads as a bug rather than as a stat.
+ */
+function formatUsageTime(total: number): string {
+  const d = Math.floor(total / 1440);
+  const h = Math.floor((total % 1440) / 60);
+  const m = total % 60;
+  const parts = [d && `${d}d`, h && `${h}h`, m && `${m}min`].filter(Boolean) as string[];
+  return parts.slice(0, 2).join(' ') || '0min';
+}
+
+/**
+ * The first value the counter shows, formatted server-side in the page's own
+ * language. `press-phone.js` formats every later one the same way, but rendering
+ * this one on the client would leave `/de` and `/sv` showing English until the
+ * bundle lands — and showing it forever with JS off.
+ */
+const initialSince = new Intl.NumberFormat(lang, {
+  style: 'unit',
+  unit: 'minute',
+  unitDisplay: 'long',
+}).format(SEED.sinceLast);
+
+/**
+ * The push body ends in an emoji, and at this width it wraps onto a line of its
+ * own. A non-breaking space keeps it with the last word without editing the
+ * copy the app actually sends.
+ */
+const notifBody = t.app_notif_body.replace(/ (\S+)$/u, ' $1');
+
+/**
+ * cx = cy = 20 in a 40-unit box, so r plus half the 7-unit stroke is 19.4 and
+ * the ring clears the viewBox. At the obvious `0 0 36 36` it did not: the stroke
+ * overflowed by 1.4 units on every side and the SVG viewport clipped the circle
+ * into a flat-sided octagon.
+ */
+const RADIUS = 15.9155; // circumference 100, so dasharray reads as a percentage
+const donutPct = Math.min(100, (SEED.today / SEED.limit) * 100);
+
+const brands = ['VELO', '77', 'Ace', 'Après', 'An'];
+---
+
+<AppScreen class={className} data-press-phone data-seed={JSON.stringify(SEED)}>
+        <p class="sr-only">{t.app_demo_caption}</p>
+
+        {/* Status bar. Static: a live clock here would be a second thing ticking
+            for no gain, and it is the one element nobody reads. */}
+        <div
+          class="flex h-[26px] shrink-0 items-start justify-between px-[14px] pt-[13px] text-[10px] font-semibold leading-[11px] text-white"
+          aria-hidden="true"
+        >
+          <span>07:13</span>
+          <span class="flex items-center gap-[3px]">
+            <svg width="14" height="9" viewBox="0 0 14 9" fill="currentColor"
+              ><rect x="0" y="6" width="2.4" height="3" rx=".6"></rect><rect
+                x="3.6"
+                y="4"
+                width="2.4"
+                height="5"
+                rx=".6"></rect><rect x="7.2" y="2" width="2.4" height="7" rx=".6"></rect><rect
+                x="10.8"
+                y="0"
+                width="2.4"
+                height="9"
+                rx=".6"
+                opacity=".35"></rect></svg
+            >
+            <svg width="12" height="9" viewBox="0 0 16 12" fill="none" stroke="currentColor"
+              ><path d="M1 4a10 10 0 0 1 14 0" stroke-width="1.6" stroke-linecap="round"></path><path
+                d="M4 7a6 6 0 0 1 8 0"
+                stroke-width="1.6"
+                stroke-linecap="round"></path><circle cx="8" cy="10.2" r="1.1" fill="currentColor"
+                stroke="none"></circle></svg
+            >
+            <span
+              class="rounded-[3px] border border-white/50 px-[3px] text-[8px] font-bold leading-[10px]"
+              >98</span
+            >
+          </span>
+        </div>
+
+        {/* Top bar: streak, then the three chrome icons. */}
+        <div class="mt-[19px] flex h-[20px] shrink-0 items-center justify-between px-[12px]">
+          <div class="flex items-center gap-[6px]">
+            <span class="text-[16px] font-bold leading-none text-white">{SEED.streak}</span>
+            {/* Flame is #1FD9FF between 1 and 100, which a streak of 64 is. */}
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="#1FD9FF" aria-hidden="true"
+              ><path
+                d="M12 2c.5 3.2-1.4 4.6-2.8 6C7.6 9.6 6 11.2 6 14a6 6 0 0 0 12 0c0-3-1.6-4.8-3-6.4-.8.9-1.6 1.3-2.3 1-.9-.4-1.1-1.7-.4-3.4C12.7 4 12.6 2.9 12 2Zm0 11.2c1.3 1 1.9 1.9 1.9 2.9a1.9 1.9 0 0 1-3.8 0c0-1 .6-1.9 1.9-2.9Z"
+              ></path></svg
+            >
+          </div>
+          <div class="flex items-center gap-[13px] text-[#9ca3af]" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              ><path d="M12 3v12M12 3 8 7M12 3l4 4" stroke-linecap="round" stroke-linejoin="round"
+              ></path><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" stroke-linecap="round"
+              ></path></svg
+            >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"
+              ><path
+                d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Zm0 1.8c-3.6 0-8 1.8-8 4.6V21h16v-2.6c0-2.8-4.4-4.6-8-4.6Z"
+              ></path></svg
+            >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"
+              ><path
+                d="m19.4 13-.1-1 2-1.6-2-3.4-2.4.9c-.5-.4-1.1-.7-1.7-1L14.8 4h-4l-.4 2.9c-.6.3-1.2.6-1.7 1l-2.4-.9-2 3.4 2 1.6a7.6 7.6 0 0 0 0 2l-2 1.6 2 3.4 2.4-.9c.5.4 1.1.7 1.7 1l.4 2.9h4l.4-2.9c.6-.3 1.2-.6 1.7-1l2.4.9 2-3.4-2-1.6.1-1Zm-6.6 3.2a3.2 3.2 0 1 1 0-6.4 3.2 3.2 0 0 1 0 6.4Z"
+              ></path></svg
+            >
+          </div>
+        </div>
+
+        {/* Time counter. `data-since` is minutes; the script reformats it in the
+            page's own language via Intl, so no duration strings are translated. */}
+        <div class="mt-[10px] flex shrink-0 flex-col items-center">
+          <span class="text-[9px] uppercase leading-[9px] tracking-[0.06em] text-[#9ca3af]">
+            {t.app_time_since_last_snus}
+          </span>
+          <span
+            class="mt-[5px] text-[20px] font-bold leading-[20px] text-white"
+            data-press-since
+            data-since={SEED.sinceLast}>{initialSince}</span
+          >
+        </div>
+
+        {/* The button. 133px is the app's 200pt at this screen's scale. The halo
+            behind it is the affordance the painted-on arrow used to carry; the
+            script drops it after the first press. */}
+        <div class="relative mt-[16px] flex h-[133px] shrink-0 justify-center">
+          <span class="press-phone__halo" data-press-halo aria-hidden="true"></span>
+          <button
+            type="button"
+            class="press-phone__button relative h-[133px] w-[133px] rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#1FD9FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#161622]"
+            data-press-button
+            aria-label={t.app_press_aria}
+          >
+            <Image
+              src={pressButton}
+              width={160}
+              height={160}
+              alt=""
+              aria-hidden="true"
+              class="press-phone__art press-phone__art--live select-none"
+              loading="eager"
+              decoding="sync"
+              fetchpriority="high"
+            />
+            {/*
+              The app's cooldown artwork. Eager so the swap on press is instant
+              rather than a blank frame while it downloads.
+            */}
+            <Image
+              src={pressButtonGray}
+              width={160}
+              height={160}
+              alt=""
+              aria-hidden="true"
+              class="press-phone__art press-phone__art--locked select-none"
+              loading="eager"
+              decoding="async"
+            />
+          </button>
+        </div>
+
+        <p class="mt-[13px] shrink-0 text-center text-[8px] leading-[8px] text-[#6b7280]">
+          {t.app_press_hint}
+        </p>
+
+        {/* Brand row. Clipped rather than wrapped, exactly as it scrolls off the
+            right edge on the phone. */}
+        <div
+          class="mt-[7px] flex h-[15px] shrink-0 items-center gap-[5px] overflow-hidden pl-[6px]"
+          data-press-brands
+        >
+          <span
+            class="flex h-[15px] shrink-0 items-center gap-[3px] rounded-full border border-[#374151]/50 px-[6px] text-[8px] leading-none text-[#6b7280]"
+            aria-hidden="true"
+          >
+            <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              ><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4.5-4.5" stroke-linecap="round"
+              ></path></svg
+            >
+            …
+          </span>
+          <span
+            class="flex h-[15px] shrink-0 items-center rounded-full border border-[#374151] px-[7px] text-[8px] leading-none text-[#6b7280]"
+            aria-hidden="true">—</span
+          >
+          {
+            brands.map((brand, i) => (
+              <button
+                type="button"
+                class="press-phone__brand h-[15px] shrink-0 whitespace-nowrap rounded-full border px-[7px] text-[8px] leading-none transition-colors"
+                data-press-brand
+                aria-pressed={i === 0 ? 'true' : 'false'}
+              >
+                {brand}
+              </button>
+            ))
+          }
+        </div>
+
+        {/* Consum Statistic. aria-live so a press is announced once, politely,
+            rather than four separate times. */}
+        <div
+          class="mx-[6px] mt-[19px] h-[95px] shrink-0 rounded-[11px] bg-gradient-to-br from-[#1E1E2D] to-[#232533] p-[10px]"
+          aria-live="polite"
+        >
+          <div class="flex h-[15px] items-center justify-between">
+            <span class="text-[12px] font-bold leading-none text-white">
+              {t.app_consum_statistic}
+            </span>
+            <span class="flex items-center gap-[2px] text-[9px] font-medium leading-none text-[#1FD9FF]">
+              {t.app_see_more}
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                ><path d="m9 5 7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg
+              >
+            </span>
+          </div>
+
+          <div class="mt-[7px] flex items-center justify-between">
+            {/* Donut. Circumference is normalised to 100 so the dasharray is
+                literally the percentage, which keeps the script's update to one
+                attribute. */}
+            <div class="relative h-[53px] w-[53px] shrink-0">
+              <svg viewBox="0 0 40 40" class="h-full w-full -rotate-90">
+                <circle cx="20" cy="20" r={RADIUS} fill="none" stroke="#4b5563" stroke-width="7"
+                ></circle>
+                <circle
+                  cx="20"
+                  cy="20"
+                  r={RADIUS}
+                  fill="none"
+                  stroke="#66cfff"
+                  stroke-width="7"
+                  stroke-dasharray={`${donutPct} 100`}
+                  class="transition-[stroke-dasharray] duration-500 ease-out"
+                  data-press-donut
+                ></circle>
+              </svg>
+              <span
+                class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#1f2937] px-[5px] py-[2px] text-[9px] font-bold leading-[11px] text-white"
+                data-press-today-label
+                >{SEED.today}/{SEED.limit}</span
+              >
+            </div>
+
+            <div class="flex min-w-0 flex-1 items-start justify-around gap-[2px]">
+              <div class="flex min-w-0 flex-1 flex-col items-center">
+                <span class="mb-[4px] rounded-[7px] bg-[#1E1E2D]/60 p-[5px] text-[#6b7280]" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"
+                    ><rect x="3" y="11" width="4" height="9" rx="1"></rect><rect
+                      x="10"
+                      y="6"
+                      width="4"
+                      height="14"
+                      rx="1"></rect><rect x="17" y="3" width="4" height="17" rx="1"></rect></svg
+                  >
+                </span>
+                <span
+                  class="w-full truncate text-center text-[9px] font-bold leading-[11px] text-white"
+                  data-press-overall>{SEED.overall}</span
+                >
+                <span class="text-[8px] leading-[10px] text-[#9ca3af]">{t.app_overall}</span>
+              </div>
+
+              <div class="flex min-w-0 flex-1 flex-col items-center">
+                <span class="mb-[4px] rounded-[7px] bg-[#1E1E2D]/60 p-[5px] text-[#6b7280]" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"
+                    ><path
+                      d="M3 6h18a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Zm9 3.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z"
+                    ></path></svg
+                  >
+                </span>
+                <span
+                  class="w-full truncate text-center text-[9px] font-bold leading-[11px] text-white"
+                  data-press-cost>{SEED.cost.toFixed(2)}€</span
+                >
+                <span class="text-[8px] leading-[10px] text-[#9ca3af]">{t.app_cost}</span>
+              </div>
+
+              <div class="flex min-w-0 flex-1 flex-col items-center">
+                <span class="mb-[4px] rounded-[7px] bg-[#1E1E2D]/60 p-[5px] text-[#6b7280]" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    ><circle cx="12" cy="12" r="9"></circle><path
+                      d="M12 7v5.2l3.2 2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"></path></svg
+                  >
+                </span>
+                <span
+                  class="w-full truncate text-center text-[9px] font-bold leading-[11px] text-white"
+                  data-press-usage-time>{formatUsageTime(SEED.minutes)}</span
+                >
+                <span class="text-[8px] leading-[10px] text-[#9ca3af]">{t.app_time}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Social and Drops, side by side at half width each, as in the app. */}
+        <div class="mx-[6px] mt-[15px] flex h-[89px] shrink-0 gap-[6px]">
+          <div class="w-1/2 rounded-[11px] bg-gradient-to-br from-[#1E1E2D] to-[#232533] p-[9px]">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold leading-none text-white">{t.app_social}</span>
+              <svg
+                width="9"
+                height="9"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#1FD9FF"
+                stroke-width="3"
+                aria-hidden="true"
+                ><path d="m9 5 7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg
+              >
+            </div>
+            <div class="mt-[8px] flex items-center gap-[6px]">
+              <span class="rounded-[7px] bg-[#1FD9FF]/15 p-[4px]" aria-hidden="true">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="#1FD9FF"
+                  ><path
+                    d="M6 3h12v5a6 6 0 0 1-5 5.9V17h3v2H8v-2h3v-3.1A6 6 0 0 1 6 8V3Zm-4 1h3v3a3 3 0 0 1-3-3Zm17 0h3a3 3 0 0 1-3 3V4ZM7 20h10v2H7v-2Z"
+                  ></path></svg
+                >
+              </span>
+              <span class="flex flex-col">
+                <span class="text-[12px] font-semibold leading-[13px] text-white">#{SEED.rank}</span>
+                <span class="text-[7px] leading-[9px] text-[#6b7280]">{t.app_your_rank}</span>
+              </span>
+            </div>
+            <div class="mt-[8px] flex items-center gap-[14px] text-[9px] font-semibold leading-none text-white">
+              <span class="flex items-center gap-[4px]">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="#1FD9FF" aria-hidden="true"
+                  ><path
+                    d="M8.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm8-1a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm0 2c-2 0-6 1-6 3v2h12v-2c0-2-4-3-6-3Zm-8 1c-2.6 0-7 1.3-7 3.5V19h8.6v-2c0-1.2.6-2.2 1.6-3-1-.3-2.2-.5-3.2-.5Z"
+                  ></path></svg
+                >
+                {SEED.friends}
+              </span>
+              <span class="flex items-center gap-[4px]">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#1FD9FF" stroke-width="2.2" aria-hidden="true"
+                  ><path d="M2 12h4l2.5-6 4 12 2.5-6H22" stroke-linecap="round" stroke-linejoin="round"
+                  ></path></svg
+                >
+                <span data-press-activity>{SEED.activity}</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="w-1/2 rounded-[11px] bg-gradient-to-br from-[#1E1E2D] to-[#232533] p-[9px]">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold leading-none text-white">{t.app_drops}</span>
+              <span
+                class="rounded-[7px] bg-[#1FD9FF]/20 px-[6px] py-[2px] text-[8px] font-bold leading-[10px] text-[#1FD9FF]"
+                >6</span
+              >
+            </div>
+            <ul class="mt-[8px] space-y-[5px] text-[9px] leading-[11px] text-[#d1d5db]">
+              <li class="flex items-start gap-[4px]">
+                <span class="mt-[4px] h-[3px] w-[3px] shrink-0 rounded-full bg-[#1FD9FF]"></span>
+                <span class="truncate">4 Free Cans Nordic…</span>
+              </li>
+              <li class="flex items-start gap-[4px]">
+                <span class="mt-[4px] h-[3px] w-[3px] shrink-0 rounded-full bg-[#1FD9FF]"></span>
+                <span class="truncate">FREE NYX Can (GB o…</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Breezer's Chat. Only its header clears the frame's bottom edge, which
+            is exactly how much of it the phone shows — the cut-off card is what
+            says there is more screen below. */}
+        <div class="mx-[6px] mt-[13px] shrink-0 rounded-[11px] bg-gradient-to-br from-[#1E1E2D] to-[#232533] p-[9px]">
+          <div class="flex items-center justify-between">
+            <span class="flex items-center gap-[5px] text-[11px] font-bold leading-none text-white">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#1FD9FF" aria-hidden="true"
+                ><path
+                  d="M8 3h9a4 4 0 0 1 4 4v5a4 4 0 0 1-4 4h-1l-4 3v-3H8a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4Z"
+                ></path></svg
+              >
+              {t.app_breezers_chat}
+            </span>
+            <span class="h-[7px] w-[7px] rounded-full bg-[#1FD9FF]"></span>
+          </div>
+          <div class="mt-[9px] flex items-center gap-[6px]">
+            <span class="h-[15px] w-[15px] rounded-full bg-[#1FD9FF]/20 ring-1 ring-[#1FD9FF]/30"></span>
+            <span class="h-[5px] w-[95px] rounded-full bg-white/10"></span>
+          </div>
+        </div>
+
+        {/* The friend's push. Inside the screen so it scales with it and clips at
+            the window edge, the way the OS draws it over the app. aria-hidden
+            because it loops — a live region repeating every few seconds is a
+            screen-reader nuisance, and the same claim is made in real copy
+            further down the page. */}
+        <div
+          class="press-phone__banner pointer-events-none absolute inset-x-[8px] top-[8px]"
+          data-press-banner
+          aria-hidden="true"
+        >
+          <div
+            class="flex items-start gap-[7px] rounded-[16px] bg-[#1c1c1e]/85 p-[8px] shadow-lg backdrop-blur-md"
+          >
+            <Image
+              src={appIcon}
+              width={44}
+              height={44}
+              alt=""
+              aria-hidden="true"
+              class="h-[26px] w-[26px] shrink-0 rounded-[7px]"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="min-w-0 flex-1">
+              <div class="flex items-baseline justify-between gap-[6px]">
+                <span
+                  class="truncate text-[10px] font-semibold leading-[13px] text-white"
+                  data-press-banner-name>Marcus</span
+                >
+                <span class="shrink-0 text-[8px] leading-[13px] text-[#9ca3af]">{t.app_notif_ago}</span>
+              </div>
+              <p class="text-[10px] leading-[13px] text-white/90">{notifBody}</p>
+            </div>
+          </div>
+        </div>
+  {/*
+    The "press me" arrow, back from the hero screenshot this component replaced.
+    It sits in AppScreen's overlay slot so it can overlap the bezel the way the
+    painted-on one did, rather than being boxed inside the screen where the only
+    room is a 64px margin.
+
+    One closed path for the whole silhouette — tapered shaft and head together —
+    rather than a stroked line plus a triangle. Two overlapping strokes cannot
+    share an outline: the white casing bunched up where the shaft met the head
+    and the join showed. Drawing it once and painting the stroke underneath the
+    fill (`paint-order`) gives a single even casing around the whole shape.
+
+    The shaft widens from 5 units at the tail to 11 at the head, which is what
+    makes it read as drawn rather than as a line with a triangle stuck on.
+
+    The 60-degree rotation is baked into these coordinates rather than applied
+    as a CSS transform, because the transform property is already carrying the
+    nudge animation and the two would fight. Rotating the drawn shape by exactly
+    that much leaves the head horizontal, so the arrow comes in flat from the
+    side and points straight at the button rather than climbing at it from
+    underneath. Re-rotating means regenerating the path, not adding a transform.
+
+    Geometry: the tip sits at (94.1%, 68.7%) of the box, and the box is placed so
+    that lands on (81, 204) of the 295x594 device — just off the PRESS button's
+    left edge, level with its centre. `press-phone.js` retires it on first press.
+  */}
+  <svg
+    slot="overlay"
+    class="press-phone__arrow"
+    viewBox="0 0 105 86"
+    aria-hidden="true"
+    data-press-arrow
+  >
+    <defs>
+      <linearGradient id="pressArrowFill" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#3EE0FF"></stop>
+        <stop offset="1" stop-color="#0D6BCD"></stop>
+      </linearGradient>
+    </defs>
+    <path
+      d="M6 11C14.5 47.7 36.3 67.4 62.7 70.2L62.7 80.2L98.8 59.1L62.6 38L62.6 48.1C42.3 47.8 28.2 37.4 14.7 6Z"
+      fill="url(#pressArrowFill)"
+      stroke="#FFFFFF"
+      stroke-width="6"
+      stroke-linejoin="round"
+      paint-order="stroke"></path>
+  </svg>
+</AppScreen>
+
+<style>
+  .press-phone__button {
+    transition: opacity 120ms ease;
+  }
+  /* The app dips opacity on press and does not scale down; matched here. */
+  .press-phone__button:active {
+    opacity: 0.7;
+  }
+
+  /* Cooldown. The app greys the button out and disables it for 15 minutes after
+     a pouch; `press-phone.js` uses a far shorter lock so the hero stays worth
+     touching twice. Both artworks ship in the markup and only visibility swaps,
+     so the change costs a repaint and never a network round trip. */
+  .press-phone__art {
+    position: absolute;
+    inset: 0;
+    height: 133px;
+    width: 133px;
+  }
+  .press-phone__button:not([data-locked]) .press-phone__art--locked,
+  .press-phone__button[data-locked] .press-phone__art--live {
+    visibility: hidden;
+  }
+  .press-phone__button[data-locked] {
+    animation: none;
+    cursor: default;
+  }
+  .press-phone__button[data-locked]:active {
+    opacity: 1;
+  }
+
+  /* The arrow is positioned inline on the element, not here: it goes through a
+     named slot into AppScreen, and layout that critical should not depend on a
+     scoped selector still matching after the move. `:global` for the same
+     reason — the state and the animation have to reach it wherever it lands. */
+  :global(.press-phone__arrow) {
+    position: absolute;
+    left: -30px;
+    top: 137px;
+    width: 40%;
+    height: auto;
+    pointer-events: none;
+    z-index: 10;
+    transition: opacity 400ms ease;
+  }
+  /* Below roughly 355px the device sits flush against the page gutter, and a
+     30px overhang would push the whole page into horizontal scroll — there is
+     no `overflow-x: hidden` anywhere to catch it. Tucking the arrow in costs a
+     little overlap with the button and keeps the page from sliding sideways. */
+  @media (max-width: 360px) {
+    :global(.press-phone__arrow) {
+      left: -12px;
+    }
+  }
+  /* Once someone has pressed, the invitation is noise. */
+  :global(.press-phone__arrow[data-pressed]) {
+    opacity: 0;
+  }
+
+  .press-phone__halo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 133px;
+    height: 133px;
+    margin: -66.5px 0 0 -66.5px;
+    border-radius: 9999px;
+    box-shadow: 0 0 0 0 rgba(31, 217, 255, 0.45);
+    opacity: 0;
+  }
+
+  .press-phone__brand {
+    border-color: #374151;
+    color: #6b7280;
+  }
+  .press-phone__brand[aria-pressed='true'] {
+    border-color: #1fd9ff;
+    background-color: rgba(31, 217, 255, 0.15);
+    color: #1fd9ff;
+  }
+
+  /* Hidden until the script (or reduced motion) shows it, so it never flashes
+     on first paint. */
+  .press-phone__banner {
+    opacity: 0;
+    transform: translateY(-120%);
+  }
+  .press-phone__banner[data-visible] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* The app's ImageButton breathes 1 → 1.05 → 1 over 4s, forever. Period is
+       coprime with the hero's 7s drift and 5s twinkle so the three never fall
+       into step. */
+    @keyframes breezer-press-breathe {
+      0%,
+      100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+    .press-phone__button {
+      animation: breezer-press-breathe 4s ease-in-out infinite;
+      will-change: transform;
+    }
+
+    @keyframes breezer-press-halo {
+      0% {
+        box-shadow: 0 0 0 0 rgba(31, 217, 255, 0.45);
+        opacity: 1;
+      }
+      100% {
+        box-shadow: 0 0 0 26px rgba(31, 217, 255, 0);
+        opacity: 0;
+      }
+    }
+  .press-phone__halo {
+      animation: breezer-press-halo 2.2s ease-out infinite;
+    }
+    /* A nudge along its own axis, toward the button it is pointing at. Period is
+       coprime with the 7s drift, 5s twinkle and 4s breathe so nothing syncs. */
+    @keyframes breezer-press-arrow {
+      0%,
+      100% {
+        transform: translate3d(0, 0, 0);
+      }
+      50% {
+        transform: translate3d(7px, 0, 0);
+      }
+    }
+    :global(.press-phone__arrow) {
+      animation: breezer-press-arrow 1.9s ease-in-out infinite;
+      will-change: transform;
+    }
+    :global(.press-phone__arrow[data-pressed]) {
+      animation: none;
+    }
+
+    /* Set once the visitor has pressed: the invitation has been accepted. */
+    .press-phone__halo[data-pressed] {
+      animation: none;
+      opacity: 0;
+    }
+
+    .press-phone__banner {
+      transition:
+        opacity 320ms ease,
+        transform 380ms cubic-bezier(0.16, 0.84, 0.44, 1);
+    }
+  }
+</style>

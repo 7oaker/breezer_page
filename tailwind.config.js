@@ -4,6 +4,10 @@ module.exports = {
   theme: {
     fontFamily: {
       inter: ['Inter Variable', 'Inter', 'sans-serif'],
+      // The app is Poppins throughout. Only the phone mockup uses it, and only
+      // the homepage renders that, so the faces are imported from the component
+      // rather than from Base.astro.
+      poppins: ['Poppins', 'Inter Variable', 'sans-serif'],
     },
     container: {
       center: true,

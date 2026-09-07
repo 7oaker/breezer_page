@@ -901,3 +901,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+/**
+ * The homepage's live app mockups — the hero's tracking screen, the stats screen
+ * and the quit screen. Split out and imported conditionally because it is a
+ * single page's worth of behaviour and every other page would otherwise carry
+ * it — the same reason `analytics.js` loads PostHog lazily.
+ */
+function breezerInitAppScreens() {
+  if (!document.querySelector('[data-app-screen]')) return;
+  import('./app-screens.js').then(function (m) {
+    m.init();
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', breezerInitAppScreens);
+} else {
+  breezerInitAppScreens();
+}

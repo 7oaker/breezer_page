@@ -1,0 +1,88 @@
+---
+/**
+ * The shell every rebuilt app screen sits in: the device frame, plus a screen
+ * box laid out at the frame window's true pixel size and scaled to whatever the
+ * frame actually is.
+ *
+ * THE GEOMETRY CONTRACT. The box is 261x566 — `mobile-frame.png`'s transparent
+ * window at the 295px the device caps at. Every app screenshot in
+ * `src/assets/images/screens/new/` is 1179x2556 of that same screen, so a
+ * landmark measured off a screenshot maps in at 261/1179, and the app's type
+ * scale maps at `pt * 261/393 = 0.6641` (app `text-sm` 14 -> 9px, `text-5xl` 48
+ * -> 32px). That is why the numbers in the screens are odd pixel values: they
+ * were measured, not judged, and they should be changed by re-measuring.
+ *
+ * Laying out at a fixed size and scaling is what lets those be plain px at all.
+ * Sizing the type in percentages instead would leave every screen to reflow
+ * differently at every viewport, which is how the stat rows overflowed before.
+ */
+import PhoneFrame from '../PhoneFrame.astro';
+
+// Poppins is the app's face, and only these screens use it. Imported here
+// rather than in Base.astro so Astro keeps the faces off every page that does
+// not render one. 800 is the quit hero and the stats total; the rest is UI.
+import '@fontsource/poppins/latin-400.css';
+import '@fontsource/poppins/latin-500.css';
+import '@fontsource/poppins/latin-600.css';
+import '@fontsource/poppins/latin-700.css';
+import '@fontsource/poppins/latin-800.css';
+
+interface Props {
+  /** Extra classes for the outermost box, e.g. the hero's `float-slow`. */
+  class?: string;
+  /** Anything else — each screen puts its own `data-*` hook on this element. */
+  [key: string]: unknown;
+}
+const { class: className = '', ...rest } = Astro.props;
+---
+
+<div
+  class:list={['app-screen relative mx-auto w-full max-w-[295px]', className]}
+  data-app-screen
+  {...rest}
+>
+  <PhoneFrame screenBg="#161622">
+    <div class="app-screen__fit">
+      <div class="app-screen__screen flex flex-col bg-[#161622] font-poppins antialiased">
+        <slot />
+      </div>
+    </div>
+  </PhoneFrame>
+  {/*
+    Anything that has to sit over the device rather than inside its screen —
+    the hero's "press me" arrow overlaps the bezel the way the old painted-on
+    one did. Positioned by the caller against this 295x594 box.
+  */}
+  <slot name="overlay" />
+</div>
+
+<style>
+  /* The caller may put `float-slow` on this same element, so the device drifts.
+     A drifting target is a hostile one to aim at, though, so the drift holds
+     still while a pointer or keyboard focus is on the phone. */
+  .app-screen:hover,
+  .app-screen:focus-within {
+    animation-play-state: paused;
+  }
+
+  /* Fills the frame's screen window; the screen inside is scaled to match. */
+  .app-screen__fit {
+    width: 100%;
+    height: 100%;
+  }
+
+  .app-screen__screen {
+    position: relative;
+    width: 261px;
+    height: 566px;
+    transform-origin: top left;
+    /* 261px is exactly the frame window at the 295px the device caps at, so the
+       default of 1 is already correct on every viewport wide enough to show the
+       phone at full size — the fallback needs no second code path.
+       `app-screens.js` lowers the ratio on narrower ones. The scale is set from
+       JS rather than `calc(100cqw / 261px)`, which is valid CSS and works
+       inline but is dropped by this project's PostCSS chain before it ever
+       reaches the browser. */
+    transform: scale(var(--app-screen-scale, 1));
+  }
+</style>
