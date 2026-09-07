@@ -211,6 +211,19 @@ const { t, lang } = Astro.props;
       
 
       
+      {/*
+        PARKED, not deleted. The "Install the App / Sign in / Add Friends" row
+        came in already empty from the webpack-to-Astro migration and was never
+        customised: the heading container below is literally blank, the icons
+        are template clip art, and the copy tells a visitor what they already
+        know. Nothing links to `#work-process` (no nav, no footer, no sitemap,
+        no JSON-LD), so nothing breaks by it not rendering.
+
+        A JSX comment rather than `<!-- -->`, which would ship ~240 lines of
+        dead markup on every locale of the homepage. Its six `ui.ts` keys stay
+        where they are so bringing this back is one uncomment, not a rewrite.
+      */}
+      {/*
       <section id="work-process" class="relative z-10 pt-[110px] hidden sm:block">
         <div class="container">
           <div
@@ -452,6 +465,7 @@ const { t, lang } = Astro.props;
           </svg>
         </div>
       </section>
+      */}
 
       
       <section id="about" class="relative pt-[150px]">
