@@ -6,6 +6,7 @@ import PhoneFrame from '../PhoneFrame.astro';
 import PressPhone from './PressPhone.astro';
 import StatsPhone from './StatsPhone.astro';
 import QuitPhone from './QuitPhone.astro';
+import AppHandCursor from './AppHandCursor.astro';
 import type { UI } from '../../i18n/ui';
 import type { Lang } from '../../i18n/routes';
 import img_author_04 from '../../assets/images/testimonials/author-04.png';
@@ -1445,3 +1446,11 @@ const { t, lang } = Astro.props;
       </section>
       
     </main>
+
+{/*
+  Once for the page, not once per device: `app-screens.js` binds this single
+  hand to all three rebuilt screens, because there is only ever one pointer to
+  replace. It sits outside <main> because the script moves it to the body
+  anyway, and leaving it inside would only suggest it belongs to a section.
+*/}
+<AppHandCursor />

@@ -1,0 +1,93 @@
+---
+/**
+ * The pointing hand that stands in for the mouse pointer while the cursor is
+ * over one of the rebuilt app screens, so operating the mockup feels like
+ * reaching for a phone rather than mousing over a picture of one.
+ *
+ * Rendered ONCE per page, not once per screen: there is only ever one pointer,
+ * so there is only ever one hand. `src/scripts/app-screens.js` binds it to every
+ * `[data-app-screen]` on the page and moves it to `document.body`, which is
+ * where it has to live: `position: fixed` resolves against the nearest
+ * transformed ancestor, and the hero device sits inside both `float-slow` and a
+ * `.wow` reveal that leaves a transform behind.
+ *
+ * Mouse only, and hidden until the script says otherwise: with JS off, or on a
+ * touch screen, a hand frozen in the corner of the page would be worse than no
+ * hand at all.
+ */
+import { Image } from 'astro:assets';
+import pressHand from '../../assets/images/app/press-hand.png';
+---
+
+<div class="app-hand" data-app-hand aria-hidden="true" hidden>
+  <Image
+    src={pressHand}
+    width={272}
+    height={480}
+    alt=""
+    aria-hidden="true"
+    class="app-hand__art select-none"
+    loading="eager"
+    fetchpriority="low"
+    decoding="async"
+  />
+</div>
+
+<style>
+  /* All `:global`, because the script reparents this to the body and the
+     scoping attribute Astro would otherwise match on goes with it. */
+  :global(.app-hand) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0;
+    /* The outer element carries the pointer position and nothing else, and it
+       never transitions: the hand has to sit exactly under the cursor on every
+       frame rather than easing toward where the cursor just was. */
+    will-change: transform;
+  }
+  :global(.app-hand[data-visible]) {
+    opacity: 1;
+  }
+
+  :global(.app-hand__art) {
+    display: block;
+    width: 136px;
+    height: auto;
+    /* The fingertip, measured off the source PNG at 16.33% of its width and its
+       top row. It is both the hotspot (so the finger lands on whatever the
+       pointer is actually over) and the origin of the squash below, so a press
+       closes the hand toward the button instead of sliding it off. */
+    transform-origin: 16.33% 0;
+    transform: translate(-16.33%, 0) scale(1);
+    filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.45));
+  }
+  :global(.app-hand[data-press] .app-hand__art) {
+    transform: translate(-16.33%, 0) scale(0.93);
+  }
+
+  /* The real pointer goes away only while the hand is actually up, so anyone
+     who never gets one keeps a normal cursor over the device. The button needs
+     naming explicitly: its own `cursor` rule in PressPhone.astro is more
+     specific than a descendant wildcard would be. */
+  :global(.app-screen[data-hand-active]),
+  :global(.app-screen[data-hand-active] *),
+  :global(.app-screen[data-hand-active] .press-phone__button) {
+    cursor: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* The hand tracking the pointer is the visitor's own movement, not the
+       page's, so it keeps working under reduced motion. Only the fade and the
+       squash are animation, so only they live in here: without them the hand
+       appears and presses instantly, which is correct rather than broken. */
+    :global(.app-hand) {
+      transition: opacity 180ms ease;
+    }
+    :global(.app-hand__art) {
+      transition: transform 130ms cubic-bezier(0.16, 0.84, 0.44, 1);
+    }
+  }
+</style>
