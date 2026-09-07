@@ -263,17 +263,30 @@ const brands = ['VELO', '77', 'Ace', 'Après', 'An'];
           }
         </div>
 
-        {/* Consum Statistic. aria-live so a press is announced once, politely,
-            rather than four separate times. */}
-        <div
-          class="mx-[6px] mt-[19px] h-[95px] shrink-0 rounded-[11px] bg-gradient-to-br from-[#1E1E2D] to-[#232533] p-[10px]"
-          aria-live="polite"
+        {/*
+          Consum Statistic. In the app "see more" opens the full stats screen,
+          so here it goes to the section further down that rebuilds that screen.
+          A real anchor rather than a click handler: it is keyboard reachable,
+          it opens in a new tab, and it still jumps with JS off.
+          `press-phone.js` only upgrades the jump to a smooth scroll.
+
+          aria-live sits on the stats row rather than the whole card, because
+          only those four values change on a press and a live region wrapping
+          the link would re-announce the heading alongside them.
+        */}
+        <a
+          href="#about"
+          class="press-phone__stats mx-[6px] mt-[19px] block h-[95px] shrink-0 rounded-[11px] bg-gradient-to-br from-[#1E1E2D] to-[#232533] p-[10px] outline-none focus-visible:ring-2 focus-visible:ring-[#1FD9FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#161622]"
+          aria-label={`${t.app_consum_statistic}: ${t.app_see_more}`}
+          data-press-stats-link
         >
           <div class="flex h-[15px] items-center justify-between">
             <span class="text-[12px] font-bold leading-none text-white">
               {t.app_consum_statistic}
             </span>
-            <span class="flex items-center gap-[2px] text-[9px] font-medium leading-none text-[#1FD9FF]">
+            <span
+              class="press-phone__see-more flex items-center gap-[2px] text-[9px] font-medium leading-none text-[#1FD9FF]"
+            >
               {t.app_see_more}
               <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
                 ><path d="m9 5 7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg
@@ -281,7 +294,7 @@ const brands = ['VELO', '77', 'Ace', 'Après', 'An'];
             </span>
           </div>
 
-          <div class="mt-[7px] flex items-center justify-between">
+          <div class="mt-[7px] flex items-center justify-between" aria-live="polite">
             {/* Donut. Circumference is normalised to 100 so the dasharray is
                 literally the percentage, which keeps the script's update to one
                 attribute. */}
@@ -359,7 +372,7 @@ const brands = ['VELO', '77', 'Ace', 'Après', 'An'];
               </div>
             </div>
           </div>
-        </div>
+        </a>
 
         {/* Social and Drops, side by side at half width each, as in the app. */}
         <div class="mx-[6px] mt-[15px] flex h-[89px] shrink-0 gap-[6px]">
@@ -604,6 +617,24 @@ const brands = ['VELO', '77', 'Ace', 'Après', 'An'];
     border-radius: 9999px;
     box-shadow: 0 0 0 0 rgba(31, 217, 255, 0.45);
     opacity: 0;
+  }
+
+  /* The stats card is a link now, so it has to read as one before it is
+     clicked. A cursor change cannot carry that here: the hand cursor hides the
+     pointer over the device entirely, so the lift and the nudged chevron are
+     the whole affordance on desktop. */
+  .press-phone__stats {
+    transition: background-image 160ms ease;
+  }
+  .press-phone__stats:hover,
+  .press-phone__stats:focus-visible {
+    background-image: linear-gradient(to bottom right, #232533, #2d2f42);
+  }
+  .press-phone__see-more svg {
+    transition: transform 160ms ease;
+  }
+  .press-phone__stats:hover .press-phone__see-more svg {
+    transform: translateX(2px);
   }
 
   .press-phone__brand {

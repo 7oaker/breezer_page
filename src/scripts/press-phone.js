@@ -188,6 +188,30 @@ export function init() {
 
   button.addEventListener('click', onPress);
 
+  // The stats card is already a working anchor in the markup, so this only
+  // upgrades its jump to a scroll. Modified and non-primary clicks fall through
+  // untouched, or open-in-new-tab and middle-click would stop working; reduced
+  // motion falls through to the instant jump the anchor would have done anyway.
+  const statsLink = root.querySelector('[data-press-stats-link]');
+  if (statsLink) {
+    statsLink.addEventListener('click', (event) => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+        return;
+      }
+      const href = statsLink.getAttribute('href');
+      const target = href && document.querySelector(href);
+      if (!target) return;
+
+      event.preventDefault();
+      target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+      // Assigning location.hash would jump to the target instantly and then
+      // leave the smooth scroll animating from the wrong place. pushState moves
+      // the URL without moving the page, so Back still works.
+      window.history.pushState(null, '', href);
+      track('hero_stats_jump');
+    });
+  }
+
   // The brand pills are cosmetic, but a row of pills that does not respond to a
   // click reads as broken rather than as decoration.
   root.querySelectorAll('[data-press-brand]').forEach((pill) => {
