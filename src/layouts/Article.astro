@@ -73,10 +73,17 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
 const de = lang === 'de';
 
 const copy = {
-  en: { faqHeading: 'Frequently asked questions', ctaHeading: 'Try Breezer for free', ctaBody: 'Download Breezer and start tracking in under a minute.', updated: 'Updated', published: 'Published', writtenBy: 'Written by' },
-  de: { faqHeading: 'Häufige Fragen', ctaHeading: 'Breezer kostenlos testen', ctaBody: 'Lade Breezer und starte in unter einer Minute.', updated: 'Aktualisiert', published: 'Veröffentlicht', writtenBy: 'Geschrieben von' },
-  sv: { faqHeading: 'Vanliga frågor', ctaHeading: 'Testa Breezer gratis', ctaBody: 'Ladda ned Breezer och kom igång på under en minut.', updated: 'Uppdaterad', published: 'Publicerad', writtenBy: 'Skriven av' },
+  en: { faqHeading: 'Frequently asked questions', ctaHeading: 'Try Breezer for free', ctaBody: 'Download Breezer and start tracking in under a minute.', updated: 'Updated', published: 'Published', writtenBy: 'Written by', backToIndex: 'All articles', backToHome: 'Back to the app' },
+  de: { faqHeading: 'Häufige Fragen', ctaHeading: 'Breezer kostenlos testen', ctaBody: 'Lade Breezer und starte in unter einer Minute.', updated: 'Aktualisiert', published: 'Veröffentlicht', writtenBy: 'Geschrieben von', backToIndex: 'Alle Artikel', backToHome: 'Zurück zur App' },
+  sv: { faqHeading: 'Vanliga frågor', ctaHeading: 'Testa Breezer gratis', ctaBody: 'Ladda ned Breezer och kom igång på under en minut.', updated: 'Uppdaterad', published: 'Publicerad', writtenBy: 'Skriven av', backToIndex: 'Alla artiklar', backToHome: 'Tillbaka till appen' },
 }[lang];
+
+// Back to the blog where one exists in this language, back to the homepage
+// where it does not. Sending a Swedish reader to the English blog would be
+// the one internal link on the page that leaves the language, which is
+// exactly the pattern the nav filtering avoids.
+const backHref = routes.blog[lang] ?? route('home', lang);
+const backLabel = routes.blog[lang] ? copy.backToIndex : copy.backToHome;
 
 // A named person in the registry gets a full Person node and a visible box; an
 // unlisted name falls back to the organisation. See src/data/authors.ts for why.
@@ -142,14 +149,35 @@ const fmt = (d: Date) =>
   <div id="readingProgress" class="reading-progress bg-gradient-1" aria-hidden="true"></div>
   <main class="pt-[120px] pb-16">
     <article class="container max-w-[820px]">
-      <nav aria-label="Breadcrumb" class="mb-6 text-sm text-body">
-        {crumbs.map((c, i) => (
-          <>
-            {i > 0 && <span aria-hidden="true"> / </span>}
-            {i < crumbs.length - 1 ? <a href={c.path} class="hover:text-primary">{c.name}</a> : <span>{c.name}</span>}
-          </>
-        ))}
-      </nav>
+      <div class="mb-6 flex items-center gap-3">
+        <a
+          href={backHref}
+          class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-stroke text-black duration-300 hover:border-primary hover:bg-primary hover:text-white dark:border-stroke-dark dark:text-white"
+          aria-label={backLabel}
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+        </a>
+        <nav aria-label="Breadcrumb" class="min-w-0 text-sm text-body">
+          {crumbs.map((c, i) => (
+            <>
+              {i > 0 && <span aria-hidden="true"> / </span>}
+              {i < crumbs.length - 1 ? <a href={c.path} class="hover:text-primary">{c.name}</a> : <span>{c.name}</span>}
+            </>
+          ))}
+        </nav>
+      </div>
 
       <h1 class="mb-4 text-3xl font-bold text-black dark:text-white sm:text-[44px]">{heading}</h1>
 
@@ -313,17 +341,23 @@ const fmt = (d: Date) =>
         <StoreButtons lang={lang} />
       </div>
 
-      {/*
-        Back to the blog where one exists in this language, back to the
-        homepage where it does not. Sending a Swedish reader to the English
-        blog would be the one internal link on the page that leaves the
-        language, which is exactly the pattern the nav filtering avoids.
-      */}
-      <p class="mt-10 text-sm text-body">
-        <a href={routes.blog[lang] ?? route('home', lang)} class="text-primary hover:underline">
-          {routes.blog[lang]
-            ? { en: '← All articles', de: '← Alle Artikel', sv: '← Alla artiklar' }[lang]
-            : { en: '← Back to the app', de: '← Zurück zur App', sv: '← Tillbaka till appen' }[lang]}
+      <p class="mt-10 text-sm">
+        <a href={backHref} class="group inline-flex items-center gap-2 font-medium text-primary hover:underline">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            class="duration-300 group-hover:-translate-x-1"
+          >
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+          {backLabel}
         </a>
       </p>
     </article>
