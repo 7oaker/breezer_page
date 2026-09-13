@@ -41,11 +41,11 @@ First, the nicotine went through the oral mucosa, which is how a pouch delivers 
 
 Second, **subjective arousal was unchanged**. The men did not report feeling less turned on, and their mood scores did not shift. The gap was between what they felt and what their body did.
 
-That is the single most useful finding here, because it matches what people actually describe: desire intact, response weaker. If you have noticed that and assumed it was in your head, the measurement says the opposite.
+That is the single most useful finding here, because it matches what people actually describe: libido intact, response weaker. If you have noticed that and assumed it was in your head, the measurement says the opposite.
 
 Harte and Meston repeated the finding in [*Urology*](https://pubmed.ncbi.nlm.nih.gov/24642073/) in 2014 with 22 nicotine-naive men, and identified the route: nicotine shifted the balance between sympathetic and parasympathetic activity, and that shift predicted the drop in tumescence.
 
-## Why it can feel smaller even when nothing is damaged
+## Do nicotine pouches make your penis smaller?
 
 An erection is a relaxation event. The flaccid penis is held small by continuous sympathetic nerve activity keeping the smooth muscle in the corpora cavernosa contracted, and an erection happens when that contraction releases and blood fills the tissue.
 
@@ -87,7 +87,7 @@ Every claim in this area sits on a different quality of data, and lumping them t
 
 The rabbit study is the instructive one. Isolated strips of rabbit corpus cavernosum contracted in response to nicotine, which sounds decisive, until you convert the concentrations. The effect appeared at 10⁻⁵ to 10⁻⁴ mol/L, which is above **1,600 ng/mL**. The strongest pouch on the market peaks around 29 ng/mL in blood, more than fifty times lower. It is a real result about nicotine and erectile tissue, and it is not a result about pouches.
 
-## The strongest evidence in this whole area is about fertility
+## Does snus affect fertility and sperm count?
 
 A. Kimblad and colleagues at Lund University studied 613 Swedish men from the general population, recruited between 2000 and 2010, of whom 109 used snuff. Every man gave a semen sample, a blood sample and a urine sample. The results are in [*Andrology*](https://pmc.ncbi.nlm.nih.gov/articles/PMC9543234/) (2022).
 
@@ -106,7 +106,7 @@ The testosterone direction is the part nobody expects. Higher testosterone with 
 
 Limits, stated by the authors: the design is cross-sectional, weekly consumption was recorded for only 71 of the snuff users, socioeconomic confounding cannot be ruled out, and there is **no data on whether any of it normalises after stopping**.
 
-## Does it come back if you quit?
+## Does erectile dysfunction reverse if you quit nicotine?
 
 For erections, the one prospective answer is about cigarettes. Gholamreza Pourmand and colleagues followed smokers with erectile dysfunction and no other risk factors for a year, scoring them on the IIEF-5. In [*BJU International*](https://pubmed.ncbi.nlm.nih.gov/15610111/) (2004):
 
@@ -142,9 +142,9 @@ This is one of the few health questions where a personal experiment is genuinely
 
 The confound is that nobody knows their own dose. Pouch use is unconscious by design: one after coffee, one in the car, three through an evening. Ask most users how many they had yesterday and the answer is wrong by a third, which makes "I cut down and nothing changed" an untestable sentence.
 
-So measure first. Breezer logs each pouch with one tap and shows the daily total, the weekly pattern and the times of day it clusters. Two weeks of that is enough to know your real baseline. Then change one variable: drop the strength, or move the last pouch of the day several hours earlier, and see whether anything shifts.
+So measure first. Breezer logs each pouch with one tap and shows the daily total, the weekly pattern and the times of day it clusters, whether you count cans generally or track one brand through the [Zyn tracker](/zyn-tracker). Two weeks of that is enough to know your real baseline. Then change one variable: drop the strength, or move the last pouch of the day several hours earlier, and see whether anything shifts.
 
-If the number turns out higher than you thought, the [snus tracker](/snus-tracker) is where you set a daily limit and step it down. If you would rather stop altogether, [Quit Mode](/quit-snus) walks through the withdrawal timeline day by day.
+If the number turns out higher than you thought, the [snus tracker](/snus-tracker) is where you set a daily limit, and the [21-day step-down plan](/blog/taper-nicotine-pouches) brings it down on a schedule. If you would rather stop altogether, [Quit Mode](/quit-snus) walks through the withdrawal timeline day by day.
 
 Worth checking before you blame the pouches for everything: nicotine within four hours of bed measurably costs sleep efficiency, and poor sleep suppresses testosterone on its own. The measured numbers are in [nicotine pouches and sleep](/blog/nicotine-pouches-sleep). And the dose you are actually taking is rarely the one on the can, which is covered in [how strong a nicotine pouch really is](/blog/nicotine-pouch-strength).
 
@@ -158,3 +158,5 @@ Worth checking before you blame the pouches for everything: nicotine within four
 - Pourmand G, Alidaee MR, Rasuli S, Maleki A, Mehrsai A. *Do cigarette smokers with erectile dysfunction benefit from stopping?* BJU International, 2004.
 - Nguyen HB, et al. *Nicotine in high concentration causes contraction of isolated strips of rabbit corpus cavernosum.* Korean Journal of Physiology & Pharmacology, 2015.
 - Juenemann KP, Lue TF, Luo JA, Benowitz NL, Abozeid M, Tanagho EA. *The effect of cigarette smoking on penile erection.* The Journal of Urology, 1987.
+
+This article is not medical advice. Erectile dysfunction that persists is one of the earliest warning signs of vascular disease, and difficulty conceiving after a year of trying has causes a semen analysis can find. Both belong with a doctor, not with a website.

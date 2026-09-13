@@ -41,11 +41,11 @@ Erstens ging das Nikotin über die Mundschleimhaut. Genau so liefert ein Nikotin
 
 Zweitens blieb die **subjektiv empfundene Erregung unverändert**. Die Männer berichteten keine geringere Lust, auch die Stimmungswerte verschoben sich nicht. Die Lücke lag zwischen dem, was sie fühlten, und dem, was der Körper tat.
 
-Das ist der praktisch nützlichste Befund hier, weil er genau das beschreibt, was Betroffene schildern: Lust da, Reaktion schwächer. Wer das bei sich bemerkt und für Kopfsache gehalten hat, bekommt von der Messung das Gegenteil gesagt.
+Das ist der praktisch nützlichste Befund hier, weil er genau das beschreibt, was Betroffene schildern: Libido da, Reaktion schwächer. Wer bei sich einen Potenzverlust bemerkt und ihn für Kopfsache gehalten hat, bekommt von der Messung das Gegenteil gesagt.
 
 Harte und Meston wiederholten den Befund 2014 in [*Urology*](https://pubmed.ncbi.nlm.nih.gov/24642073/) mit 22 nikotinnaiven Männern und fanden den Weg dorthin: Nikotin verschob das Gleichgewicht zwischen Sympathikus und Parasympathikus, und diese Verschiebung sagte den Rückgang der Schwellung vorher.
 
-## Warum er sich kleiner anfühlt, ohne dass etwas kaputt ist
+## Wird der Penis durch Snus kleiner?
 
 Eine Erektion ist ein Entspannungsvorgang. Im schlaffen Zustand hält anhaltende sympathische Nervenaktivität die glatte Muskulatur in den Schwellkörpern zusammengezogen. Erst wenn diese Anspannung nachlässt, füllt sich das Gewebe mit Blut.
 
@@ -85,7 +85,7 @@ Jede Aussage in diesem Feld ruht auf einer anderen Datenqualität. Dass alles in
 
 Die Kaninchenstudie ist die lehrreiche. Isolierte Streifen vom Schwellkörper zogen sich unter Nikotin zusammen, was eindeutig klingt, bis man die Konzentrationen umrechnet. Der Effekt trat bei 10⁻⁵ bis 10⁻⁴ mol/l auf, das sind über **1.600 ng/ml**. Der stärkste Beutel am Markt erreicht im Blut rund 29 ng/ml, also mehr als fünfzigmal weniger. Ein echtes Ergebnis über Nikotin und Schwellkörpergewebe, und kein Ergebnis über Nikotinbeutel.
 
-## Die härtesten Zahlen in diesem Feld betreffen die Fruchtbarkeit
+## Macht Snus unfruchtbar? Was die Spermienzahlen zeigen
 
 A. Kimblad und Kollegen an der Universität Lund untersuchten 613 schwedische Männer aus der Allgemeinbevölkerung, rekrutiert zwischen 2000 und 2010, davon 109 Snus-Nutzer. Jeder gab eine Samen-, eine Blut- und eine Urinprobe ab. Die Ergebnisse stehen in [*Andrology*](https://pmc.ncbi.nlm.nih.gov/articles/PMC9543234/) (2022).
 
@@ -104,7 +104,7 @@ Die Richtung beim Testosteron überrascht die meisten. Höheres Testosteron bei 
 
 Die Grenzen benennen die Autoren selbst: Das Design ist ein Querschnitt, der wöchentliche Konsum war nur für 71 der Snus-Nutzer erfasst, sozioökonomische Störgrößen lassen sich nicht ausschließen, und es gibt **keine Daten dazu, ob sich irgendetwas davon nach dem Aufhören normalisiert**.
 
-## Kommt es zurück, wenn man aufhört?
+## Bildet sich eine Erektionsstörung nach dem Aufhören zurück?
 
 Für die Erektion gibt es eine prospektive Antwort, und die stammt von Zigaretten. Gholamreza Pourmand und Kollegen begleiteten ein Jahr lang Raucher mit Erektionsstörung ohne weitere Risikofaktoren und erhoben den IIEF-5. In [*BJU International*](https://pubmed.ncbi.nlm.nih.gov/15610111/) (2004):
 
@@ -140,9 +140,9 @@ Das ist eine der wenigen Gesundheitsfragen, bei denen ein Selbstversuch tatsäch
 
 Der Haken: Kaum jemand kennt seine eigene Dosis. Beutelkonsum läuft nebenbei, einer nach dem Kaffee, einer im Auto, drei über den Abend. Frag die meisten, wie viele es gestern waren, und die Antwort liegt um ein Drittel daneben. Damit wird "ich habe reduziert und es hat nichts gebracht" zu einem Satz, den man nicht überprüfen kann.
 
-Also zuerst messen. Breezer protokolliert jeden Beutel mit einem Tipp und zeigt Tagessumme, Wochenmuster und die Uhrzeiten, an denen sich der Konsum ballt. Zwei Wochen davon reichen für eine belastbare Ausgangslage. Danach änderst du eine Variable: die Stärke runter, oder den letzten Beutel des Tages mehrere Stunden vorziehen, und schaust, ob sich etwas verschiebt.
+Also zuerst messen. Breezer protokolliert jeden Beutel mit einem Tipp und zeigt Tagessumme, Wochenmuster und die Uhrzeiten, an denen sich der Konsum ballt, ob du Dosen allgemein zählst oder über den [Zyn Tracker](/de/zyn-tracker) eine einzelne Marke verfolgst. Zwei Wochen davon reichen für eine belastbare Ausgangslage. Danach änderst du eine Variable: die Stärke runter, oder den letzten Beutel des Tages mehrere Stunden vorziehen, und schaust, ob sich etwas verschiebt.
 
-Ist die Zahl höher als gedacht, setzt du im [Snus Tracker](/de/snus-tracker) ein Tageslimit und senkst es schrittweise. Wer ganz aufhören will, findet im [Quit Mode](/de/snus-aufhoeren) den Entzugsverlauf Tag für Tag.
+Ist die Zahl höher als gedacht, setzt du im [Snus Tracker](/de/snus-tracker) ein Tageslimit, und der [21-Tage-Plan zum Reduzieren](/de/blog/nikotinbeutel-reduzieren) senkt es nach Zeitplan. Wer ganz aufhören will, findet im [Quit Mode](/de/snus-aufhoeren) den Entzugsverlauf Tag für Tag.
 
 Eine Sache lohnt sich zu prüfen, bevor du alles den Beuteln anlastest: Nikotin innerhalb von vier Stunden vor dem Schlafen kostet messbar Schlafeffizienz, und schlechter Schlaf senkt Testosteron für sich genommen. Die Zahlen dazu stehen in [Nikotinbeutel und Schlaf](/de/blog/nikotinbeutel-schlaf). Und die Dosis, die du tatsächlich nimmst, ist selten die auf der Dose, siehe [wie stark ein Nikotinbeutel wirklich ist](/de/blog/nikotinbeutel-staerke).
 
@@ -156,3 +156,5 @@ Eine Sache lohnt sich zu prüfen, bevor du alles den Beuteln anlastest: Nikotin 
 - Pourmand G, Alidaee MR, Rasuli S, Maleki A, Mehrsai A. *Do cigarette smokers with erectile dysfunction benefit from stopping?* BJU International, 2004.
 - Nguyen HB, et al. *Nicotine in high concentration causes contraction of isolated strips of rabbit corpus cavernosum.* Korean Journal of Physiology & Pharmacology, 2015.
 - Juenemann KP, Lue TF, Luo JA, Benowitz NL, Abozeid M, Tanagho EA. *The effect of cigarette smoking on penile erection.* The Journal of Urology, 1987.
+
+Dieser Artikel ersetzt keine medizinische Beratung. Eine anhaltende Erektionsstörung ist eines der frühesten Warnzeichen für eine Gefäßerkrankung, und ein unerfüllter Kinderwunsch nach einem Jahr hat Ursachen, die ein Spermiogramm findet. Beides gehört zum Arzt und nicht auf eine Website.
