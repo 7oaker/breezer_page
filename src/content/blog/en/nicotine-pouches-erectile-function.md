@@ -89,7 +89,7 @@ The rabbit study is the instructive one. Isolated strips of rabbit corpus cavern
 
 ## The strongest evidence in this whole area is about fertility
 
-Mattias Kimblad and colleagues at Lund University studied 613 Swedish men from the general population, recruited between 2000 and 2010, of whom 109 used snuff. Every man gave a semen sample, a blood sample and a urine sample. The results are in [*Andrology*](https://pmc.ncbi.nlm.nih.gov/articles/PMC9543234/) (2022).
+A. Kimblad and colleagues at Lund University studied 613 Swedish men from the general population, recruited between 2000 and 2010, of whom 109 used snuff. Every man gave a semen sample, a blood sample and a urine sample. The results are in [*Andrology*](https://pmc.ncbi.nlm.nih.gov/articles/PMC9543234/) (2022).
 
 | Measure | Snuff users | Non-users | p |
 | --- | --- | --- | --- |
