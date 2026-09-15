@@ -45,6 +45,10 @@ const inviteInit = `(function () {
 
   var params = new URLSearchParams(window.location.search);
   var ref = params.get('ref');
+  // Squad invites carry a second parameter. Nothing on this page has to understand it:
+  // the clipboard write below copies the whole URL, so the app reads the squad code back
+  // out of the clipboard on a fresh install exactly as it reads the ref.
+  var squad = params.get('squad');
 
   if (ref) {
     document.getElementById('title').textContent = '@' + ref + ' invited you!';
@@ -56,7 +60,9 @@ const inviteInit = `(function () {
 
   // A link that arrives without a ref is a broken share, not an anonymous one: it can
   // never be attributed to anybody. Worth seeing separately from the ones that work.
-  report('invite_page_viewed', { has_ref: !!ref, platform: platform });
+  // has_squad separates the two kinds of invite: a squad invite that never converts is a
+  // different problem from a plain one that never converts.
+  report('invite_page_viewed', { has_ref: !!ref, has_squad: !!squad, platform: platform });
 
   var storeUrl = isAndroid ? ${JSON.stringify(ANDROID_URL)} : ${JSON.stringify(IOS_URL)};
   var btn = document.getElementById('store-btn');
@@ -85,11 +91,14 @@ const inviteInit = `(function () {
     // an automatic redirect into it would inflate exactly the number that has to stay
     // honest. The button tap is not reported here at all: it is a real click on a link to
     // apps.apple.com, so the delegated listener in analytics.js already has it.
-    if (trigger === 'auto') report('invite_store_redirect', { platform: platform, has_ref: !!ref });
+    if (trigger === 'auto') report('invite_store_redirect', { platform: platform, has_ref: !!ref, has_squad: !!squad });
     window.location.href = storeUrl;
   }
 
-  var needsClipboard = !!(ref && navigator.clipboard && navigator.clipboard.writeText);
+  // Either parameter is worth carrying across the install. A squad invite whose sharer has
+  // no username yet arrives without a ref, and dropping the clipboard write for it would
+  // lose the squad code, which is the only way into that squad.
+  var needsClipboard = !!((ref || squad) && navigator.clipboard && navigator.clipboard.writeText);
 
   if (needsClipboard) {
     navigator.clipboard.writeText(window.location.href)
