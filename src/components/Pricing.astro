@@ -101,13 +101,6 @@ const modes = [
       </section>
     </div>
 
-    {/*
-      One pair of store buttons under both cards rather than a pair inside each.
-      Both plans lead to the same two places — the free download and the
-      subscription are the same install — so two sets asked the reader to choose
-      between identical buttons.
-    */}
-    <StoreButtons lang={lang} class="mt-8 justify-center" mono />
 
     {/* The page's one loud line: the price in the unit the reader already buys. */}
     <section class="mt-14 border-y border-stroke py-10 dark:border-stroke-dark">
@@ -246,7 +239,7 @@ const modes = [
       <h2 class="mx-auto max-w-[20ch] text-3xl font-bold leading-tight text-black dark:text-white sm:text-4xl">
         {t.ctaHeading}
       </h2>
-      <StoreButtons lang={lang} class="mt-8 justify-center" mono />
+      <StoreButtons lang={lang} class="mt-8 justify-center" />
       <p class="mx-auto mt-8 max-w-[62ch] text-xs leading-relaxed text-body/80 dark:text-white/50">
         {t.storeNote}
       </p>

@@ -9,14 +9,8 @@ interface Props {
    * default pair (primary blue and black) disappears into the brand gradient.
    */
   onColor?: boolean;
-  /**
-   * Both buttons in the neutral treatment the App Store one already uses. The
-   * blue Play button is a third colour next to a page that already carries the
-   * brand gradient, and on the Pro page that reads as a stray accent.
-   */
-  mono?: boolean;
 }
-const { lang, class: className = '', onColor = false, mono = false } = Astro.props;
+const { lang, class: className = '', onColor = false } = Astro.props;
 
 const neutral = 'bg-black text-white dark:bg-white dark:text-black dark:hover:bg-opacity-90';
 
@@ -53,7 +47,7 @@ const APPLE_URL = 'https://apps.apple.com/at/app/breezer/id6737725511';
       href={PLAY_URL}
       class:list={[
         'inline-flex items-center rounded-md py-[10px] pl-4 pr-5 hover:bg-opacity-90',
-        onColor ? 'bg-white text-black' : mono ? neutral : 'bg-primary text-white',
+        onColor ? 'bg-white text-black' : 'bg-primary text-white',
       ]}
       rel="noopener"
       aria-label={t.playAria}
