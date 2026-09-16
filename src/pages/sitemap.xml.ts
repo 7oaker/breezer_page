@@ -59,6 +59,21 @@ export const GET: APIRoute = async () => {
     });
   }
 
+  // Pro vs Free. A hand-written route rather than a collection entry, so unlike
+  // the guides above it has to be listed here by name.
+  const pricingAlt: LocalePaths = routes.pricing;
+  for (const locale of localeCodes) {
+    const path = pricingAlt[locale];
+    if (!path) continue;
+    entries.push({
+      path,
+      lastmod: iso(new Date()),
+      changefreq: 'monthly',
+      priority: '0.8',
+      alt: pricingAlt,
+    });
+  }
+
   // Blog hubs
   const blogAlt: LocalePaths = routes.blog;
   for (const lang of localeCodes) {

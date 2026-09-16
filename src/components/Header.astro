@@ -32,12 +32,20 @@ const prefix = full ? '' : home === '/' ? '/' : home;
 /**
  * The merch shop took the slot that used to hold "How It Works", and "About"
  * went with it: both sections explain themselves to anyone already scrolling
- * the page, so they bought nothing from a nav slot. What is left is the three
- * destinations you cannot reach by scrolling. `scroll` marks the same-page
+ * the page, so they bought nothing from a nav slot. What is left is the
+ * destinations you cannot reach by scrolling, Pro among them. `scroll` marks the same-page
  * jump, which is what the menu-scroll class and its active state key off.
  */
+// Named after the page's own heading, so the link and the page agree.
+const proLabel = { en: 'Pro vs Free', de: 'Pro vs Gratis', sv: 'Pro vs gratis' }[lang];
+
 const nav = [
   { href: 'https://shop.breezer.now/', label: 'Shop', scroll: false },
+  // The only nav item that answers a question a visitor has before installing,
+  // and the answer is not reachable by scrolling.
+  ...(routes.pricing[lang]
+    ? [{ href: route('pricing', lang), label: proLabel, scroll: false }]
+    : []),
   { href: `${prefix}#support`, label: 'Support', scroll: true },
   // Dropped in a language that has no blog. Linking a Swedish reader into the
   // English blog from the main nav is the thin-locale pattern: a page that

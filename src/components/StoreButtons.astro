@@ -4,8 +4,13 @@ import type { Lang } from '../i18n/routes';
 interface Props {
   lang: Lang;
   class?: string;
+  /**
+   * For a coloured surface: both buttons go white on black text, because the
+   * default pair (primary blue and black) disappears into the brand gradient.
+   */
+  onColor?: boolean;
 }
-const { lang, class: className = '' } = Astro.props;
+const { lang, class: className = '', onColor = false } = Astro.props;
 
 const copy = {
   en: {
@@ -38,7 +43,10 @@ const APPLE_URL = 'https://apps.apple.com/at/app/breezer/id6737725511';
   <div class="inline-block">
     <a
       href={PLAY_URL}
-      class="inline-flex items-center rounded-md bg-primary py-[10px] pl-4 pr-5 text-white hover:bg-opacity-90"
+      class:list={[
+        'inline-flex items-center rounded-md py-[10px] pl-4 pr-5 hover:bg-opacity-90',
+        onColor ? 'bg-white text-black' : 'bg-primary text-white',
+      ]}
       rel="noopener"
       aria-label={t.playAria}
     >
@@ -56,7 +64,12 @@ const APPLE_URL = 'https://apps.apple.com/at/app/breezer/id6737725511';
   <div class="inline-block">
     <a
       href={APPLE_URL}
-      class="inline-flex items-center rounded-md bg-black py-[10px] pl-4 pr-5 text-white hover:bg-opacity-90 dark:bg-white dark:text-black dark:hover:bg-opacity-90"
+      class:list={[
+        'inline-flex items-center rounded-md py-[10px] pl-4 pr-5 hover:bg-opacity-90',
+        onColor
+          ? 'bg-white text-black'
+          : 'bg-black text-white dark:bg-white dark:text-black dark:hover:bg-opacity-90',
+      ]}
       rel="noopener"
       aria-label={t.appleAria}
     >

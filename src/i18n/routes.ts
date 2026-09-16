@@ -71,6 +71,10 @@ export const nav: { key: RouteKey; label: Record<Locale, string> }[] = [
   { key: 'snusTracker', label: { sv: 'Snus Tracker', en: 'Snus Tracker', de: 'Snus Tracker' } },
   { key: 'quitSnus', label: { sv: 'Sluta snusa', en: 'Quit Snus', de: 'Snus aufhören' } },
   { key: 'zynTracker', label: { sv: 'Zyn Tracker', en: 'Zyn Tracker', de: 'Zyn Tracker' } },
+  // The one nav entry that is not a guide. Somebody who wants to know what Pro
+  // costs should not have to scroll a marketing page to find out, and "Pro" is
+  // the word they look for.
+  { key: 'pricing', label: { sv: 'Pro vs gratis', en: 'Pro vs Free', de: 'Pro vs Gratis' } },
   { key: 'blog', label: { sv: 'Blogg', en: 'Blog', de: 'Blog' } },
 ];
 
@@ -87,6 +91,6 @@ export const footerNav: { key: RouteKey; label: Record<Locale, string> }[] = [
   { key: 'zynTracker', label: { sv: 'Zyn Tracker', en: 'Zyn Tracker', de: 'Zyn Tracker' } },
   { key: 'vsSnusless', label: { sv: 'Breezer vs Snusless', en: 'Breezer vs Snusless', de: 'Breezer vs Snusless' } },
   { key: 'vsSmokeFree', label: { sv: 'Breezer vs Smoke Free', en: 'Breezer vs Smoke Free', de: 'Breezer vs Smoke Free' } },
-  { key: 'pricing', label: { sv: 'Priser', en: 'Pricing', de: 'Preise' } },
+  { key: 'pricing', label: { sv: 'Pro vs gratis', en: 'Pro vs Free', de: 'Pro vs Gratis' } },
   { key: 'blog', label: { sv: 'Blogg', en: 'Blog', de: 'Blog' } },
 ];

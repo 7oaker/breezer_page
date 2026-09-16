@@ -1,0 +1,32 @@
+---
+/**
+ * Pro vs Free. A product page rather than a guide: it began as a markdown entry
+ * in the guides collection and was rebuilt as a route, because somebody who
+ * wants to know what Pro costs is deciding, not reading.
+ *
+ * `/de/preise` is this same page in German, paired through `routes.pricing`.
+ */
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Pricing from '../components/Pricing.astro';
+import { pricing } from '../i18n/pricing';
+import { faqPage } from '../i18n/schema';
+import { routes } from '../i18n/routes';
+
+const lang = 'en' as const;
+const t = pricing[lang];
+---
+
+<Base
+  lang={lang}
+  title={t.title}
+  description="Everything that makes tracking and quitting work is free, friends, rankings and chat included. What Breezer Pro adds, what it costs, and where the free version ends."
+  path="/pricing"
+  alternates={routes.pricing}
+  schema={[faqPage(t.faq)]}
+>
+  <Header lang={lang} />
+  <Pricing lang={lang} />
+  <Footer lang={lang} />
+</Base>

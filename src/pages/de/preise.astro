@@ -1,0 +1,26 @@
+---
+/** Dieselbe Seite wie `/pricing`, auf Deutsch. Gepaart über `routes.pricing`. */
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Pricing from '../../components/Pricing.astro';
+import { pricing } from '../../i18n/pricing';
+import { faqPage } from '../../i18n/schema';
+import { routes } from '../../i18n/routes';
+
+const lang = 'de' as const;
+const t = pricing[lang];
+---
+
+<Base
+  lang={lang}
+  title={t.title}
+  description="Alles, was Tracken und Aufhören ausmacht, ist gratis, Freunde, Ranglisten und Chat inklusive. Was Breezer Pro dazugibt, was es kostet und wo die Gratisversion endet."
+  path="/de/preise"
+  alternates={routes.pricing}
+  schema={[faqPage(t.faq)]}
+>
+  <Header lang={lang} />
+  <Pricing lang={lang} />
+  <Footer lang={lang} />
+</Base>
