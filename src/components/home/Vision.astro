@@ -1,0 +1,70 @@
+---
+/**
+ * Why the app exists, immediately before the screenshots.
+ *
+ * The page up to here is argument — features, numbers, devices — and the page
+ * after it is proof. This is the one place that says what the thing is for, so
+ * it is deliberately the quietest section on the homepage: no gradient, no icon
+ * set, one portrait and the sentence. Everything around it is already loud, and
+ * a statement of intent that arrives dressed as an ad reads as an ad.
+ *
+ * Spoken, and marked up as spoken: a `blockquote` with a `cite` in the footer,
+ * because the closing line is first person. An unsigned "love you all" is a
+ * company pretending to be a person.
+ *
+ * The portrait is the same line drawing the blog byline uses, painted through a
+ * CSS mask so the outline picks up the brand gradient instead of the palette it
+ * was drawn in. Two nested elements, because a mask clips the element it sits
+ * on — the ring has to be the parent or it gets masked away with the rest. The
+ * reasoning for a drawing rather than a photograph is in `src/data/authors.ts`:
+ * the accountability is real, the biometric exposure is not.
+ */
+import { getAuthor } from '../../data/authors';
+import type { UI } from '../../i18n/ui';
+
+interface Props {
+  t: UI;
+}
+const { t } = Astro.props;
+
+const portrait = getAuthor('Klaus Siebeneicher')?.image;
+---
+
+<section id="vision" class="relative z-20 pt-[110px]">
+  <div class="container">
+    <figure class="mx-auto max-w-[760px] border-t border-stroke pt-14 text-center dark:border-stroke-dark">
+      <p class="text-sm font-medium text-primary dark:text-primary-light">{t.vision_eyebrow}</p>
+
+      {portrait && (
+        <span
+          aria-hidden="true"
+          class="mx-auto mt-6 flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-primary/5 ring-1 ring-stroke dark:bg-white/5 dark:ring-stroke-dark"
+        >
+          <span
+            class="bg-gradient-1 block h-full w-full"
+            style={`-webkit-mask:url(${portrait}) center/88% no-repeat;mask:url(${portrait}) center/88% no-repeat;`}
+          ></span>
+        </span>
+      )}
+
+      <blockquote
+        class="wow fadeInUp mt-8"
+        data-wow-delay=".2s"
+      >
+        <p class="mx-auto max-w-[19ch] text-3xl font-bold leading-tight text-black dark:text-white sm:text-4xl md:text-[44px] md:leading-tight">
+          {t.vision_heading}
+        </p>
+        <p class="mx-auto mt-6 max-w-[62ch] text-base leading-relaxed text-body sm:text-lg">
+          {t.vision_body}
+        </p>
+        <p class="mx-auto mt-8 max-w-[36ch] text-xl font-semibold leading-relaxed text-black dark:text-white sm:text-2xl">
+          {t.vision_closing}
+        </p>
+      </blockquote>
+
+      <figcaption class="mt-6 text-sm text-body dark:text-white/60">
+        <cite class="not-italic">{t.vision_signature}</cite>
+      </figcaption>
+    </figure>
+  </div>
+</section>

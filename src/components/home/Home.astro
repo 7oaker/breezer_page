@@ -4,6 +4,7 @@ import LanguageSwitcher from '../LanguageSwitcher.astro';
 import Icon from '../Icon.astro';
 import ScreenCarousel from './ScreenCarousel.astro';
 import FeatureList from './FeatureList.astro';
+import Vision from './Vision.astro';
 import PressPhone from './PressPhone.astro';
 import StatsPhone from './StatsPhone.astro';
 import QuitPhone from './QuitPhone.astro';
@@ -814,6 +815,13 @@ const screenModes = [
        
 
       
+      {/*
+        What the app is for, between the argument and the proof: the sections
+        above make the case, the screenshots below show the thing, and this says
+        why it was built at all.
+      */}
+      <Vision t={t} />
+
       <section id="screens" class="relative z-20 pt-[110px]">
         <div class="container">
           <div
