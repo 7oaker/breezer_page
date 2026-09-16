@@ -28,6 +28,7 @@ import type { UI } from '../../i18n/ui';
 import { fill } from '../../i18n/ui';
 import quitBg from '../../assets/images/app/quit-bg.jpg';
 import pouch from '../../assets/images/app/logo-small.png';
+import appIcon from '../../assets/images/app/app-icon-dark.png';
 
 interface Props {
   t: UI;
@@ -111,12 +112,53 @@ const HEALTH_TOTAL = 9;
 const ACHIEVEMENTS_DONE = 17;
 const ACHIEVEMENTS_TOTAL = 24;
 
-/** Invented names; day counts and avatar colours are the screenshot's. */
-const RANKING = [
-  { initials: 'JL', name: 'Jonas Lindqvist', days: 286, bg: '#85DBD8' },
-  { initials: 'TK', name: 'Tobias Krause', days: 283, flag: '🇩🇪', bg: '#85DBD8' },
-  { initials: 'EM', name: 'Elena Moreno', days: 267, flag: '🇪🇸', bg: '#7C67FE' },
+/**
+ * The journey tile, which replaced the quitters ranking in the app — a board on
+ * which nobody could ever move, because days clean grow by one a day for
+ * everybody. `JourneySection.jsx` draws the path in miniature instead: filled
+ * behind you, hollow ahead, a ring where you are standing, and the three
+ * milestones that come next.
+ *
+ * These five rungs and three milestones are not invented. They are what
+ * `buildHomeCard({ days: 24, userHabit: HABIT, hasProAccess: true })` in
+ * `react_Breezer/lib/quitJourney.js` returns, which is the same function the app
+ * calls — day 20 and 24 are money and pouch targets the seeded habit reaches
+ * there, 25 is a withdrawal symptom easing, 30 is the fifth health improvement,
+ * 40 is 100 EUR saved. Changing QUIT_SECONDS or HABIT means running that
+ * function again rather than nudging these by hand.
+ *
+ * `tone` is the app's `spineTone`: green for what happened to your body, blue
+ * for what you earned. `kind` is its `primaryKind`, which decides the icon and
+ * can differ from the tone on a day that carries both.
+ *
+ * Static, like the ranking it replaces. The clock above it ticks, but a rung
+ * only moves after a whole day, and the page would have to stay open for the
+ * rest of one for that to matter.
+ */
+const RUNGS: { day: number; tone: 'earned' | 'health'; reached: boolean }[] = [
+  { day: 20, tone: 'earned', reached: true },
+  { day: 24, tone: 'earned', reached: true },
+  { day: 25, tone: 'health', reached: false },
+  { day: 30, tone: 'health', reached: false },
+  { day: 40, tone: 'earned', reached: false },
 ];
+
+/** The first rung still ahead: where the quitter is standing on the ladder. */
+const NEXT_RUNG = RUNGS.findIndex((rung) => !rung.reached);
+
+const NEXT = [
+  { kind: 'symptom', label: t.app_quit_journey_irritability, inDays: 1 },
+  { kind: 'health', label: t.app_quit_journey_nicotine_free, inDays: 6 },
+  { kind: 'achievement', label: `€100 ${t.app_quit_saved}`, inDays: 16 },
+];
+
+/** The app's `journey.inDays`, whose one/other split i18next handles for it. */
+const inDays = (count: number) =>
+  count === 1 ? t.app_quit_journey_in_day : fill(t.app_quit_journey_in_days, { count });
+
+/** `spineTone` as the two colours the path uses, at the opacities it uses them. */
+const DOT = { earned: 'bg-[#1FD9FF]/50', health: 'bg-[#22c55e]/60' };
+const LINE = { earned: 'bg-[#1FD9FF]/30', health: 'bg-[#22c55e]/25' };
 
 const CHIPS = [
   { value: seedChips.years, label: t.app_quit_label_year, key: 'years' },
@@ -320,57 +362,244 @@ const CONFIG = { quitSeconds: QUIT_SECONDS, habit: HABIT };
     </div>
   </div>
 
-  {/* Share pill */}
-  <div
-    class="mx-[8px] mt-[12px] flex h-[28px] shrink-0 items-center justify-center gap-[5px] rounded-[11px] bg-gradient-to-r from-[#1E1E2D] to-[#232533]"
-  >
-    <span class="text-[9px] font-medium leading-none text-[#d1d5db]">{t.app_share_with_friend}</span>
-    <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="2" aria-hidden="true"
-      ><path d="M12 3v12M12 3 8 7M12 3l4 4" stroke-linecap="round" stroke-linejoin="round"
-      ></path><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" stroke-linecap="round"></path></svg
+  {/*
+    Urge and Slip. Each sits under the tile it belongs to — craving under Health,
+    slip under Achievements — so the column above says what the button is about
+    before the label does. Deliberately quiet: nothing here is a celebration.
+
+    Not operable, like everything else on this screen. The two real buttons open
+    a form, and a form is not a thing to mock up on a marketing page.
+  */}
+  <div class="mx-[5px] mt-[6px] flex h-[27px] shrink-0 gap-[6px]" aria-hidden="true">
+    <span
+      class="flex w-1/2 items-center justify-center gap-[3px] rounded-[11px] bg-gradient-to-br from-[#1E1E2D] to-[#232533] text-[9px] font-semibold leading-none text-[#1FD9FF]"
     >
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+        ><path d="M12 5v14M5 12h14" stroke-linecap="round"></path></svg
+      >
+      {t.app_quit_urge}
+    </span>
+    <span
+      class="flex w-1/2 items-center justify-center gap-[3px] rounded-[11px] bg-gradient-to-br from-[#1E1E2D] to-[#232533] text-[9px] font-semibold leading-none text-[#fb7185]"
+    >
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+        ><path d="M12 5v14M5 12h14" stroke-linecap="round"></path></svg
+      >
+      {t.app_quit_slip}
+    </span>
   </div>
 
-  {/* Quitters Ranking. Static: the app computes these counts once, server-side,
-      so they do not tick either. */}
+  {/*
+    Your Journey. It replaces both the share pill and the quitters ranking that
+    stood here: the pill was a row of chrome, and the board it sat above ranked
+    strangers on a number that only ever counts up.
+
+    The strip is the path itself in miniature, which is the whole idea of it — a
+    card that opens a path should look like one rather than like another number
+    in a box. Filled behind, hollow ahead, a ring on the rung being walked
+    towards, and the same green the health steps use on the screen above.
+  */}
   <div
-    class="mx-[8px] mt-[4px] shrink-0 rounded-[11px] bg-gradient-to-br from-[#1E1E2D] to-[#232533] p-[8px]"
+    class="mx-[8px] mt-[12px] shrink-0 rounded-[11px] bg-gradient-to-br from-[#1E1E2D] to-[#232533] p-[8px]"
   >
     <div class="flex items-center justify-between">
-      <span class="text-[11px] font-bold leading-none text-white">{t.app_quit_ranking}</span>
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="#1FD9FF" aria-hidden="true"
-        ><path
-          d="M6 3h12v5a6 6 0 0 1-5 5.9V17h3v2H8v-2h3v-3.1A6 6 0 0 1 6 8V3Zm-4 1h3v3a3 3 0 0 1-3-3Zm17 0h3a3 3 0 0 1-3 3V4ZM7 20h10v2H7v-2Z"
-        ></path></svg
+      <span class="flex items-center gap-[5px] text-[11px] font-bold leading-none text-white">
+        {/* Footsteps, the app's icon for this card: two prints walking away. */}
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="#6b7280" aria-hidden="true"
+          ><ellipse cx="7" cy="7" rx="3" ry="4.2"></ellipse><ellipse cx="7" cy="13.8" rx="2.2" ry="1.8"
+          ></ellipse><ellipse cx="17" cy="11" rx="3" ry="4.2"></ellipse><ellipse
+            cx="17"
+            cy="17.8"
+            rx="2.2"
+            ry="1.8"></ellipse></svg
+        >
+        {t.app_quit_journey}
+      </span>
+      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#1FD9FF" stroke-width="3" aria-hidden="true"
+        ><path d="m9 5 7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg
       >
     </div>
-    {
-      RANKING.map((row, i) => (
-        <div class="mt-[7px] flex items-center">
-          <span class="w-[13px] shrink-0 text-[9px] font-bold leading-none text-[#6b7280]">
-            {i + 1}.
-          </span>
-          <span
-            class="mx-[5px] flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-full text-[8px] font-bold leading-none ring-1 ring-[#1FD9FF]/30"
-            style={`background-color: ${row.bg}; color: #1F1F2E`}
-            aria-hidden="true"
-          >
-            {row.initials}
-          </span>
-          <span class="flex-1 truncate text-[9px] leading-[11px] text-[#e5e7eb]">
-            {row.name}
-            {row.flag ? ` ${row.flag}` : ''}
-          </span>
-          <span class="shrink-0 text-[8px] font-bold leading-none text-[#1FD9FF]">
-            {row.days} {t.app_quit_days}
-          </span>
-        </div>
-      ))
-    }
-    <p
-      class="mt-[6px] border-t border-[#374151]/30 pt-[6px] text-center text-[8px] font-medium leading-none text-[#1FD9FF]"
+
+    {/*
+      The day under each dot, bare and in the weight the spine itself uses,
+      because a row of dots is a shape rather than a scale: it shows that
+      something is coming without saying whether it is tomorrow or in a year.
+      No total here either — that is the 32px number two centimetres above, and
+      these are the days the rungs sit on, which is what the counter cannot say.
+    */}
+    <div class="mt-[9px] flex items-start" aria-hidden="true">
+      {
+        RUNGS.map((rung, i) => {
+          const isNext = i === NEXT_RUNG;
+          const prev = i > 0 ? RUNGS[i - 1] : null;
+          return (
+            <>
+              {/* A segment belongs to the dot on its left: it is the stretch
+                  already walked, so it takes that dot's colour. Nudged to the
+                  dots' middle rather than centred on a column the day numbers
+                  made taller. */}
+              {prev ? (
+                <span
+                  class:list={[
+                    'mt-[3px] h-[1.5px] flex-1',
+                    prev.reached ? LINE[prev.tone] : 'bg-[#374151]/40',
+                  ]}
+                />
+              ) : null}
+              <span class="flex w-[20px] shrink-0 flex-col items-center">
+                {/* Fixed height: the ring is two pixels wider than a plain dot,
+                    and the numbers would otherwise sit at two heights. */}
+                <span class="flex h-[8px] items-center justify-center">
+                  <span
+                    class:list={[
+                      'rounded-full',
+                      isNext
+                        ? 'h-[7px] w-[7px] border-[1.5px] border-[#1FD9FF] bg-[#232533]'
+                        : ['h-[5px] w-[5px]', rung.reached ? DOT[rung.tone] : 'bg-[#374151]'],
+                    ]}
+                  />
+                </span>
+                <span
+                  class:list={[
+                    'mt-[3px] text-[7px] font-bold leading-[9px]',
+                    isNext ? 'text-[#1FD9FF]' : rung.reached ? 'text-[#6b7280]' : 'text-[#4b5563]',
+                  ]}
+                >
+                  {rung.day}
+                </span>
+              </span>
+            </>
+          );
+        })
+      }
+    </div>
+
+    <div class="mt-[8px] border-t border-[#374151]/30 pt-[7px]">
+      {
+        NEXT.map((node, i) => (
+          <div class:list={['flex items-center', i < NEXT.length - 1 && 'mb-[4px]']}>
+            {/* The icon the path draws for that kind, in the greys it uses for
+                what is still ahead: the card is a window onto that screen, so a
+                heart here has to be the heart there. */}
+            <span class="flex w-[10px] shrink-0 justify-start" aria-hidden="true">
+              {node.kind === 'health' ? (
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke={i === 0 ? '#9ca3af' : '#6b7280'} stroke-width="2">
+                  <path d="M12 20.3 3.6 12a5 5 0 0 1 8.4-5.2A5 5 0 0 1 20.4 12l-8.4 8.3Z" stroke-linejoin="round" />
+                </svg>
+              ) : node.kind === 'symptom' ? (
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke={i === 0 ? '#9ca3af' : '#6b7280'} stroke-width="2">
+                  <path d="M3 7.5 9.5 14l4-4 4.5 4.5" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M21 10.5v5h-5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              ) : (
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke={i === 0 ? '#9ca3af' : '#6b7280'} stroke-width="2">
+                  <path d="M7 4h10v5a5 5 0 0 1-10 0V4Z" stroke-linejoin="round" />
+                  <path d="M7 5.5H4V7a3 3 0 0 0 3 3m10-4.5h3V7a3 3 0 0 1-3 3M12 14v4m-3.5 2h7" stroke-linecap="round" />
+                </svg>
+              )}
+            </span>
+            {/* The nearest one carries the accent and the ones behind it recede.
+                A list where every line shouts equally is one nobody reads. */}
+            <span
+              class:list={[
+                'mx-[5px] flex-1 truncate text-[8px] leading-[10px]',
+                i === 0 ? 'text-[#e5e7eb]' : 'text-[#9ca3af]',
+              ]}
+            >
+              {node.label}
+            </span>
+            <span
+              class:list={[
+                'shrink-0 text-[8px] font-medium leading-[10px]',
+                i === 0 ? 'text-[#1FD9FF]' : 'text-[#6b7280]',
+              ]}
+            >
+              {inDays(node.inDays)}
+            </span>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  {/*
+    The milestone push, the same device the press screen uses for a friend's
+    pouch. Here it is the app's own, so the sender is Breezer and the icon is
+    the app's.
+
+    It is about the node the strip below is walking towards, which is why it
+    names the same thing the first row of that list does: a banner and a list
+    that disagree about what is coming next read as two mockups rather than as
+    one screen. `lib/quitNotifications.js` does schedule a push per journey node,
+    but for a symptom day its `titleFor` falls through to the generic
+    `journey.title`, which says nothing about what is easing. So this is phrased
+    from `journey.symptomEased` and the one day still to go instead.
+
+    The name carries the title and the rest goes in the body, because a
+    notification title is one line: the whole sentence would be cut after
+    "Stimmungsschwankungen fast übe…" at this width.
+
+    Inside the screen so it scales with it and clips at the window edge, the way
+    the OS draws it over the app. aria-hidden because it is a picture of a
+    notification: the same claim is made in real copy further down the page.
+
+    top-[26px] rather than the 8px the press screen's banner started at:
+    `mobile-frame.png` draws the notch into the screen window (x 76..185,
+    y 0..21 of the 261x566 box), so a banner any higher slides under it and the
+    frame paints the island over its first line. A short sender name happens to
+    sit clear of it; a title that runs the full width does not. 26px is the
+    status bar's own height, so the banner starts exactly where that ends, which
+    is where iOS puts it.
+  */}
+  <div
+    class="quit-phone__banner pointer-events-none absolute inset-x-[8px] top-[26px]"
+    data-quit-banner
+    aria-hidden="true"
+  >
+    <div
+      class="flex items-start gap-[7px] rounded-[16px] bg-[#1c1c1e]/85 p-[8px] shadow-lg backdrop-blur-md"
     >
-      {t.app_quit_leaderboard}
-    </p>
+      <Image
+        src={appIcon}
+        width={44}
+        height={44}
+        alt=""
+        aria-hidden="true"
+        class="h-[26px] w-[26px] shrink-0 rounded-[7px]"
+        loading="lazy"
+        decoding="async"
+      />
+      <div class="min-w-0 flex-1">
+        <div class="flex items-baseline justify-between gap-[6px]">
+          <span class="truncate text-[10px] font-semibold leading-[13px] text-white"
+            >{t.app_quit_notif_title}</span
+          >
+          <span class="shrink-0 text-[8px] leading-[13px] text-[#9ca3af]">{t.app_notif_ago}</span>
+        </div>
+        <p class="text-[10px] leading-[13px] text-white/90">{t.app_quit_notif_body}</p>
+      </div>
+    </div>
   </div>
 </AppScreen>
+
+<style>
+  /* Hidden until `quit-phone.js` shows it, so it never flashes on first paint.
+     Same treatment as the press screen's banner, because it is the same object
+     arriving the same way. */
+  .quit-phone__banner {
+    opacity: 0;
+    transform: translateY(-120%);
+  }
+  .quit-phone__banner[data-visible] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .quit-phone__banner {
+      transition:
+        opacity 320ms ease,
+        transform 380ms cubic-bezier(0.16, 0.84, 0.44, 1);
+    }
+  }
+</style>

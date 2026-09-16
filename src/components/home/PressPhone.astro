@@ -56,6 +56,8 @@ const SEED = {
   rank: 1,
   friends: 14,
   activity: 2,
+  squadTag: 'BNGZ',
+  squadMembers: 7,
 };
 
 /**
@@ -390,20 +392,27 @@ const brands = ['VELO', '77', 'Ace', 'Après', 'An'];
                 ><path d="m9 5 7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg
               >
             </div>
-            <div class="mt-[8px] flex items-center gap-[6px]">
-              <span class="rounded-[7px] bg-[#1FD9FF]/15 p-[4px]" aria-hidden="true">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="#1FD9FF"
-                  ><path
-                    d="M6 3h12v5a6 6 0 0 1-5 5.9V17h3v2H8v-2h3v-3.1A6 6 0 0 1 6 8V3Zm-4 1h3v3a3 3 0 0 1-3-3Zm17 0h3a3 3 0 0 1-3 3V4ZM7 20h10v2H7v-2Z"
-                  ></path></svg
-                >
-              </span>
-              <span class="flex flex-col">
+            {/* Rank on the left, squad on the right, both as value over label.
+                No trophy beside the rank: the app dropped it when the squad
+                moved in, and two columns of the same shape read as a pair where
+                an icon on one of them would not. The tag rather than the squad's
+                full name, because four characters never need truncating. */}
+            <div class="mt-[7px] flex items-end justify-between gap-[5px]">
+              <span class="flex shrink-0 flex-col">
                 <span class="text-[12px] font-semibold leading-[13px] text-white">#{SEED.rank}</span>
                 <span class="text-[7px] leading-[9px] text-[#6b7280]">{t.app_your_rank}</span>
               </span>
+              <span class="flex min-w-0 flex-col items-end">
+                <span class="truncate text-[12px] font-bold leading-[13px] text-[#1FD9FF]"
+                  >{SEED.squadTag}</span
+                >
+                <span class="text-[7px] leading-[9px] text-[#6b7280]">{t.app_your_squad}</span>
+              </span>
             </div>
-            <div class="mt-[8px] flex items-center gap-[14px] text-[9px] font-semibold leading-none text-white">
+            {/* Friends, activity, squad size. Three pairs across half a card, so
+                the gap is the app's `mr-3` rather than the `mr-5` it used when
+                there were two. */}
+            <div class="mt-[8px] flex items-center gap-[9px] text-[9px] font-semibold leading-none text-white">
               <span class="flex items-center gap-[4px]">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="#1FD9FF" aria-hidden="true"
                   ><path
@@ -418,6 +427,12 @@ const brands = ['VELO', '77', 'Ace', 'Après', 'An'];
                   ></path></svg
                 >
                 <span data-press-activity>{SEED.activity}</span>
+              </span>
+              <span class="flex items-center gap-[4px]">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="#1FD9FF" aria-hidden="true"
+                  ><path d="M12 2 4 5v6.2c0 4.9 3.4 9.1 8 10.3 4.6-1.2 8-5.4 8-10.3V5l-8-3Z"></path></svg
+                >
+                {SEED.squadMembers}
               </span>
             </div>
           </div>
@@ -468,9 +483,16 @@ const brands = ['VELO', '77', 'Ace', 'Après', 'An'];
             the window edge, the way the OS draws it over the app. aria-hidden
             because it loops — a live region repeating every few seconds is a
             screen-reader nuisance, and the same claim is made in real copy
-            further down the page. */}
+            further down the page.
+
+            top-[26px] rather than the 8px it started at: `mobile-frame.png`
+            draws the notch into the screen window (x 76..185, y 0..21 of the
+            261x566 box), so a banner any higher slides under it and the frame
+            paints the island over its first line. 26px is the status bar's own
+            height, so the banner starts exactly where that ends — which is
+            where iOS puts it. */}
         <div
-          class="press-phone__banner pointer-events-none absolute inset-x-[8px] top-[8px]"
+          class="press-phone__banner pointer-events-none absolute inset-x-[8px] top-[26px]"
           data-press-banner
           aria-hidden="true"
         >

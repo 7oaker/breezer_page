@@ -13,6 +13,15 @@
 /** The app values a pouch at half an hour of life back. */
 const MINUTES_PER_SNUS = 30;
 
+/**
+ * The milestone push. It arrives once, because a milestone does: the press
+ * screen loops its friend's notification on purpose, since that loop is the
+ * social claim it is making, and repeating a "day 24 reached" would read as a
+ * bug rather than as a second friend.
+ */
+const NOTIFICATION_AFTER_MS = 4500;
+const NOTIFICATION_VISIBLE_MS = 6000;
+
 /** `computeQuittingSavings` — mirrors QuitPhone.astro's server-side copy. */
 function savingsFor(elapsedSeconds, habit) {
   const days = elapsedSeconds / 86400;
@@ -80,8 +89,10 @@ export function init() {
 
   // A number changing once a second is exactly what this preference asks to be
   // spared, and the site's convention is a completely still page. The markup is
-  // already rendered at its seeded values, so opting out simply leaves it there.
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  // already rendered at its seeded values, so opting out simply leaves the clock
+  // there. The push still arrives: it lands once and then holds still, which is
+  // the same bargain the press screen's banner makes under this preference.
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const start = new Date(Date.now() - config.quitSeconds * 1000);
   const chips = {};
@@ -113,18 +124,47 @@ export function init() {
     if (gainedNode) gainedNode.textContent = formatGained(savings.minutesGained);
   }
 
+  // The push. Armed only once the phone is actually on screen, so a visitor who
+  // scrolls straight past does not spend their one notification on an empty
+  // viewport.
+  const banner = root.querySelector('[data-quit-banner]');
+  let bannerTimer = null;
+  let bannerFired = false;
+
+  function startBanner() {
+    if (!banner || bannerFired || bannerTimer) return;
+    bannerTimer = window.setTimeout(() => {
+      bannerFired = true;
+      banner.setAttribute('data-visible', '');
+      // No handle kept: it fires once, so there is never a second one to cancel.
+      window.setTimeout(() => banner.removeAttribute('data-visible'), NOTIFICATION_VISIBLE_MS);
+    }, NOTIFICATION_AFTER_MS);
+  }
+
+  function stopBanner() {
+    if (!bannerTimer) return;
+    window.clearTimeout(bannerTimer);
+    bannerTimer = null;
+  }
+
   // Nothing ticks while the phone is off-screen or the tab is in the background.
   let timer = null;
   let onScreen = true;
 
   function sync() {
     const shouldRun = onScreen && !document.hidden;
-    if (shouldRun && !timer) {
-      update();
-      timer = window.setInterval(update, 1000);
-    } else if (!shouldRun && timer) {
-      window.clearInterval(timer);
-      timer = null;
+    if (shouldRun) {
+      startBanner();
+      if (!timer && !reduced) {
+        update();
+        timer = window.setInterval(update, 1000);
+      }
+    } else {
+      stopBanner();
+      if (timer) {
+        window.clearInterval(timer);
+        timer = null;
+      }
     }
   }
 
