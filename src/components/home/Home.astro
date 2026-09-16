@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import LanguageSwitcher from '../LanguageSwitcher.astro';
 import Icon from '../Icon.astro';
 import ScreenCarousel from './ScreenCarousel.astro';
+import FeatureList from './FeatureList.astro';
 import PressPhone from './PressPhone.astro';
 import StatsPhone from './StatsPhone.astro';
 import QuitPhone from './QuitPhone.astro';
@@ -589,97 +590,16 @@ const screenModes = [
 
                   </p>
 
-                  <div class="hidden md:block">
-                                    <div class="mb-[30px] flex items-center">
-                    <div
-                      class="mr-[22px] flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full border border-stroke text-primary dark:border-stroke-dark dark:bg-dark"
-                    >
-                      <Icon name="analytics" />
-                    </div>
-                    <div>
-                      <h3
-                        class="text-xl font-medium text-black dark:text-white"
-                      >
-                        {t.premium_tracking_charts}
-                      </h3>
-                      <p class="text-base text-body">
-                        {t.advanced_analytics_with_beautiful_visual_charts}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div class="mb-[30px] flex items-center">
-                    <div
-                      class="mr-[22px] flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full border border-stroke text-primary dark:border-stroke-dark dark:bg-dark"
-                    >
-                      <Icon name="group" />
-                    </div>
-                    <div>
-                      <h3
-                        class="text-xl font-medium text-black dark:text-white"
-                      >
-                        {t.link_with_friends}
-                      </h3>
-                      <p class="text-base text-body">
-                        {t.connect_and_share_your_journey_with}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div class="mb-[30px] flex items-center">
-                    <div
-                      class="mr-[22px] flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full border border-stroke text-primary dark:border-stroke-dark dark:bg-dark"
-                    >
-                      <Icon name="leaderboard" />
-                    </div>
-                    <div>
-                      <h3
-                        class="text-xl font-medium text-black dark:text-white"
-                      >
-                        {t.ranking_and_activities}
-                      </h3>
-                      <p class="text-base text-body">
-                        {t.compete_on_leaderboards_and_track_activities}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div class="mb-[30px] flex items-center">
-                    <div
-                      class="mr-[22px] flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full border border-stroke text-primary dark:border-stroke-dark dark:bg-dark"
-                    >
-                      <Icon name="notifications" />
-                    </div>
-                    <div>
-                      <h3
-                        class="text-xl font-medium text-black dark:text-white"
-                      >
-                        {t.smart_notifications}
-                      </h3>
-                      <p class="text-base text-body">
-                        {t.see_when_your_friends_take_snus}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div class="flex items-center">
-                    <div
-                      class="mr-[22px] flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full border border-stroke text-primary dark:border-stroke-dark dark:bg-dark"
-                    >
-                      <Icon name="local-mall" />
-                    </div>
-                    <div>
-                      <h3
-                        class="text-xl font-medium text-black dark:text-white"
-                      >
-                        {t.exclusive_promotions}
-                      </h3>
-                      <p class="text-base text-body">
-                        {t.get_verified_partner_discounts_and_giveaways}
-                      </p>
-                    </div>
-                  </div>
-                  </div>
+                  <FeatureList
+                    class="mt-2"
+                    features={[
+                      { icon: 'analytics', title: t.premium_tracking_charts, text: t.advanced_analytics_with_beautiful_visual_charts, lead: true },
+                      { icon: 'group', title: t.link_with_friends, text: t.connect_and_share_your_journey_with },
+                      { icon: 'leaderboard', title: t.ranking_and_activities, text: t.compete_on_leaderboards_and_track_activities },
+                      { icon: 'notifications', title: t.smart_notifications, text: t.see_when_your_friends_take_snus },
+                      { icon: 'local-mall', title: t.exclusive_promotions, text: t.get_verified_partner_discounts_and_giveaways },
+                    ]}
+                  />
                 </div>
               </div>
             </div>
@@ -711,78 +631,15 @@ const screenModes = [
 
                   </p>
                   
-                  <div class="hidden md:block">
-                  <div class="mb-[30px] flex items-center">
-                    <div
-                      class="mr-[22px] flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full border border-stroke text-primary dark:border-stroke-dark dark:bg-dark"
-                    >
-                      <Icon name="route" />
-                    </div>
-                    <div>
-                      <h3
-                        class="text-xl font-medium text-black dark:text-white"
-                      >
-                        {t.your_quitting_journey}
-                      </h3>
-                      <p class="text-base text-body">
-                        {t.every_day_carries_what_eases_and}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div class="mb-[30px] flex items-center">
-                    <div
-                      class="mr-[22px] flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full border border-stroke text-primary dark:border-stroke-dark dark:bg-dark"
-                    >
-                      <Icon name="monitor-heart" />
-                    </div>
-                    <div>
-                      <h3
-                        class="text-xl font-medium text-black dark:text-white"
-                      >
-                        {t.health_monitor}
-                      </h3>
-                      <p class="text-base text-body">
-                        {t.monitor_your_health_improvements_over_time}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div class="mb-[30px] flex items-center">
-                    <div
-                      class="mr-[22px] flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full border border-stroke text-primary dark:border-stroke-dark dark:bg-dark"
-                    >
-                      <Icon name="pulse" />
-                    </div>
-                    <div>
-                      <h3
-                        class="text-xl font-medium text-black dark:text-white"
-                      >
-                        {t.cravings_and_slips}
-                      </h3>
-                      <p class="text-base text-body">
-                        {t.log_a_craving_while_it_lasts}
-                      </p>
-                    </div>
-                  </div>
-                  <div class="flex items-center">
-                    <div
-                      class="mr-[22px] flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full border border-stroke text-primary dark:border-stroke-dark dark:bg-dark"
-                    >
-                      <Icon name="emoji-events" />
-                    </div>
-                    <div>
-                      <h3
-                        class="text-xl font-medium text-black dark:text-white"
-                      >
-                        {t.achievements}
-                      </h3>
-                      <p class="text-base text-body">
-                        {t.unlock_badges_and_celebrate_your_milestones}
-                      </p>
-                    </div>
-                  </div>
-                  </div>
+                  <FeatureList
+                    class="mt-2"
+                    features={[
+                      { icon: 'route', title: t.your_quitting_journey, text: t.every_day_carries_what_eases_and, lead: true },
+                      { icon: 'monitor-heart', title: t.health_monitor, text: t.monitor_your_health_improvements_over_time },
+                      { icon: 'pulse', title: t.cravings_and_slips, text: t.log_a_craving_while_it_lasts },
+                      { icon: 'emoji-events', title: t.achievements, text: t.unlock_badges_and_celebrate_your_milestones },
+                    ]}
+                  />
                   
                 </div>
               </div>
