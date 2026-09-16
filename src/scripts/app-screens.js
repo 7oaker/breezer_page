@@ -40,7 +40,9 @@ function fitScreens() {
 /**
  * Swaps the mouse pointer for a pointing hand while the cursor is over any of
  * the rebuilt screens, so operating a mockup feels like reaching for a phone
- * rather than mousing over a picture of one.
+ * rather than mousing over a picture of one. The feature lists opt into the
+ * same hand through `[data-hand-target]`, because a panel that unfolds when
+ * pressed has to say so before it is pressed.
  *
  * One hand for all three devices: there is only ever one pointer, so the
  * element `AppHandCursor.astro` renders once gets bound to every screen on the
@@ -57,7 +59,10 @@ function fitScreens() {
  */
 function handCursor() {
   const hand = document.querySelector('[data-app-hand]');
-  const screens = document.querySelectorAll('[data-app-screen]');
+  // `[data-hand-target]` is the opt-in for anything that is not a device: the
+  // feature lists use it so the hand says "this opens" before anyone has to
+  // guess that a panel of text is pressable.
+  const screens = document.querySelectorAll('[data-app-screen], [data-hand-target]');
   if (!hand || !screens.length) return;
   if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 

@@ -592,6 +592,10 @@ const screenModes = [
 
                   <FeatureList
                     class="mt-2"
+                    id="tracking"
+                    collapseAfter={2}
+                    showAllLabel={t.features_show_all}
+                    showLessLabel={t.features_show_less}
                     features={[
                       { icon: 'analytics', title: t.premium_tracking_charts, text: t.advanced_analytics_with_beautiful_visual_charts, lead: true },
                       { icon: 'group', title: t.link_with_friends, text: t.connect_and_share_your_journey_with },
@@ -633,6 +637,10 @@ const screenModes = [
                   
                   <FeatureList
                     class="mt-2"
+                    id="quitting"
+                    collapseAfter={2}
+                    showAllLabel={t.features_show_all}
+                    showLessLabel={t.features_show_less}
                     features={[
                       { icon: 'route', title: t.your_quitting_journey, text: t.every_day_carries_what_eases_and, lead: true },
                       { icon: 'monitor-heart', title: t.health_monitor, text: t.monitor_your_health_improvements_over_time },

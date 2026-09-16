@@ -23,8 +23,36 @@
  * Visible on every width. The old markup was `hidden md:block`, so on a phone
  * the page showed two device mockups and no feature text at all — the audience
  * most likely to be reading it on the device they would install on.
+ *
+ * THE FOLD. With `collapseAfter`, the rows past that count sit behind a folded
+ * page corner at the bottom right, which is the button that opens them. Three
+ * things about that are deliberate:
+ *
+ * The corner is a real `<button>` with a name and `aria-expanded`; only its look
+ * is a fold. A press anywhere on the panel opens and closes it too — the corner
+ * says where to look, it is not the only place that works, and a thumb should
+ * not have to find a 48px triangle. The button still exists because a pointer
+ * target is not a keyboard target: it is what Tab reaches and what a screen
+ * reader announces, and the click it fires bubbles into the same handler.
+ *
+ * Hover never opens it. A list that unfolds because the mouse happened to cross
+ * it folds itself back up the moment the mouse leaves, and on a phone that
+ * trigger does not exist at all. What hover does instead is announce: the panel
+ * carries `data-hand-target`, so the same hand that reaches for the app screens
+ * reaches for this one, and the pressable thing looks pressable before it is
+ * pressed.
+ *
+ * The first hidden row is cut off rather than hidden, and fades into the panel.
+ * A cut line is what tells the eye there is more; a clean edge reads as the end
+ * of the list.
+ *
+ * The rows behind the fold stay in the HTML, which is the whole reason this is
+ * a fold and not a shorter list: they are the only place on the site where the
+ * journey, urges, slips, minigames and drops appear as prose, and search engines
+ * index collapsed content normally. `<noscript>` unfolds everything, so a
+ * visitor without JavaScript gets the full list instead of a dead corner.
  */
-import Icon from '../Icon.astro';
+import FeatureRow from './FeatureRow.astro';
 
 export interface Feature {
   /** Key from `Icon.astro`'s inlined set. */
@@ -37,43 +65,67 @@ export interface Feature {
 
 interface Props {
   features: Feature[];
+  /** Distinguishes this list's ids from the other list on the page. */
+  id: string;
+  /** Rows shown before the fold. 0 renders the whole list, unfolded. */
+  collapseAfter?: number;
+  showAllLabel?: string;
+  showLessLabel?: string;
   class?: string;
 }
-const { features, class: className = '' } = Astro.props;
+const {
+  features,
+  id,
+  collapseAfter = 0,
+  showAllLabel = '',
+  showLessLabel = '',
+  class: className = '',
+} = Astro.props;
+
+const folds = collapseAfter > 0 && features.length > collapseAfter;
+const shown = folds ? features.slice(0, collapseAfter) : features;
+const hidden = folds ? features.slice(collapseAfter) : [];
+const moreId = `feature-more-${id}`;
 ---
 
-<ul
-  class:list={[
-    'space-y-1 rounded-[26px] bg-gray p-2 dark:bg-dark/60',
-    className,
-  ]}
+<div
+  class:list={['feature-panel relative rounded-[26px] p-2', folds && 'cursor-pointer', className]}
+  data-feature-list
+  data-hand-target={folds ? '' : undefined}
 >
-  {features.map((feature) => (
-    <li
-      class:list={[
-        'flex items-start gap-4 rounded-[20px] px-4 py-4 sm:px-5',
-        feature.lead && 'bg-white shadow-card dark:bg-[#272B44] dark:shadow-card-dark',
-      ]}
-    >
-      <span
-        class:list={[
-          'flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px]',
-          feature.lead
-            ? 'bg-primary text-white'
-            : 'bg-primary/10 text-primary dark:bg-primary-light/15 dark:text-primary-light',
-        ]}
-        aria-hidden="true"
-      >
-        <Icon name={feature.icon} size={22} />
-      </span>
-      <div class="min-w-0 pt-[3px]">
-        <h3 class="text-[17px] font-semibold leading-tight text-black dark:text-white">
-          {feature.title}
-        </h3>
-        <p class="mt-1 max-w-[46ch] text-sm leading-relaxed text-body dark:text-white/60">
-          {feature.text}
-        </p>
+  <ul class="space-y-1">
+    {shown.map((feature) => <FeatureRow feature={feature} />)}
+  </ul>
+
+  {folds && (
+    <>
+      <div class="feature-more" id={moreId} data-feature-more data-collapsed>
+        <ul class="space-y-1 pt-1">
+          {hidden.map((feature) => <FeatureRow feature={feature} />)}
+        </ul>
+        <div class="feature-fade" aria-hidden="true"></div>
       </div>
-    </li>
-  ))}
-</ul>
+
+      <button
+        type="button"
+        class="feature-fold"
+        aria-expanded="false"
+        aria-controls={moreId}
+        data-feature-fold
+        data-label-more={showAllLabel}
+        data-label-less={showLessLabel}
+      >
+        <span class="sr-only" data-feature-fold-label>{showAllLabel}</span>
+        <span class="feature-fold__flap" aria-hidden="true"></span>
+      </button>
+
+      <noscript>
+        <style>
+          .feature-more { max-height: none !important; }
+          .feature-fade,
+          .feature-fold { display: none !important; }
+        </style>
+      </noscript>
+    </>
+  )}
+</div>

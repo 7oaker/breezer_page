@@ -74,7 +74,9 @@ import pressHand from '../../assets/images/app/press-hand.png';
      specific than a descendant wildcard would be. */
   :global(.app-screen[data-hand-active]),
   :global(.app-screen[data-hand-active] *),
-  :global(.app-screen[data-hand-active] .press-phone__button) {
+  :global(.app-screen[data-hand-active] .press-phone__button),
+  :global([data-hand-target][data-hand-active]),
+  :global([data-hand-target][data-hand-active] *) {
     cursor: none;
   }
 

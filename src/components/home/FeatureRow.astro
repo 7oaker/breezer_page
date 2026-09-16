@@ -1,0 +1,41 @@
+---
+/**
+ * One row of a `FeatureList`. Its own file because the list renders two groups —
+ * the rows that always show and the rows behind the fold — and a row that was
+ * copied into both would drift the first time one of them is touched.
+ */
+import Icon from '../Icon.astro';
+import type { Feature } from './FeatureList.astro';
+
+interface Props {
+  feature: Feature;
+}
+const { feature } = Astro.props;
+---
+
+<li
+  class:list={[
+    'flex items-start gap-4 rounded-[20px] px-4 py-4 sm:px-5',
+    feature.lead && 'bg-white shadow-card dark:bg-[#272B44] dark:shadow-card-dark',
+  ]}
+>
+  <span
+    class:list={[
+      'flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px]',
+      feature.lead
+        ? 'bg-primary text-white'
+        : 'bg-primary/10 text-primary dark:bg-primary-light/15 dark:text-primary-light',
+    ]}
+    aria-hidden="true"
+  >
+    <Icon name={feature.icon} size={22} />
+  </span>
+  <div class="min-w-0 pt-[3px]">
+    <h3 class="text-[17px] font-semibold leading-tight text-black dark:text-white">
+      {feature.title}
+    </h3>
+    <p class="mt-1 max-w-[46ch] text-sm leading-relaxed text-body dark:text-white/60">
+      {feature.text}
+    </p>
+  </div>
+</li>

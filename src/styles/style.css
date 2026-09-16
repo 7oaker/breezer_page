@@ -138,6 +138,129 @@
     @apply max-h-fit py-[30px]  opacity-100;
   }
 
+  /* --- Feature list, and the folded corner that opens it. ------------------
+     The panel colour is a variable because two things have to land on exactly
+     it: the fade over the cut row, and the page behind the lifted corner. */
+  .feature-panel {
+    --feature-panel-bg: theme('colors.gray');
+    --feature-page-bg: #ffffff;
+    /* The back of the page: darker than the panel in light mode, lighter in
+       dark mode, because the fold is only readable as a fold if the turned-over
+       side is a different tone from the side it came from. */
+    --feature-fold-bg: #eef1fb;
+    --feature-fold-shade: #d8dff2;
+    --feature-fold-edge: rgba(45, 74, 170, 0.28);
+    background-color: var(--feature-panel-bg);
+  }
+
+  .dark .feature-panel {
+    /* What `bg-dark/60` resolved to over the page, now solid: the fade has to
+       reach an opaque colour or the text shows through underneath it. */
+    --feature-panel-bg: #1c1e30;
+    --feature-page-bg: theme('colors.black');
+    --feature-fold-bg: #3b4268;
+    --feature-fold-shade: #272c44;
+    --feature-fold-edge: rgba(0, 0, 0, 0.55);
+  }
+
+  .feature-more {
+    position: relative;
+    overflow: hidden;
+    transition: max-height 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Cuts into the first hidden row rather than ending between two: the cut is
+     what says there is more. */
+  .feature-more[data-collapsed] {
+    max-height: 56px;
+  }
+
+  .feature-fade {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 56px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 200ms cubic-bezier(0.22, 1, 0.36, 1);
+    background: linear-gradient(to bottom, transparent, var(--feature-panel-bg));
+  }
+
+  .feature-more[data-collapsed] .feature-fade {
+    opacity: 1;
+  }
+
+  /* The button is 44px of tap area; the fold is the 30px triangle inside it. */
+  .feature-fold {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    height: 48px;
+    width: 48px;
+    align-items: flex-end;
+    justify-content: flex-end;
+    border-bottom-right-radius: 26px;
+  }
+
+  .feature-fold__flap {
+    display: block;
+    height: 34px;
+    width: 34px;
+    /* The lower-right half of the box: the page corner turned back on itself. */
+    clip-path: polygon(100% 0, 0 100%, 100% 100%);
+    /* Perpendicular to the fold line: bright where the paper bends, shaded
+       towards the corner it was turned onto. */
+    background: linear-gradient(135deg, var(--feature-fold-bg) 0%, var(--feature-fold-shade) 100%);
+    /* drop-shadow follows the clipped shape; box-shadow would be clipped away. */
+    filter: drop-shadow(-1px -1px 1px var(--feature-fold-edge));
+    transition: transform 120ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* The page showing through where the corner was. Sits under the flap, and is
+     what the lift on hover reveals. */
+  .feature-fold::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    height: 34px;
+    width: 34px;
+    clip-path: polygon(100% 0, 0 100%, 100% 100%);
+    background: var(--feature-page-bg);
+  }
+
+  .feature-fold:focus-visible {
+    outline: 2px solid theme('colors.primary');
+    outline-offset: 2px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .feature-fold:hover .feature-fold__flap {
+      transform: translate(-2px, -2px);
+    }
+  }
+
+  /* Open: the corner turns the other way, so the state is visible and not only
+     announced. */
+  .feature-fold[aria-expanded='true'] .feature-fold__flap {
+    transform: rotate(180deg);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .feature-fold[aria-expanded='true']:hover .feature-fold__flap {
+      transform: rotate(180deg) translate(-2px, -2px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .feature-more,
+    .feature-fade,
+    .feature-fold__flap {
+      transition: none;
+    }
+  }
+
   /* The Tracking / Quitting filter above the screens carousel. `aria-selected`
      is already the state the tab exposes, so the selected look reads it
      directly: this project is on Tailwind 3.1, which has no `aria-*` variant,

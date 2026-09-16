@@ -672,6 +672,62 @@ function breezerInitScreenTabs() {
 
 breezerInitScreenTabs();
 
+/**
+ * The folded corner under each feature list.
+ *
+ * `max-height` has to be animated to a measured pixel value, because a
+ * transition to `auto` does not run. Opening therefore sets the measured height,
+ * then hands back to `none` once the transition is over, so a later reflow — a
+ * font arriving, a language with longer lines — cannot end up cut off by a
+ * height that was measured before it.
+ */
+function breezerInitFeatureFolds() {
+  for (const list of document.querySelectorAll('[data-feature-list]')) {
+    const fold = list.querySelector('[data-feature-fold]');
+    const panel = list.querySelector('[data-feature-more]');
+    const label = fold && fold.querySelector('[data-feature-fold-label]');
+    if (!fold || !panel) continue;
+
+    let settle;
+
+    // One handler for the whole panel. The corner button's own click bubbles in
+    // here, which is also how Enter and Space on it end up in the same place.
+    list.addEventListener('click', () => {
+      // Somebody who just dragged across a sentence wanted the sentence, not a
+      // fold that swallows their selection.
+      const selection = window.getSelection && window.getSelection();
+      if (selection && !selection.isCollapsed) return;
+
+      const open = fold.getAttribute('aria-expanded') === 'true';
+      clearTimeout(settle);
+
+      if (open) {
+        // From `none` back to a number first, otherwise there is nothing to
+        // animate from and the rows vanish in one frame.
+        panel.style.maxHeight = `${panel.scrollHeight}px`;
+        void panel.offsetHeight;
+        panel.setAttribute('data-collapsed', '');
+        panel.style.maxHeight = '';
+      } else {
+        panel.style.maxHeight = `${panel.scrollHeight}px`;
+        panel.removeAttribute('data-collapsed');
+        settle = setTimeout(() => {
+          panel.style.maxHeight = 'none';
+        }, 220);
+      }
+
+      fold.setAttribute('aria-expanded', open ? 'false' : 'true');
+      if (label) {
+        label.textContent = open
+          ? fold.dataset.labelMore || label.textContent
+          : fold.dataset.labelLess || label.textContent;
+      }
+    });
+  }
+}
+
+breezerInitFeatureFolds();
+
 //GLightbox({
  // href: "https://www.youtube.com/watch?v=r44RKWyfcFw&fbclid=IwAR21beSJORalzmzokxDRcGfkZA1AtRTE__l5N4r09HcGS5Y6vOluyouM9EM",
  // type: "video",
