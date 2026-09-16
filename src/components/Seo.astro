@@ -136,7 +136,15 @@ const otherOgLocales = (Object.keys(locales) as Locale[])
 
 <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
 <link rel="manifest" href="/site.webmanifest" />
-<meta name="theme-color" content="#0D6BCD" />
+{/*
+  The browser chrome takes its colour from here, so it should match the top of
+  the page, not the brand: one value meant a blue bar above a white page. A
+  manual theme toggle updates these from main.js, because the media queries only
+  know what the OS wants.
+*/}
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#FFFFFF" />
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#161622" />
+<meta name="color-scheme" content="light dark" />
 <meta name="google-site-verification" content="bwKXk7Y2z1UH9uVey_xx8RvpBl3cFq4OClKifDmF0ms" />
 
 {

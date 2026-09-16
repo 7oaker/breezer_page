@@ -1,6 +1,14 @@
 module.exports = {
   content: ['./src/**/*.{astro,html,js,ts,md,mdx}'],
   darkMode: 'class',
+  future: {
+    // Touch browsers fake a hover on first tap and leave it applied until the
+    // next tap elsewhere, so every `hover:` utility on this site stuck to
+    // whatever a thumb last touched. This compiles them all into
+    // `@media (hover: hover)`, which is the fix for 107 of them at once.
+    // Tailwind 4 does it by default; on 3.x it is opt-in.
+    hoverOnlyWhenSupported: true,
+  },
   theme: {
     fontFamily: {
       inter: ['Inter Variable', 'Inter', 'sans-serif'],

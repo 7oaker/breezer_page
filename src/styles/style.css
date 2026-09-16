@@ -8,9 +8,84 @@
   body {
     @apply font-inter;
   }
+
+  /* --- What separates a website from something installed, on a phone. ------
+     Each of these is a real behaviour that does not reproduce in a desktop
+     browser's device toolbar, which is why they survived this long. */
+
+  html {
+    /* iOS and Android paint a translucent grey box over anything tapped that
+       has a click handler. It is the loudest "this is a web page" tell there
+       is, and it fights the press feedback below. */
+    -webkit-tap-highlight-color: transparent;
+    /* No font inflation when the phone is turned to landscape. */
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Browsers wait ~300ms after a tap to see whether a second one is coming,
+     because a double tap zooms. This says these elements never zoom, so the
+     click fires on the first one. */
+  a,
+  button,
+  summary,
+  label,
+  [role='button'] {
+    touch-action: manipulation;
+  }
+
+  /* A long press on a control selects its label or pops the copy callout, which
+     no native button does. Only on controls: body text, error messages and
+     order numbers stay selectable, because people copy those. */
+  button,
+  [role='button'],
+  .swiper-button-prev,
+  .swiper-button-next,
+  .back-to-top {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  /* Native controls answer the moment a finger lands. A control that only
+     changes on click answers when the finger leaves, which reads as lag even
+     at zero latency. */
+  button,
+  [role='button'],
+  .back-to-top {
+    transition: transform 120ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  button:active,
+  [role='button']:active,
+  .back-to-top:active {
+    transform: scale(0.97);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    button,
+    [role='button'],
+    .back-to-top {
+      transition: none;
+    }
+
+    button:active,
+    [role='button']:active,
+    .back-to-top:active {
+      transform: none;
+    }
+  }
 }
 
 @layer components {
+  /* `viewport-fit=cover` lets the page under the notch, which is what makes a
+     page look edge to edge instead of letterboxed. The content still has to be
+     padded back out, and in landscape the inset is wider than the container's
+     own 1rem. */
+  .container {
+    padding-left: max(1rem, env(safe-area-inset-left, 0px));
+    padding-right: max(1rem, env(safe-area-inset-right, 0px));
+  }
+
   .sticky-navbar {
     @apply !fixed !border-b !bg-opacity-80 !backdrop-blur-sm dark:!bg-opacity-80;
   }

@@ -93,7 +93,9 @@ const themeInit = `(function () {
 <html lang={lang}>
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {/* `viewport-fit=cover` paints the page edge to edge instead of letterboxing
+        it inside the safe area; style.css pads the content back out. */}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <Seo {...seo} />
     {/* Language first: if it redirects, the theme work belongs to the new page. */}
     <script is:inline set:html={langInit} />

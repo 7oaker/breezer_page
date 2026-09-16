@@ -275,7 +275,8 @@ function breezerCreateCookieBanner() {
   // sich ueber die volle Breite, die sichtbare Box ist aber nur max-w-4xl und zentriert.
   // Ohne das faengt der unsichtbare Bereich links und rechts daneben jeden Klick ab,
   // unter anderem auf die Store-Buttons im Hero.
-  wrapper.className = 'pointer-events-none fixed inset-x-0 bottom-0 z-[9999] p-4 sm:p-6';
+  wrapper.className =
+    'pointer-events-none fixed inset-x-0 bottom-0 z-[9999] p-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] sm:p-6 sm:pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))]';
 
   wrapper.innerHTML = `
     <div class="pointer-events-auto mx-auto max-w-4xl rounded-xl border border-stroke bg-white/95 shadow-card backdrop-blur dark:border-stroke-dark dark:bg-[#15182B]/95 dark:shadow-card-dark">
@@ -767,9 +768,23 @@ const themeCheck = () => {
 // visitor to following their browser rather than pinning them to a value that
 // only looks identical today. Base.astro applies the same rule pre-paint, which
 // is what releases anyone still pinned by the old two-state behaviour.
+/**
+ * The `theme-color` meta tags in Seo.astro are scoped to the OS colour scheme,
+ * which is all a static page can know. A visitor who toggles the theme by hand
+ * would otherwise keep a status bar from the other scheme, so the tag is kept in
+ * step here. Both tags are set: whichever media query matches wins anyway.
+ */
+const syncStatusBar = () => {
+  const dark = document.documentElement.classList.contains('dark');
+  for (const meta of document.querySelectorAll('meta[name="theme-color"]')) {
+    meta.setAttribute('content', dark ? '#161622' : '#FFFFFF');
+  }
+};
+
 const themeSwitch = () => {
   const next = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
   document.documentElement.classList.toggle('dark', next === 'dark');
+  syncStatusBar();
 
   if (next === (systemThemeQuery.matches ? 'dark' : 'light')) {
     localStorage.removeItem('theme');
@@ -791,6 +806,7 @@ systemThemeQuery.addEventListener('change', themeCheck);
 
 // Invoke Theme Check on Initial Load
 themeCheck();
+syncStatusBar();
   /* ========  themeSwitcher End ========= */
 
   /* ========  scroll to top  start ========= */
