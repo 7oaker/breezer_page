@@ -591,25 +591,85 @@ function breezerInitFaq() {
 
 breezerInitFaq();
 
-// Testimonial
-const testimonial = new Swiper('.mySwiper', {
-  modules: [Navigation],
-  slidesPerView: 1,
-  spaceBetween: 30,
-  grabCursor: true,
-  navigation: {
-    nextEl: '.swiper-button-next',
-    prevEl: '.swiper-button-prev',
-  },
-  loop: true,
-  breakpoints: {
-    // when window width is >= 640px
-    768: {
-      slidesPerView: 3,
-      spaceBetween: 40,
-    },
-  },
-});
+/**
+ * The app screenshots carousels, one per mode, behind the Tracking / Quitting
+ * filter above them.
+ *
+ * One instance per `.mySwiper` element, with the nav buttons looked up inside
+ * that element: the old document-wide `'.swiper-button-next'` selector would
+ * hand both carousels the same pair of arrows, so the hidden one would move
+ * whenever the visible one did.
+ */
+const screenSwipers = new Map();
+
+for (const el of document.querySelectorAll('.mySwiper')) {
+  screenSwipers.set(
+    el,
+    new Swiper(el, {
+      modules: [Navigation],
+      slidesPerView: 1,
+      spaceBetween: 30,
+      grabCursor: true,
+      navigation: {
+        nextEl: el.querySelector('.swiper-button-next'),
+        prevEl: el.querySelector('.swiper-button-prev'),
+      },
+      loop: true,
+      breakpoints: {
+        // when window width is >= 640px
+        768: {
+          slidesPerView: 3,
+          spaceBetween: 40,
+        },
+      },
+    }),
+  );
+}
+
+/**
+ * The Tracking / Quitting filter.
+ *
+ * A Swiper initialised inside a hidden panel measures every slide as zero wide,
+ * because `hidden` is `display: none` and there is nothing to measure. That is
+ * why each panel's instance is updated when its tab is opened rather than at
+ * init: the first measurement that matters is the one taken while the panel is
+ * on screen. Nothing here runs if the tablist is absent, so every page but the
+ * homepage skips it.
+ */
+function breezerInitScreenTabs() {
+  const tabs = Array.from(document.querySelectorAll('[data-screens-tab]'));
+  if (tabs.length === 0) return;
+
+  const panelFor = (tab) => document.getElementById(tab.getAttribute('aria-controls'));
+
+  const select = (tab, { focus = false } = {}) => {
+    for (const other of tabs) {
+      const isTarget = other === tab;
+      other.setAttribute('aria-selected', isTarget ? 'true' : 'false');
+      // Roving tabindex: one stop for the whole group, arrows move within it.
+      other.tabIndex = isTarget ? 0 : -1;
+      const panel = panelFor(other);
+      if (panel) panel.hidden = !isTarget;
+    }
+
+    const panel = panelFor(tab);
+    const swiper = panel && screenSwipers.get(panel.querySelector('.mySwiper'));
+    if (swiper) swiper.update();
+    if (focus) tab.focus();
+  };
+
+  for (const [i, tab] of tabs.entries()) {
+    tab.addEventListener('click', () => select(tab));
+    tab.addEventListener('keydown', (e) => {
+      const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (step === 0) return;
+      e.preventDefault();
+      select(tabs[(i + step + tabs.length) % tabs.length], { focus: true });
+    });
+  }
+}
+
+breezerInitScreenTabs();
 
 //GLightbox({
  // href: "https://www.youtube.com/watch?v=r44RKWyfcFw&fbclid=IwAR21beSJORalzmzokxDRcGfkZA1AtRTE__l5N4r09HcGS5Y6vOluyouM9EM",

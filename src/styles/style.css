@@ -63,6 +63,15 @@
     @apply max-h-fit py-[30px]  opacity-100;
   }
 
+  /* The Tracking / Quitting filter above the screens carousel. `aria-selected`
+     is already the state the tab exposes, so the selected look reads it
+     directly: this project is on Tailwind 3.1, which has no `aria-*` variant,
+     and the alternative is JS keeping a second copy of the state in a class
+     list that can drift from the attribute screen readers actually use. */
+  .screens-tab[aria-selected='true'] {
+    @apply bg-primary text-white hover:text-white dark:text-white dark:hover:text-white;
+  }
+
   .swiper-button-prev,
   .swiper-button-next {
     @apply static top-auto bottom-0 flex h-10 w-10 items-center justify-center rounded-full border border-body text-body after:hidden hover:border-primary hover:bg-primary hover:text-white;
