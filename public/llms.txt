@@ -1,33 +1,95 @@
 # Breezer
 
-> Breezer is a free social snus app for iOS and Android. It tracks snus and
-> nicotine-pouch consumption with one tap, shows spending and habit statistics,
-> lets friends compete on global leaderboards, and includes a guided Quit Mode
-> that tracks days snus-free, money saved, and health milestones.
+> Breezer is a social snus and nicotine-pouch app for iOS and Android. It logs
+> every pouch with one tap, shows consumption, spending and habit statistics,
+> connects friends through rankings, squads, an activity feed and a global chat,
+> and carries a Quit Mode with a day-by-day quitting journey: the withdrawal
+> symptom that eases, the health improvement that follows, and what has been
+> saved by then, plus logging for cravings and slips and reminders timed to the
+> days attempts usually break.
 
-Breezer is made in Austria. The site is available in English and German
-(Austria). Download: App Store (https://apps.apple.com/at/app/breezer/id6737725511)
-and Google Play (https://play.google.com/store/apps/details?id=com.breezerapp.breezer).
+Breezer is made in Austria. The site is in English, German (Austria) and
+Swedish. Download: App Store
+(https://apps.apple.com/at/app/breezer/id6737725511) and Google Play
+(https://play.google.com/store/apps/details?id=com.breezerapp.breezer).
+
+## What it costs
+
+Free to download, and free for everything essential: one-tap logging,
+statistics for the current period, profile, friends, rankings, activity feed,
+global chat, and Quit Mode with days snus-free, savings and the first four
+health improvements. Breezer Pro is an optional subscription at **2.99 € a month
+or 19.99 € a year**, each with one free week, once per person. Pro adds the full
+quitting journey, all nine health improvements and all six symptom curves, all
+24 achievements, premium statistics across earlier periods, the full community
+feed, photos in chat, entry to Pro drops and unlimited minigames. Those are the
+euro prices from the stores, checked September 2026; outside the euro area the
+App Store and Google Play set the local price. Inviting three friends earns 30
+days of Pro without paying. Full breakdown: https://breezer.now/pricing
 
 ## Pages (English)
 
-- [Breezer: Social Snus App](https://breezer.now/): Homepage — features, how it works, screenshots, reviews, and FAQ.
-- [Snus Tracker](https://breezer.now/snus-tracker): How the snus tracker works — one-tap logging, statistics, cost tracking, widgets.
-- [Quit Snus](https://breezer.now/quit-snus): Quit Mode — withdrawal tracking, health milestones, money saved.
-- [Zyn Tracker](https://breezer.now/zyn-tracker): Tracking Zyn, Velo, and other nicotine pouches with daily limits and costs.
-- [Breezer vs Snusless](https://breezer.now/vs-snusless): Comparison of the two snus apps — tracking, quit mode, social features, price.
-- [Pro vs Free](https://breezer.now/pricing): What the free version includes, what Breezer Pro adds, and what it costs (€2.99 a month or €19.99 a year, one free week).
-- [Blog](https://breezer.now/blog): Guides on tracking snus, quitting nicotine pouches, and app comparisons.
+- [Breezer: Social Snus App](https://breezer.now/): Homepage — features, app screenshots, community numbers, reviews and FAQ.
+- [Snus Tracker](https://breezer.now/snus-tracker): How the tracker works — one-tap logging, statistics, cost tracking, widgets, tracking without having to quit.
+- [Quit Snus](https://breezer.now/quit-snus): Withdrawal timeline, symptoms, what the evidence says helps, the quitting journey, and Breezer's own figures on quit attempts.
+- [Zyn Tracker](https://breezer.now/zyn-tracker): Tracking Zyn, Velo and other pouches, reading mg per pouch versus mg/g, daily limits and costs.
+- [Pro vs Free](https://breezer.now/pricing): What the free version includes, what Breezer Pro adds, what it costs, and where the free version ends.
+- [Breezer vs Snusless](https://breezer.now/vs-snusless): Comparison of the two apps — tracking, quit mode, social features, price.
+- [Breezer vs Smoke Free](https://breezer.now/vs-smoke-free): Comparison with Smoke Free, which is built for cigarettes rather than pouches.
+- [Blog](https://breezer.now/blog): Sourced articles on nicotine pouches, tracking and quitting.
+- [Imprint](https://breezer.now/imprint): Legal notice under Austrian law.
+
+## Articles (English)
+
+- [How Strong Is a Nicotine Pouch, Really?](https://breezer.now/blog/nicotine-pouch-strength): mg per pouch versus mg/g, and how much nicotine actually reaches you.
+- [What Nicotine Pouches Actually Do to You](https://breezer.now/blog/nicotine-pouch-side-effects): The documented side effects, and how strong the evidence is for each.
+- [What Nicotine Pouches Do to Your Gums](https://breezer.now/blog/nicotine-pouches-gums): Mucosal changes and recession, and what the three existing studies do and do not show.
+- [Do Nicotine Pouches Wreck Your Sleep?](https://breezer.now/blog/nicotine-pouches-sleep): Nicotine, sleep architecture and the 3am wake-up.
+- [Do Nicotine Pouches Actually Calm You Down?](https://breezer.now/blog/nicotine-pouches-stress): Why the relief feels real, and what happens to anxiety after quitting.
+- [Do Nicotine Pouches Help Athletic Performance?](https://breezer.now/blog/nicotine-pouches-sport): The evidence on performance, and the WADA monitoring status.
+- [Do Nicotine Pouches Affect Erections, Size and Fertility?](https://breezer.now/blog/nicotine-pouches-erectile-function): The trials that exist on erectile response and sperm counts.
+- [Do Nicotine Pouches Help You Quit Smoking?](https://breezer.now/blog/nicotine-pouches-quit-smoking): Pouches as a substitute for cigarettes, and what the reviews found.
+- [Cutting Down on Nicotine Pouches, Day by Day](https://breezer.now/blog/taper-nicotine-pouches): A step-down plan, and whether tapering beats stopping outright.
 
 ## Seiten (Deutsch)
 
-- [Breezer: Soziale Snus App](https://breezer.now/de): Startseite auf Deutsch.
-- [Snus Tracker](https://breezer.now/de/snus-tracker): Snus-Konsum tracken, Statistiken und Kosten.
-- [Snus aufhören](https://breezer.now/de/snus-aufhoeren): Quit-Modus — Entzug tracken, Meilensteine, Ersparnis.
-- [Zyn Tracker](https://breezer.now/de/zyn-tracker): Zyn, Velo und andere Nikotinbeutel tracken.
-- [Breezer vs Snusless](https://breezer.now/de/vs-snusless): Snus-App-Vergleich auf Deutsch.
-- [Pro vs Gratis](https://breezer.now/de/preise): Was die Gratisversion enthält, was Breezer Pro dazugibt und was es kostet (2,99 € im Monat oder 19,99 € im Jahr, eine Gratiswoche).
-- [Blog](https://breezer.now/de/blog): Guides zum Tracken, Aufhören und App-Vergleiche.
+- [Breezer: Soziale Snus App](https://breezer.now/de): Startseite — Funktionen, App-Screenshots, Community-Zahlen, Bewertungen und FAQ.
+- [Snus Tracker](https://breezer.now/de/snus-tracker): Snus-Konsum tracken, Statistiken, Kosten, Widgets, tracken ohne aufhören zu müssen.
+- [Snus aufhören](https://breezer.now/de/snus-aufhoeren): Entzugsverlauf, Symptome, was nachweislich hilft, die Journey, Breezers eigene Zahlen zu Quit-Versuchen und die Preise in Österreich.
+- [Zyn Tracker](https://breezer.now/de/zyn-tracker): Zyn, Velo und andere Nikotinbeutel tracken, mg pro Beutel gegen mg/g, Tageslimits und Kosten.
+- [Pro vs Gratis](https://breezer.now/de/preise): Was die Gratisversion enthält, was Breezer Pro dazugibt, was es kostet und wo die Gratisversion endet.
+- [Breezer vs Snusless](https://breezer.now/de/vs-snusless): Vergleich der beiden Apps — Tracking, Quit-Modus, soziale Funktionen, Preis.
+- [Breezer vs Smoke Free](https://breezer.now/de/vs-smoke-free): Vergleich mit Smoke Free, das für Zigaretten gebaut ist und nicht für Beutel.
+- [Blog](https://breezer.now/de/blog): Artikel mit Quellen zu Nikotinbeuteln, Tracking und Aufhören.
+- [Impressum](https://breezer.now/de/impressum): Offenlegung nach § 5 ECG und § 25 MedienG.
+
+## Artikel (Deutsch)
+
+- [Wie stark ist ein Nikotinbeutel wirklich?](https://breezer.now/de/blog/nikotinbeutel-staerke): mg pro Beutel gegen mg/g, und wie viel Nikotin tatsächlich ankommt.
+- [Was Nikotinbeutel wirklich anrichten](https://breezer.now/de/blog/nikotinbeutel-nebenwirkungen): Die belegten Nebenwirkungen, und wie stark die Evidenz jeweils ist.
+- [Was Nikotinbeutel mit dem Zahnfleisch machen](https://breezer.now/de/blog/nikotinbeutel-zahnfleisch): Schleimhautveränderungen und Rückgang, und was die drei vorhandenen Studien zeigen.
+- [Ruinieren Nikotinbeutel den Schlaf?](https://breezer.now/de/blog/nikotinbeutel-schlaf): Nikotin, Schlafarchitektur und das Aufwachen um drei.
+- [Beruhigen Nikotinbeutel wirklich?](https://breezer.now/de/blog/nikotinbeutel-stress): Warum sich die Entlastung echt anfühlt, und was nach dem Aufhören mit der Angst passiert.
+- [Bringen Nikotinbeutel im Sport etwas?](https://breezer.now/de/blog/nikotinbeutel-sport): Die Studienlage zur Leistung, und der WADA-Status.
+- [Machen Nikotinbeutel die Erektion schwächer und den Penis kleiner?](https://breezer.now/de/blog/snus-erektion): Die Studien zu Erektionsantwort, Potenz und Spermienzahl.
+- [Helfen Nikotinbeutel beim Rauchstopp?](https://breezer.now/de/blog/nikotinbeutel-statt-rauchen): Beutel als Ersatz für Zigaretten, und was die Reviews gefunden haben.
+- [Snus reduzieren, Tag für Tag](https://breezer.now/de/blog/nikotinbeutel-reduzieren): Ein Reduktionsplan, und ob Reduzieren besser wirkt als ein Schlussstrich.
+
+## Sidor (Svenska)
+
+- [Breezer: social snusapp](https://breezer.now/sv): Startsidan på svenska.
+- [Sluta snusa](https://breezer.now/sv/sluta-snusa): Abstinensen dag för dag enligt 1177, vad som faktiskt hjälper, och gratis stöd i Sverige.
+
+## Notes
+
+- Prices here are the euro prices from the App Store and Google Play, checked
+  September 2026. In Sweden and other non-euro markets the stores set the local
+  price, so a figure in kronor will differ.
+- Health claims on this site name their source, and say when the evidence is
+  thin instead of rounding it up. Breezer is an app, not a treatment; articles
+  that touch health end by pointing at a doctor or a quitline.
+- The community figures on the homepage come from the app itself and are
+  recomputed weekly, so they move between deployments.
 
 ## Contact
 
