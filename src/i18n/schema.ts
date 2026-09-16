@@ -28,7 +28,7 @@ export const organization = {
   // the same name, which is measurably what happens in the Indian and Pakistani
   // impression data.
   description:
-    'Breezer is a social snus and nicotine pouch app for iOS and Android. It tracks pouch consumption, ranks users on leaderboards, and includes a Quit Mode with a withdrawal timeline, savings and health milestones.',
+    'Breezer is a social snus and nicotine pouch app for iOS and Android. It tracks pouch consumption, ranks users on leaderboards, and includes a Quit Mode that carries a quitting journey of health, savings and achievement milestones, logs cravings and slips, and sends reminders at the points where attempts usually break.',
   address: {
     '@type': 'PostalAddress',
     streetAddress: 'Am Sonnenhang 2',
@@ -74,16 +74,25 @@ export const mobileApp = {
   ],
   installUrl: `${SITE}/invite`,
   description:
-    'Breezer is the first social snus app for iOS and Android. Track your snus consumption with one tap, compete with friends on global leaderboards, earn rewards, and quit snus with a dedicated Quit Mode that tracks days snus-free, money saved, and health milestones.',
+    'Breezer is the first social snus app for iOS and Android. Track your snus consumption with one tap, compete with friends on global leaderboards, earn rewards, and quit snus with a dedicated Quit Mode: a quitting journey of health, savings and achievement milestones, a log for cravings and slips, and reminders timed to the days attempts usually break.',
   image: `${SITE}/images/og-image.png`,
   inLanguage: SITE_LANGUAGES,
+  /**
+   * What the app does, in the words somebody would use to ask for it. An answer
+   * engine reading this node has nothing else to go on: every feature below
+   * this line existed in the app long before it was named anywhere on the site,
+   * and until it was, the site could only be cited for the half it mentioned.
+   */
   featureList: [
     'Snus usage tracking and analytics',
     'Global and local leaderboards',
-    'Social features and friend connections',
-    'Quitting mode with health tracking',
-    'Exclusive promotions and rewards',
-    'Real-time notifications',
+    'Social features, friends and squads',
+    'Quit Mode with a day-by-day quitting journey',
+    'Health improvement milestones after quitting',
+    'Craving and slip logging in Quit Mode',
+    'Milestone reminders and real-time notifications',
+    'Exclusive promotions, giveaways and drops',
+    'Minigames for craving moments',
     'Visual statistics and progress charts',
     'Achievement system and milestones',
   ],
