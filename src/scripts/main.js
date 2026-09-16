@@ -920,3 +920,21 @@ if (document.readyState === 'loading') {
 } else {
   breezerInitAppScreens();
 }
+
+/**
+ * The community numbers band. Same conditional import as the app screens above: only
+ * the homepage has it, and every other page would otherwise carry the ticker for
+ * nothing.
+ */
+function breezerInitCommunityStats() {
+  if (!document.querySelector('[data-community-stats]')) return;
+  import('./community-stats.js').then(function (m) {
+    m.init();
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', breezerInitCommunityStats);
+} else {
+  breezerInitCommunityStats();
+}

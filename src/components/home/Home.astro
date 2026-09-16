@@ -7,6 +7,7 @@ import PressPhone from './PressPhone.astro';
 import StatsPhone from './StatsPhone.astro';
 import QuitPhone from './QuitPhone.astro';
 import AppHandCursor from './AppHandCursor.astro';
+import CommunityStats from './CommunityStats.astro';
 import type { UI } from '../../i18n/ui';
 import type { Lang } from '../../i18n/routes';
 import img_author_04 from '../../assets/images/testimonials/author-04.png';
@@ -208,9 +209,14 @@ const { t, lang } = Astro.props;
         </div>
       </section>
 
-      
+      {/*
+        Real numbers, straight under the hero's claim. They come from one Appwrite row
+        the app writes every week and are rendered at build time; the component omits
+        itself entirely if that row cannot be read, rather than showing a stale guess.
+      */}
+      <CommunityStats t={t} lang={lang} />
 
-      
+
       {/*
         PARKED, not deleted. The "Install the App / Sign in / Add Friends" row
         came in already empty from the webpack-to-Astro migration and was never

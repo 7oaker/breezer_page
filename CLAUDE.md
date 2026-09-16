@@ -73,8 +73,26 @@ statically dead so PostHog is never shipped. Keep it dynamic.
 | `src/i18n/{ui,faq,blog,schema}.ts` | UI strings, shared FAQ copy, structured data |
 | `src/layouts/{Base,Article}.astro` | Page shells |
 | `src/components/Seo.astro` | Meta, OG, hreflang, JSON-LD |
+| `src/data/communityStats.ts` | The only build-time data fetch on the site — see below |
 | `scripts/prune-orphan-assets.mjs` | Post-build asset cleanup |
 | `docs/seo-findings.md` | SEO audit log — decisions get recorded here |
+
+### The one number on this site that is not hardcoded
+
+`src/data/communityStats.ts` fetches one public Appwrite row at **build time** and
+`src/components/home/CommunityStats.astro` renders it under the hero. The row is written
+once a week by `functions/community-stats` in the app repo, and it carries a per-day rate
+next to days, pouches and money, so `src/scripts/community-stats.js` can count those
+three forward in the browser from `computedAt`. That is the whole reason a weekly job is
+enough.
+
+Three rules hold it together. **No key**: the row is world readable and holds nothing but
+totals, because an Appwrite key's scopes are project wide and one in the Vercel build
+environment would read the user table too. **No fallback**: if the row cannot be read the
+band renders nothing, since a hardcoded number is exactly what this replaces. **No client
+fetch**: the numbers are in the HTML, so nothing arrives late and shifts the layout.
+
+Changing a number here means changing the function in the app repo, not this file.
 
 ## Where things are written down
 
