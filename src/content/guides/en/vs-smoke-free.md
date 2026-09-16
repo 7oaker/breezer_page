@@ -81,7 +81,7 @@ That this does something is not just our opinion. The Cochrane review [Group beh
 | Download | free | free |
 | Basic tracking | free | free |
 | Friends and leaderboards | free | not listed as a feature |
-| Premium | optional Breezer Pro subscription | paid tiers, including counsellor access |
+| Premium | optional [Breezer Pro subscription](/pricing), €2.99 a month or €19.99 a year | paid tiers, including counsellor access |
 
 ## Which should you choose?
 

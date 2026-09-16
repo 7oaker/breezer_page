@@ -22,7 +22,7 @@ faq:
   - q: "Which brands can I track?"
     a: "Breezer is brand-agnostic. Zyn, Velo, LOOP, XQS, Killa, Pablo and traditional snus are all handled the same way. You can run several brands in parallel and still see one total."
   - q: "What does Breezer cost?"
-    a: "Tracking is free on iOS and Android, with no subscription for the core features. Pro unlocks additional analysis and achievements."
+    a: "Tracking is free on iOS and Android, with no subscription for the core features. Breezer Pro adds premium statistics, the full feed and more, for €2.99 a month or €19.99 a year with one free week. The full split is on the pricing page."
 heroImage: ../../../assets/images/screens/new/take-snus.png
 heroImageAlt: Logging a Zyn nicotine pouch with one tap in Breezer
 ---

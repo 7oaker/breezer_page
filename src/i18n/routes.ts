@@ -28,6 +28,7 @@ export const routes = {
   zynTracker: { en: '/zyn-tracker', de: '/de/zyn-tracker' },
   vsSnusless: { en: '/vs-snusless', de: '/de/vs-snusless' },
   vsSmokeFree: { en: '/vs-smoke-free', de: '/de/vs-smoke-free' },
+  pricing: { en: '/pricing', de: '/de/preise' },
   blog: { en: '/blog', de: '/de/blog' },
   imprint: { en: '/imprint', de: '/de/impressum' },
 } as const satisfies Record<string, LocalePaths>;
@@ -86,5 +87,6 @@ export const footerNav: { key: RouteKey; label: Record<Locale, string> }[] = [
   { key: 'zynTracker', label: { sv: 'Zyn Tracker', en: 'Zyn Tracker', de: 'Zyn Tracker' } },
   { key: 'vsSnusless', label: { sv: 'Breezer vs Snusless', en: 'Breezer vs Snusless', de: 'Breezer vs Snusless' } },
   { key: 'vsSmokeFree', label: { sv: 'Breezer vs Smoke Free', en: 'Breezer vs Smoke Free', de: 'Breezer vs Smoke Free' } },
+  { key: 'pricing', label: { sv: 'Priser', en: 'Pricing', de: 'Preise' } },
   { key: 'blog', label: { sv: 'Blogg', en: 'Blog', de: 'Blog' } },
 ];

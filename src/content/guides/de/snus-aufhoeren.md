@@ -193,14 +193,16 @@ Breezer hat einen eigenen Quit-Modus, der sichtbar macht, was man beim Aufhören
 
 Dazu zeigt die App Gesundheitsmeilensteine von Tag 1 bis Jahr 5:
 
-| Zeitpunkt | Was die App anzeigt |
-| --- | --- |
-| Tag 1 | Herz und Puls beruhigen sich |
-| Tag 3 | Geschmack und Geruch kommen zurück |
-| Tag 7 | Mund frischer, Zahnfleisch weniger gereizt, weniger Trockenheit |
-| Tag 14 | Bessere Durchblutung, mehr Energie, kleine Wunden heilen schneller |
-| Tag 30 | Der Körper braucht das Nikotin körperlich nicht mehr |
-| Tag 90 | Haut sieht gesünder aus, Zahnfleisch erholt sich |
+| Zeitpunkt | Was die App anzeigt | |
+| --- | --- | --- |
+| Tag 1 | Herz und Puls beruhigen sich | gratis |
+| Tag 3 | Geschmack und Geruch kommen zurück | gratis |
+| Tag 7 | Mund frischer, Zahnfleisch weniger gereizt, weniger Trockenheit | gratis |
+| Tag 14 | Bessere Durchblutung, mehr Energie, kleine Wunden heilen schneller | gratis |
+| Tag 30 | Der Körper braucht das Nikotin körperlich nicht mehr | Pro |
+| Tag 90 | Haut sieht gesünder aus, Zahnfleisch erholt sich | Pro |
+
+Die ersten vier stehen in der Gratisversion, die späteren gehören zu Breezer Pro, genau wie der Rest der Journey. [Was gratis ist und was Pro dazugibt](/de/preise) listet die Aufteilung vollständig.
 
 Diese Meilensteine sind als Orientierung gedacht und stammen aus der Tabakentwöhnung. Für Nikotinbeutel im Besonderen ist die Erholung im Mund kaum untersucht: der systematische Review von Rungraungrayabkul und Kollegen (*BMC Oral Health*, 2024) fand insgesamt nur drei Studien mit 190 Teilnehmenden und hält ausdrücklich fest, dass nicht geklärt ist, ob sich Schleimhautveränderungen nach dem Aufhören vollständig zurückbilden. Was das für dein Zahnfleisch bedeutet, steht ausführlich in [was Nikotinbeutel mit dem Zahnfleisch machen](/de/blog/nikotinbeutel-zahnfleisch).
 

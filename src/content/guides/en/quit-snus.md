@@ -183,14 +183,16 @@ Breezer has a dedicated Quit Mode that makes visible what you otherwise cannot f
 
 The app also shows health milestones from day 1 to year 5:
 
-| Point | What the app shows |
-| --- | --- |
-| Day 1 | Heart rate and pulse settle |
-| Day 3 | Taste and smell return |
-| Day 7 | Mouth feels fresher, gums less irritated, less dryness |
-| Day 14 | Better circulation, more energy, small wounds heal faster |
-| Day 30 | Your body no longer needs the nicotine physically |
-| Day 90 | Skin looks healthier, gums recover |
+| Point | What the app shows | |
+| --- | --- | --- |
+| Day 1 | Heart rate and pulse settle | free |
+| Day 3 | Taste and smell return | free |
+| Day 7 | Mouth feels fresher, gums less irritated, less dryness | free |
+| Day 14 | Better circulation, more energy, small wounds heal faster | free |
+| Day 30 | Your body no longer needs the nicotine physically | Pro |
+| Day 90 | Skin looks healthier, gums recover | Pro |
+
+The first four are in the free version, the later ones are part of Breezer Pro, along with the rest of the quitting journey. [What is free and what Pro adds](/pricing) lists the split in full.
 
 These milestones are orientation points adapted from tobacco cessation. For nicotine pouches specifically, recovery in the mouth is barely researched: the systematic review by Rungraungrayabkul and colleagues (*BMC Oral Health*, 2024) found only three studies with 190 participants in total and states explicitly that whether mucosal changes fully reverse after stopping is not established. What that means for your gums is covered in [what nicotine pouches do to your gums](/blog/nicotine-pouches-gums).
 

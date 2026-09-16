@@ -83,7 +83,7 @@ Dass daran etwas dran ist, ist nicht nur unsere Meinung: Der Cochrane-Review [Gr
 | Download | kostenlos | kostenlos |
 | Basis-Tracking | kostenlos | kostenlos |
 | Freunde und Ranglisten | kostenlos | im Store-Eintrag nicht als Funktion genannt |
-| Premium | optionales Breezer Pro Abo | kostenpflichtige Stufen, inklusive Beratungszugang |
+| Premium | optionales [Breezer Pro Abo](/de/preise), 2,99 € im Monat oder 19,99 € im Jahr | kostenpflichtige Stufen, inklusive Beratungszugang |
 
 ## Was solltest du wählen?
 
