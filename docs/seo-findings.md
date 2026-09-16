@@ -607,3 +607,37 @@ sagt, was die Seite ist und nicht ist.
   Dashboard ist die Stelle, an der sich das zuerst zeigen müsste: `snus aufhören` und
   `mit snus aufhören` sollten sich von Position 22 bis 24 nach vorne bewegen. Passiert bis
   Mitte Oktober nichts, war die Diagnose falsch und nicht die Umsetzung.
+
+## E. Journey-Features auf der Seite (16.09.2026)
+
+Ausgangslage: Journey, Urge- und Slip-Protokoll, Squads, Minispiele und Drops existierten in
+der App, auf der Website aber ausschließlich im Alt-Text der Screenshots. Weder `schema.ts`
+noch `faq.ts` noch ein Guide nannten sie. Für eine Antwortmaschine, die die Entität über
+diese Knoten auflöst, bestand die App aus der Hälfte ihrer Funktionen.
+
+**Verworfen: ein eigener Artikel über die Quit-Journey.** Der Vorschlag lag auf dem Tisch und
+hätte auf dieselben Head-Terms gezielt wie `/quit-snus` (1252 Impressionen, Position 19,4) und
+`/de/snus-aufhoeren` (1117, Position 10,5), die Entzugsverlauf, Symptomliste, Wirksamkeit und
+Gesundheitsmeilensteine bereits abdecken. Dieselbe Begründung wie bei C1: eine zweite Seite
+auf denselben Begriff schwächt die vorhandene, statt Nachfrage dazuzugewinnen. Stattdessen ein
+neuer Abschnitt in beiden Guides plus zwei FAQ-Einträge je Sprache.
+
+**Neue Datenquelle: die eigene Abbruchzahl.** Die Quitting-Collection in Appwrite trägt pro
+Versuch `start`, `end` und `active`. Am 16.09.2026: 821 Versuche, 391 davon laufend; unter den
+mindestens neunzig Tage alten 224 von 535. Die Zahl steht mit Vorbehalt in beiden Guides,
+denn `active` wird nur durch aktives Beenden in der App falsch (`stopUserQuitting`). Wer
+aufhört, die App zu öffnen, zählt weiter als laufend. Damit ist die Zahl eine Obergrenze und
+**keine Erfolgsquote**, und genau so ist sie formuliert. Als Quote gelesen läge sie bei 42
+Prozent nach neunzig Tagen, ein Vielfaches dessen, was die Literatur für unbegleitete
+Versuche zeigt: das wäre die Art Zahl, die eine Seite unglaubwürdig macht.
+
+PostHog trägt hier nichts bei. `urge_started`, `urge_completed` und `slip_logged` senden erst
+seit 13.09.2026, zusammen 28 Ereignisse von fünf Personen. `quit_started` seit 16.08.2026, 104
+Versuche von 91 Personen. Für eine belastbare Aussage zu dünn, in einigen Monaten erneut
+ansehen.
+
+**Schwedisch bewusst ausgelassen.** `sv/sluta-snusa` bleibt unverändert, bis die
+Wirkungskontrolle zu C1 vorliegt (Abschnitt D, Mitte Oktober 2026).
+
+**Offen:** ob der Abschnitt Wirkung zeigt, ist erst ab Mitte November beurteilbar und wird
+sich mit der C1-Messung überlagern. Wer das später auswertet, muss beides trennen.

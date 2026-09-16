@@ -7,7 +7,7 @@ lang: en
 slug: quit-snus
 translationKey: quit-snus
 publishDate: 2026-06-26
-updatedDate: 2026-08-18
+updatedDate: 2026-09-16
 faq:
   - q: "How long does snus withdrawal last?"
     a: "Symptoms appear 4 to 24 hours after your last pouch, peak at around day three, and taper off over the following three to four weeks. That is the timeline described in the review by McLaughlin, Dani and De Biasi (2015). Cravings can still surface after that, but they get shorter and less frequent."
@@ -21,6 +21,10 @@ faq:
     a: "Day two and day three. The peak sits at roughly day three, and users in quit communities consistently describe the physical side easing off around day four while cravings continue. Most failed attempts happen in weeks two and three, right when the physical withdrawal fades and only the habit is left."
   - q: "What happens to your body after you quit snus?"
     a: "The withdrawal timeline is well described: peak around day three, substantial improvement over three to four weeks. Recovery in the mouth is far less certain. The systematic review by Rungraungrayabkul and colleagues (2024) states explicitly that whether mucosal changes fully reverse after stopping has not been established."
+  - q: "How many people are quitting snus with Breezer?"
+    a: "On 16 September 2026 the app held 821 quit attempts, 391 of them still running. An attempt is only marked finished when somebody ends it in the app, so that figure is an upper bound rather than a success rate: anyone who stops opening the app stays counted as running."
+  - q: "Does one slip end a quit attempt?"
+    a: "Not in Breezer. A slip is logged as an entry and the attempt keeps running. That matches how quitting actually goes: among the quit accounts quoted in this guide, several people needed three or four attempts before one held, and most failed attempts break in weeks two and three, when the physical symptoms have already faded."
   - q: "How much money do you save by quitting snus?"
     a: "It depends on your previous use. At a can every two days it adds up to several hundred a year, and at a can a day it runs well into four figures. Breezer calculates the saving from your quit date using what you actually used before and your own pack price, rather than an average."
 heroImage: ../../../assets/images/screens/new/quitting-home.png
@@ -158,6 +162,20 @@ That is what the decision to build Breezer social rather than single-player rest
 - **Prompts that arrive from outside** rather than waiting for someone to open the app (automated messaging, RR 1.54 in the Cochrane review by Whittaker and colleagues, 2019). In Breezer that is milestones, limit alerts and notifications.
 
 This is explicitly **not** a claim that Breezer has a demonstrated success rate. For apps as such the evidence is open. It is the reasoning behind why the product looks the way it does: the social layer is not an add-on, it is an attempt to make what actually works in the research available without a referral or a waiting list.
+
+## What 821 quit attempts look like from the inside
+
+Breezer stores a quit attempt as a start date that keeps running until someone ends it. On **16 September 2026** the app held **821 attempts**, and **391** of them were still running. Among the attempts that were at least ninety days old, **224 of 535** were still running.
+
+One caveat decides what those figures are worth. An attempt counts as finished only when somebody ends it in the app. Anyone who simply stops opening Breezer stays counted as running, so 391 is an upper bound on how many people are still off snus, not a success rate. Published quit rates come from trials that follow people up and ask them; an app nobody opens cannot ask.
+
+What the figures do show is how the attempt is carried, and that is the part with evidence behind it: automated prompts that arrive from outside reached **RR 1.54** in the Cochrane review of mobile phone-based interventions by Robert Whittaker and colleagues (2019), while apps people have to open themselves came out at RR 1.00. Three things do the carrying.
+
+**The journey.** Every day of the attempt holds three entries: the withdrawal symptom easing, the health improvement due next, and what has been saved by then. A day on the path shows what changed, which a counter alone does not.
+
+**The craving, logged while it lasts.** An acute craving passes in minutes, but it never feels that way from inside one. Writing it down while it happens turns it into an entry with a start and an end, and the count of them falling week by week is the evidence that it is getting easier.
+
+**A slip is an entry, not an ending.** Logging a slip leaves the attempt running. Relapse is the norm rather than the end, and the quit accounts above say the same: several needed three or four attempts before one held.
 
 ## Quitting with Breezer
 

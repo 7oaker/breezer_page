@@ -7,7 +7,7 @@ lang: de
 slug: snus-aufhoeren
 translationKey: quit-snus
 publishDate: 2026-04-01
-updatedDate: 2026-08-18
+updatedDate: 2026-09-16
 faq:
   - q: "Wie lange dauert der Snus-Entzug?"
     a: "Die Entzugserscheinungen setzen 4 bis 24 Stunden nach der letzten Dose ein, erreichen etwa am dritten Tag ihren Höhepunkt und klingen über die folgenden drei bis vier Wochen ab. So beschreibt es die Übersichtsarbeit von McLaughlin, Dani und De Biasi (2015). Das Verlangen selbst kann länger auftauchen, wird aber seltener und kürzer."
@@ -21,6 +21,10 @@ faq:
     a: "Belastbar beschrieben ist vor allem der Entzugsverlauf: Symptomhöhepunkt um Tag drei, deutliche Besserung über drei bis vier Wochen. Für die Erholung im Mund ist die Datenlage dünn. Der systematische Review von Rungraungrayabkul und Kollegen (2024) hält ausdrücklich fest, dass nicht untersucht ist, ob sich Schleimhautveränderungen nach dem Aufhören vollständig zurückbilden."
   - q: "Wie viel Geld spare ich, wenn ich mit Snus aufhöre?"
     a: "Das hängt vom bisherigen Verbrauch ab. Bei einer Dose alle zwei Tage kommen schnell mehrere hundert Euro im Jahr zusammen. Breezer rechnet die Ersparnis seit deinem Quit-Tag automatisch mit, basierend auf deinem tatsächlichen früheren Konsum statt auf einer Schätzung."
+  - q: "Wie viele Leute hören mit Breezer mit Snus auf?"
+    a: "Am 16. September 2026 standen 821 Quit-Versuche in der App, 391 davon liefen noch. Beendet ist ein Versuch erst, wenn ihn jemand in der App beendet. Die Zahl ist damit eine Obergrenze und keine Erfolgsquote: wer die App nicht mehr öffnet, zählt weiter als laufend."
+  - q: "Beendet ein Rückfall den Quit-Versuch?"
+    a: "In Breezer nicht. Ein Rückfall wird als Eintrag protokolliert, der Versuch läuft weiter. Das entspricht dem tatsächlichen Verlauf: In den Erfahrungsberichten in diesem Guide brauchten mehrere drei oder vier Anläufe, bis einer hielt, und die meisten gescheiterten Versuche kippen in Woche zwei und drei, wenn die körperlichen Symptome längst weg sind."
   - q: "Was kostet eine Dose Nikotinbeutel in Österreich?"
     a: "In der Trafik im Schnitt rund 6,50 Euro. Seit Anfang April 2026 fallen Nikotinbeutel unter das Tabakmonopolgesetz, dürfen nur noch in Trafiken verkauft werden und der Onlinehandel ist verboten. Zuvor lag der Onlinepreis bei etwa 3,50 Euro. Bei einer Dose alle zwei Tage sind das rund 1.190 Euro im Jahr statt vorher etwa 640 Euro."
   - q: "Kann eine App beim Snus aufhören helfen?"
@@ -168,6 +172,20 @@ Genau darauf beruht die Entscheidung, Breezer sozial zu bauen statt als Einzelpl
 - **Erinnerungen, die von außen kommen** statt darauf zu warten, dass jemand die App öffnet (automatisierte Nachrichten, RR 1,54 im Cochrane-Review von Whittaker und Kollegen, 2019). Bei Breezer sind das Meilensteine, Limitwarnungen und Benachrichtigungen.
 
 Das ist ausdrücklich **keine** Behauptung, dass Breezer eine belegte Erfolgsquote hätte. Für Apps als solche ist die Studienlage offen. Es ist die Begründung, warum das Produkt so aussieht, wie es aussieht: Der soziale Teil ist kein Zusatz, sondern der Versuch, das niederschwellig abzubilden, was in der Forschung tatsächlich wirkt.
+
+## Was 821 Quit-Versuche von innen zeigen
+
+Breezer speichert einen Quit-Versuch als Startdatum, das läuft, bis jemand ihn beendet. Am **16. September 2026** standen **821 Versuche** in der App, **391** davon liefen noch. Unter den Versuchen, die mindestens neunzig Tage zurückliegen, liefen **224 von 535**.
+
+Ein Vorbehalt entscheidet, was diese Zahlen wert sind. Beendet ist ein Versuch erst, wenn ihn jemand in der App beendet. Wer Breezer einfach nicht mehr öffnet, zählt weiter als laufend. 391 ist damit eine Obergrenze dafür, wie viele tatsächlich snusfrei sind, und keine Erfolgsquote. Veröffentlichte Quoten stammen aus Studien, die nachfassen und nachfragen. Eine App, die niemand öffnet, kann nicht nachfragen.
+
+Was die Zahlen zeigen, ist, wie ein Versuch getragen wird, und dafür gibt es Belege: automatische Anstöße von außen erreichten im Cochrane-Review zu Handy-Interventionen von Robert Whittaker und Kollegen (2019) ein Risikoverhältnis von **1,54**, Apps, die man selbst öffnen muss, dagegen 1,00. Drei Dinge übernehmen das Tragen.
+
+**Die Journey.** Zu jedem Tag des Versuchs gehören drei Einträge: das Entzugssymptom, das nachlässt, die Gesundheitsverbesserung, die als Nächstes ansteht, und die Summe, die bis dahin zusammengekommen ist. Ein Tag auf diesem Weg zeigt, was sich geändert hat. Ein Zähler allein tut das nicht.
+
+**Der Suchtdruck, protokolliert während er da ist.** Akutes Verlangen ist nach Minuten vorbei, von innen fühlt es sich nie so an. Wer es aufschreibt, während es passiert, macht daraus einen Eintrag mit Anfang und Ende. Dass diese Einträge von Woche zu Woche weniger werden, ist der Beleg dafür, dass es leichter wird.
+
+**Ein Rückfall ist ein Eintrag, kein Ende.** Ein protokollierter Rückfall lässt den Versuch weiterlaufen. Rückfälle sind der Normalfall und nicht der Schlusspunkt, und die Erfahrungsberichte weiter oben sagen dasselbe: mehrere brauchten drei oder vier Anläufe, bis einer hielt.
 
 ## Mit Breezer aufhören
 
