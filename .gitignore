@@ -27,3 +27,20 @@ Desktop.ini
 
 # Scratch notes for pull request descriptions, not part of the site
 PR-BODY*.md
+
+# Agent skills installed with `npx skills add` — machine-local tooling, not site code
+.agents/
+.claude/skills/animate
+.claude/skills/animate-expo
+.claude/skills/animation-vocabulary
+.claude/skills/apple-design
+.claude/skills/ask-sonner
+.claude/skills/emil-design-eng
+.claude/skills/find-animation-opportunities
+.claude/skills/improve-animations
+.claude/skills/mobile-native
+.claude/skills/pick-ui-library
+.claude/skills/prototype
+.claude/skills/review-animations
+.claude/skills/write-swift
+skills-lock.json

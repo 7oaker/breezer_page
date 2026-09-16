@@ -3,15 +3,22 @@
  * The feature list that sits beside a phone mockup.
  *
  * It is built to look like the app's own list rows — tinted square icon chip,
- * title, one quiet line under it, hairline between rows — rather than like a
- * column of marketing bullets. The section already shows the app running inside
- * a device two hundred pixels to the right; the list is the same interface
- * unpacked at reading size, which is why the row is the unit and not a card.
- * The previous treatment (a 60px outlined circle per item, 30px of air between
- * them) said nothing about the product and read as a stock template.
+ * title, one quiet line under it — rather than like a column of marketing
+ * bullets. The section already shows the app running inside a device two
+ * hundred pixels to the right; the list is the same interface unpacked at
+ * reading size, which is why the row is the unit and not a card. The treatment
+ * before it (a 60px outlined circle per item, 30px of air between them) said
+ * nothing about the product and read as a stock template.
  *
- * `lead` marks the one row that carries the section's claim. It gets the solid
- * chip, everything else stays quiet: one accent per block, not five.
+ * Hierarchy comes from depth, not from rules. An earlier version separated the
+ * rows with hairlines, which is how a settings screen is drawn and reads as
+ * chrome on a page that has no chrome anywhere else. The lead row is lifted
+ * onto its own surface instead and the rest sit flat on the panel, so the eye
+ * gets the same grouping from material and spacing that the lines were doing —
+ * proximity already says these belong together.
+ *
+ * `lead` marks the one row that carries the section's claim: one accent per
+ * block, not five.
  *
  * Visible on every width. The old markup was `hidden md:block`, so on a phone
  * the page showed two device mockups and no feature text at all — the audience
@@ -37,12 +44,17 @@ const { features, class: className = '' } = Astro.props;
 
 <ul
   class:list={[
-    'divide-y divide-stroke overflow-hidden rounded-2xl border border-stroke bg-gray dark:divide-stroke-dark dark:border-stroke-dark dark:bg-dark',
+    'space-y-1 rounded-[26px] bg-gray p-2 dark:bg-dark/60',
     className,
   ]}
 >
   {features.map((feature) => (
-    <li class="flex items-start gap-4 px-5 py-[18px] sm:px-6">
+    <li
+      class:list={[
+        'flex items-start gap-4 rounded-[20px] px-4 py-4 sm:px-5',
+        feature.lead && 'bg-white shadow-card dark:bg-[#272B44] dark:shadow-card-dark',
+      ]}
+    >
       <span
         class:list={[
           'flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px]',
