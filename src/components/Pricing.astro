@@ -75,7 +75,6 @@ const modes = [
         <p class="mt-6 max-w-[38ch] text-base leading-relaxed text-body dark:text-white/70">
           {t.plans.free.note}
         </p>
-        <StoreButtons lang={lang} class="mt-8" />
       </section>
 
       {/*
@@ -83,25 +82,32 @@ const modes = [
         both cards are equally loud does not recommend anything, and this page
         has a recommendation.
       */}
-      <section class="relative overflow-hidden rounded-3xl bg-gradient-2 p-7 text-white sm:p-9">
-        <div class="flex items-center justify-between gap-4">
+      <section class="plan-pro relative overflow-hidden rounded-3xl bg-gradient-2 p-7 text-white shadow-input sm:p-9">
+        <div class="relative flex items-center justify-between gap-4">
           <h2 class="text-lg font-semibold">{t.plans.pro.name}</h2>
           <span class="rounded-full bg-white px-3 py-1 text-xs font-semibold text-primary">
             {t.plans.pro.trial}
           </span>
         </div>
-        <p class="mt-6 flex items-baseline gap-2">
+        <p class="relative mt-6 flex items-baseline gap-2">
           <span class="text-5xl font-bold tabular-nums leading-none">{t.plans.pro.price}</span>
           <span class="text-sm text-white/80">{t.plans.pro.period}</span>
         </p>
-        <p class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+        <p class="relative mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
           <span class="tabular-nums text-white/90">{t.plans.pro.second}</span>
           <span class="rounded-full bg-white/15 px-2.5 py-0.5 text-xs">{t.plans.pro.save}</span>
         </p>
-        <p class="mt-6 max-w-[38ch] text-base leading-relaxed text-white/85">{t.plans.pro.note}</p>
-        <StoreButtons lang={lang} class="mt-8" onColor />
+        <p class="relative mt-6 max-w-[38ch] text-base leading-relaxed text-white/85">{t.plans.pro.note}</p>
       </section>
     </div>
+
+    {/*
+      One pair of store buttons under both cards rather than a pair inside each.
+      Both plans lead to the same two places — the free download and the
+      subscription are the same install — so two sets asked the reader to choose
+      between identical buttons.
+    */}
+    <StoreButtons lang={lang} class="mt-8 justify-center" mono />
 
     {/* The page's one loud line: the price in the unit the reader already buys. */}
     <section class="mt-14 border-y border-stroke py-10 dark:border-stroke-dark">
@@ -134,46 +140,46 @@ const modes = [
             {mode.label}
           </h3>
 
-          <div class="mt-4 grid items-start gap-5 md:grid-cols-2">
-            <div class="rounded-3xl bg-gray p-2 dark:bg-[#1c1e30]">
-              <p class="px-5 pb-2 pt-4 text-xs font-semibold text-body dark:text-white/50">{t.colFree}</p>
-              <ul class="space-y-1 p-1">
+          <div class="mt-4 grid gap-5 md:grid-cols-2">
+            <div class="rounded-3xl border border-stroke bg-white p-7 dark:border-stroke-dark dark:bg-dark sm:p-8">
+              <p class="text-sm font-semibold text-body dark:text-white/60">{t.colFree}</p>
+              <ul class="mt-6 space-y-4">
                 {mode.free.map((row) => (
-                  <li class="flex items-start gap-3 rounded-[18px] bg-white px-4 py-3 dark:bg-[#272B44]">
+                  <li class="flex items-start gap-3">
                     <span
-                      class="mt-[3px] flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary dark:bg-primary-light/20 dark:text-primary-light"
+                      class="mt-[1px] flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[11px] font-bold text-primary dark:bg-primary-light/20 dark:text-primary-light"
                       aria-hidden="true"
                     >✓</span>
-                    <span class="min-w-0 text-sm leading-relaxed text-black dark:text-white">{row.label}</span>
+                    <span class="min-w-0 text-[15px] leading-relaxed text-black dark:text-white">{row.label}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
             {/*
-              The Pro card at the top, in the same colour family, so the Pro
-              side is recognisable before a single word is read. Rows sit on it
-              as translucent white the way that card's own badge does, rather
-              than as white boxes, which would read as a different component
-              that happens to sit on a coloured background.
+              The Pro card from the top of the page, again: same brand gradient,
+              same shape, same size as the free card beside it. The rows are
+              plain lines with a chip, not boxes inside a box — the free side
+              dropped its boxes for the same reason, and two lists that are
+              structured differently stop being comparable.
 
-              The brand gradient itself (cyan to blue) is deliberately not used
-              here: it runs through #1FD9FF, and 14px white on that is under 2:1.
-              The card above gets away with it because its light end carries a
-              48px price and nothing else. These panels are twenty lines of body
-              text, so they take the blue half of the same family instead — same
-              card, calmer, and legible top to bottom.
+              Exactly `bg-gradient-2`, the same declaration as the card at the
+              top, because anything close-but-not-identical reads as a mistake.
+              The brand gradient runs through #1FD9FF and white body text on
+              that corner is thin, so the rows carry a shadow rather than the
+              card carrying a scrim: the colour stays the colour, and the type
+              gets its edge back.
             */}
-            <div class="rounded-3xl bg-gradient-to-br from-primary to-[#0a4e96] p-2 text-white">
-              <p class="px-5 pb-2 pt-4 text-xs font-semibold text-white/80">{t.colPro}</p>
-              <ul class="space-y-1 p-1">
+            <div class="pro-panel rounded-3xl bg-gradient-2 p-7 text-white sm:p-8">
+              <p class="text-sm font-semibold text-white/85">{t.colPro}</p>
+              <ul class="mt-6 space-y-4">
                 {mode.pro.map((row) => (
-                  <li class="flex items-start gap-3 rounded-[18px] bg-white/15 px-4 py-3">
+                  <li class="flex items-start gap-3">
                     <span
-                      class="mt-[3px] flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-white text-[10px] font-bold text-primary"
+                      class="mt-[1px] flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white text-[11px] font-bold text-primary"
                       aria-hidden="true"
                     >+</span>
-                    <span class="min-w-0 text-sm leading-relaxed text-white">{row.label}</span>
+                    <span class="min-w-0 text-[15px] font-medium leading-relaxed text-white">{row.label}</span>
                   </li>
                 ))}
               </ul>
@@ -240,10 +246,56 @@ const modes = [
       <h2 class="mx-auto max-w-[20ch] text-3xl font-bold leading-tight text-black dark:text-white sm:text-4xl">
         {t.ctaHeading}
       </h2>
-      <StoreButtons lang={lang} class="mt-8 justify-center" />
+      <StoreButtons lang={lang} class="mt-8 justify-center" mono />
       <p class="mx-auto mt-8 max-w-[62ch] text-xs leading-relaxed text-body/80 dark:text-white/50">
         {t.storeNote}
       </p>
     </section>
   </div>
 </main>
+
+<style>
+  /*
+    Body text on the brand gradient. Its light end is #1FD9FF, where white type
+    at this size loses its edge; a shadow the colour of the gradient's own dark
+    end gives it back without touching the colour of the card, which is the
+    thing that makes the Pro side recognisable.
+  */
+  .pro-panel li span:last-child,
+  .pro-panel > p {
+    text-shadow: 0 1px 2px rgba(6, 42, 86, 0.38);
+  }
+
+  /*
+    One sheen, once, when the card arrives. A plan card is the one element on
+    this page somebody is asked to trust with money, and a surface that catches
+    the light reads as a made object rather than a coloured rectangle.
+
+    It runs once and then never again: a loop would turn the thing being sold
+    into a thing that blinks. Nothing else on the page moves, which is what
+    makes this readable as emphasis instead of as decoration.
+  */
+  @media (prefers-reduced-motion: no-preference) {
+    .plan-pro::after {
+      content: '';
+      position: absolute;
+      inset: -40% -10%;
+      pointer-events: none;
+      background: linear-gradient(
+        100deg,
+        transparent 38%,
+        rgba(255, 255, 255, 0.28) 48%,
+        rgba(255, 255, 255, 0.1) 54%,
+        transparent 62%
+      );
+      transform: translateX(-130%);
+      animation: plan-sheen 1400ms cubic-bezier(0.22, 1, 0.36, 1) 500ms 1 forwards;
+    }
+
+    @keyframes plan-sheen {
+      to {
+        transform: translateX(130%);
+      }
+    }
+  }
+</style>
