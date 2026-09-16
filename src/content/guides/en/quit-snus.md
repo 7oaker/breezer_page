@@ -183,7 +183,7 @@ Breezer has a dedicated Quit Mode that makes visible what you otherwise cannot f
 
 The app also shows health milestones from day 1 to year 5:
 
-| Point | What the app shows | |
+| Point | What the app shows | Plan |
 | --- | --- | --- |
 | Day 1 | Heart rate and pulse settle | free |
 | Day 3 | Taste and smell return | free |

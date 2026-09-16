@@ -7,7 +7,7 @@ lang: de
 slug: vs-smoke-free
 translationKey: vs-smoke-free
 publishDate: 2026-07-31
-updatedDate: 2026-08-18
+updatedDate: 2026-09-16
 faq:
   - q: "Funktioniert Smoke Free für Snus und Nikotinbeutel?"
     a: "Smoke Free ist als Rauchstopp-App gebaut, das sagt schon der Name. Ihre Kennzahlen sind auf Zigaretten ausgelegt: nicht gerauchte Zigaretten, Packungspreise, Erholung der Lunge. Für Beutel-Nutzer passt die Einheit nicht, weil deine Größe der Beutel ist und deine Stärke in Milligramm pro Beutel gemessen wird."

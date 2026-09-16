@@ -597,7 +597,7 @@ export const ui = {
   can_breezer_help_me_quit_snus: "Kan Breezer hjälpa mig att sluta snusa?",
   yes_breezers_quit_mode_tracks_your: "Ja. Quit-läget följer dina abstinensbesvär, räknar snusfria dagar, beräknar sparade pengar och firar hälsomilstolpar. Streaks och utmärkelser håller motivationen uppe. Appen ersätter dock ingen rådgivning.",
   is_breezer_free: "Är Breezer gratis?",
-  yes_breezer_is_free_to_download: "Ja. Tracking, vänner, topplistor, chatten och Quit-läget fungerar utan att betala. Breezer Pro lägger till djupet ovanpå för 2,99 € i månaden eller 19,99 € per år, med en gratis vecka.",
+  yes_breezer_is_free_to_download: "Ja. Tracking, vänner, topplistor, chatten och Quit-läget fungerar utan att betala. Breezer Pro lägger till djupet ovanpå som en frivillig prenumeration, med en gratis vecka. Priset i kronor står i App Store och Google Play.",
   what_platforms_is_breezer_available_on: "Vilka plattformar finns Breezer på?",
   breezer_is_available_on_iphone_ios: "Breezer finns till iPhone (iOS) i App Store och till Android på Google Play. Gratis att ladda ned i båda butikerna.",
   how_does_breezer_track_snus_consumption: "Hur trackar Breezer snuskonsumtionen?",

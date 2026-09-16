@@ -43,7 +43,7 @@ const nav = [
   { href: 'https://shop.breezer.now/', label: 'Shop', scroll: false },
   // The only nav item that answers a question a visitor has before installing,
   // and the answer is not reachable by scrolling.
-  ...(routes.pricing[lang]
+  ...((routes.pricing as LocalePaths)[lang]
     ? [{ href: route('pricing', lang), label: proLabel, scroll: false }]
     : []),
   { href: `${prefix}#support`, label: 'Support', scroll: true },

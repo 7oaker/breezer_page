@@ -7,7 +7,7 @@ lang: en
 slug: vs-smoke-free
 translationKey: vs-smoke-free
 publishDate: 2026-07-31
-updatedDate: 2026-08-18
+updatedDate: 2026-09-16
 faq:
   - q: "Does Smoke Free work for snus and nicotine pouches?"
     a: "Smoke Free is built as a stop-smoking app, as the name says. Its metrics are cigarette-shaped: cigarettes not smoked, pack prices, lung recovery. For pouch users the unit does not fit, because your unit is a pouch and your strength is measured in milligrams per pouch."

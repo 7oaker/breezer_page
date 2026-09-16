@@ -7,10 +7,10 @@ lang: de
 slug: vs-snusless
 translationKey: vs-snusless
 publishDate: 2026-01-01
-updatedDate: 2026-08-18
+updatedDate: 2026-09-16
 faq:
   - q: "Was kostet Snusless im Vergleich zu Breezer?"
-    a: "Das ist der deutlichste Unterschied. Laut App-Store-Eintrag (Stand 18.08.2026) sind die Tracking-Funktionen von Snusless an ein Premium-Abo gebunden, mit Stufen ab etwa 1,99 Euro pro Woche, 4,99 Euro pro Monat oder 17,99 Euro pro Jahr. Bei Breezer ist das Tracking kostenlos, [Breezer Pro](/de/preise) kostet 2,99 Euro im Monat oder 19,99 Euro im Jahr und schaltet zusätzliche Auswertungen frei."
+    a: "Das ist der deutlichste Unterschied. Laut App-Store-Eintrag (Stand 18.08.2026) sind die Tracking-Funktionen von Snusless an ein Premium-Abo gebunden, mit Stufen ab etwa 1,99 Euro pro Woche, 4,99 Euro pro Monat oder 17,99 Euro pro Jahr. Bei Breezer ist das Tracking kostenlos, Breezer Pro kostet 2,99 Euro im Monat oder 19,99 Euro im Jahr und schaltet zusätzliche Auswertungen frei."
   - q: "Hat Breezer einen Quit-Modus wie Snusless?"
     a: "Ja. Breezer hat einen eigenen Quit-Modus mit Entzugs-Erfassung, Meilensteinen und Ersparnisrechnung. Der Unterschied liegt weniger im Vorhandensein als in der Reihenfolge: Snusless ist von der Reduktion her gedacht, bei Breezer ist Tracking der Ausgangszustand und der Quit-Modus wird zugeschaltet."
   - q: "Welche der beiden Apps hat soziale Funktionen?"

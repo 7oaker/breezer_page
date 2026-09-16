@@ -7,7 +7,7 @@ lang: en
 slug: zyn-tracker
 translationKey: zyn-tracker
 publishDate: 2026-06-26
-updatedDate: 2026-08-18
+updatedDate: 2026-09-16
 faq:
   - q: "Does Zyn have an app?"
     a: "Not for tracking your use. Zyn does not offer a consumption-tracking app, which is why third-party apps like Breezer exist. Zyn Rewards is a different thing entirely: a loyalty programme for points and prizes, not a record of how much you use."

@@ -16,6 +16,7 @@ and Google Play (https://play.google.com/store/apps/details?id=com.breezerapp.br
 - [Quit Snus](https://breezer.now/quit-snus): Quit Mode — withdrawal tracking, health milestones, money saved.
 - [Zyn Tracker](https://breezer.now/zyn-tracker): Tracking Zyn, Velo, and other nicotine pouches with daily limits and costs.
 - [Breezer vs Snusless](https://breezer.now/vs-snusless): Comparison of the two snus apps — tracking, quit mode, social features, price.
+- [Pro vs Free](https://breezer.now/pricing): What the free version includes, what Breezer Pro adds, and what it costs (€2.99 a month or €19.99 a year, one free week).
 - [Blog](https://breezer.now/blog): Guides on tracking snus, quitting nicotine pouches, and app comparisons.
 
 ## Seiten (Deutsch)
@@ -25,6 +26,7 @@ and Google Play (https://play.google.com/store/apps/details?id=com.breezerapp.br
 - [Snus aufhören](https://breezer.now/de/snus-aufhoeren): Quit-Modus — Entzug tracken, Meilensteine, Ersparnis.
 - [Zyn Tracker](https://breezer.now/de/zyn-tracker): Zyn, Velo und andere Nikotinbeutel tracken.
 - [Breezer vs Snusless](https://breezer.now/de/vs-snusless): Snus-App-Vergleich auf Deutsch.
+- [Pro vs Gratis](https://breezer.now/de/preise): Was die Gratisversion enthält, was Breezer Pro dazugibt und was es kostet (2,99 € im Monat oder 19,99 € im Jahr, eine Gratiswoche).
 - [Blog](https://breezer.now/de/blog): Guides zum Tracken, Aufhören und App-Vergleiche.
 
 ## Contact

@@ -31,8 +31,8 @@ export interface PricingCopy {
   cansLead: string;
   cansBody: string;
   plans: {
-    free: { name: string; price: string; period: string; note: string; cta: string };
-    pro: { name: string; price: string; period: string; second: string; save: string; trial: string; note: string; cta: string };
+    free: { name: string; price: string; period: string; note: string };
+    pro: { name: string; price: string; period: string; second: string; save: string; trial: string; note: string };
   };
   compareHeading: string;
   tracking: string;
@@ -69,7 +69,6 @@ export const pricing: Record<Locale, PricingCopy> = {
         price: '€0',
         period: 'forever, no trial clock',
         note: 'Everything you need to track or to quit, friends and chat included.',
-        cta: 'Get the app',
       },
       pro: {
         name: 'Pro',
@@ -79,7 +78,6 @@ export const pricing: Record<Locale, PricingCopy> = {
         save: '44% less than monthly',
         trial: 'First week free',
         note: 'The full journey, all milestones, premium statistics, unlimited games, Pro drops.',
-        cta: 'Try Pro free',
       },
     },
     compareHeading: 'What each one gives you',
@@ -176,7 +174,6 @@ export const pricing: Record<Locale, PricingCopy> = {
         price: '0 €',
         period: 'dauerhaft, keine ablaufende Testphase',
         note: 'Alles, was du zum Tracken oder Aufhören brauchst, Freunde und Chat inklusive.',
-        cta: 'App holen',
       },
       pro: {
         name: 'Pro',
@@ -186,7 +183,6 @@ export const pricing: Record<Locale, PricingCopy> = {
         save: '44 % günstiger als monatlich',
         trial: 'Erste Woche gratis',
         note: 'Die vollständige Journey, alle Meilensteine, Premium-Statistiken, unbegrenztes Spielen, Pro-Drops.',
-        cta: 'Pro gratis testen',
       },
     },
     compareHeading: 'Was du wobei bekommst',
@@ -283,7 +279,6 @@ export const pricing: Record<Locale, PricingCopy> = {
         price: '0 €',
         period: 'för alltid, ingen provperiod som tar slut',
         note: 'Allt du behöver för att tracka eller sluta, vänner och chatt inkluderat.',
-        cta: 'Hämta appen',
       },
       pro: {
         name: 'Pro',
@@ -293,7 +288,6 @@ export const pricing: Record<Locale, PricingCopy> = {
         save: '44 % billigare än månadsvis',
         trial: 'Första veckan gratis',
         note: 'Hela resan, alla milstolpar, premiumstatistik, obegränsat spelande, Pro-drops.',
-        cta: 'Testa Pro gratis',
       },
     },
     compareHeading: 'Vad du får i respektive',

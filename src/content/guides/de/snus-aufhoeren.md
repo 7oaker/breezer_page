@@ -193,7 +193,7 @@ Breezer hat einen eigenen Quit-Modus, der sichtbar macht, was man beim Aufhören
 
 Dazu zeigt die App Gesundheitsmeilensteine von Tag 1 bis Jahr 5:
 
-| Zeitpunkt | Was die App anzeigt | |
+| Zeitpunkt | Was die App anzeigt | Stufe |
 | --- | --- | --- |
 | Tag 1 | Herz und Puls beruhigen sich | gratis |
 | Tag 3 | Geschmack und Geruch kommen zurück | gratis |
