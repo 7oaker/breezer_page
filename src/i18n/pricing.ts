@@ -46,8 +46,16 @@ export interface PricingCopy {
   clarify: string;
   referralHeading: string;
   referralBody: string;
-  missionHeading: string;
-  missionBody: string;
+  /**
+   * The app's own referral counter, rebuilt on the page. `steps` is three
+   * entries, because the threshold in `react_Breezer` is three and the widget
+   * draws one segment per friend.
+   */
+  referralDemo: { label: string; steps: [string, string, string]; caption: string };
+  /** The founder's note: first person, and the only such passage on the page. */
+  founderEyebrow: string;
+  founderHeading: string;
+  founderBody: string[];
   ctaHeading: string;
   storeNote: string;
   faqHeading: string;
@@ -126,9 +134,23 @@ export const pricing: Record<Locale, PricingCopy> = {
     referralHeading: 'Pro without paying',
     referralBody:
       'Invite three friends who sign up and you get 30 days of full Pro. No card, nothing that renews, it ends by itself. A bigger community is worth more to this app than €2.99.',
-    missionHeading: 'Why it is priced like this',
-    missionBody:
-      'The goal is to build the largest snus community there is, with the useful features for every kind of person in it: whoever just wants to count, whoever is cutting down, whoever is quitting, and whoever only does any of it because friends are doing it too. Breezer currently costs more to run than it earns — Pro pays for the servers and the backend, not for profit. That is why the essential half stays free instead of being rationed.',
+    referralDemo: {
+      label: 'Friends joined',
+      steps: [
+        'Share your personal invite link',
+        'Friends install Breezer and open your link',
+        'Three friends joined: one month of Pro is yours',
+      ],
+      caption: 'The same counter runs in the app, under Invite friends.',
+    },
+    founderEyebrow: 'Words of the founder',
+    founderHeading: 'Why it costs anything at all',
+    founderBody: [
+      'Breezer runs on infrastructure and services, and those cost money every month, whether anybody subscribes or not. Right now it costs more to run than it earns, and I pay the difference. That is also why the essential half stays free instead of being rationed: the app should pay for itself through the people who want the extra depth.',
+      'I am not trying to get rich with this. First it should cover its own costs. Then it should earn enough that I can give it more than the evenings and weekends it gets now, because that is the only thing standing between the app as it is and the app I want it to be.',
+      'And then the part I actually care about: bigger drops, real giveaways, proper cooperations with partners. Money that comes out of this community should end up back in it. The goal is the largest snus community there is, and that is not a thing you build by taking out of it.',
+      'I have used snus for years myself. Whether that is a good thing or a bad thing, I honestly do not know. That is part of why the app does both: it counts for whoever wants to count, and it helps whoever wants to stop.',
+    ],
     ctaHeading: 'Start free. Upgrade if you want more.',
     storeNote:
       'Euro prices from the App Store and Google Play, checked September 2026. Outside the euro area the stores set the local price, so exchange rates and tax can shift it. Cancel any time in the store.',
@@ -141,6 +163,10 @@ export const pricing: Record<Locale, PricingCopy> = {
       {
         q: 'What does Breezer Pro cost?',
         a: '€2.99 a month or €19.99 a year, each with one free week, once per person. The yearly plan works out at €1.67 a month, 44 percent less than paying monthly. Outside the euro area the App Store and Google Play set the local price.',
+      },
+      {
+        q: 'Why does Breezer cost anything at all?',
+        a: 'Because running it costs money every month, infrastructure and services, whether anybody subscribes or not. At the moment it costs more to run than it earns. Pro is what carries that, which is why nothing essential sits behind it: the app is meant to pay for itself through the people who want the extra depth, not by rationing the basics.',
       },
       {
         q: 'What do I lose without Pro?',
@@ -231,9 +257,23 @@ export const pricing: Record<Locale, PricingCopy> = {
     referralHeading: 'Pro ohne zu zahlen',
     referralBody:
       'Lade drei Freunde ein, die sich anmelden, und du bekommst 30 Tage volles Pro. Ohne Karte, ohne etwas, das sich verlängert, es endet von selbst. Eine größere Community ist dieser App mehr wert als 2,99 €.',
-    missionHeading: 'Warum der Preis so ist',
-    missionBody:
-      'Das Ziel ist die größte Snus-Community, die es gibt, mit den nützlichen Funktionen für jeden Typ darin: für die, die nur zählen wollen, für die, die reduzieren, für die, die aufhören, und für alle, die das überhaupt nur machen, weil Freunde mitmachen. Breezer kostet derzeit mehr im Betrieb, als es einbringt — Pro bezahlt Server und Backend, nicht den Gewinn. Deshalb bleibt die wesentliche Hälfte gratis, statt rationiert zu werden.',
+    referralDemo: {
+      label: 'Freunde beigetreten',
+      steps: [
+        'Teile deinen persönlichen Einladungslink',
+        'Freunde installieren Breezer und öffnen deinen Link',
+        'Drei Freunde beigetreten: Ein Monat Pro gehört dir',
+      ],
+      caption: 'Derselbe Zähler läuft in der App, unter Freunde einladen.',
+    },
+    founderEyebrow: 'Worte des Gründers',
+    founderHeading: 'Warum es überhaupt etwas kostet',
+    founderBody: [
+      'Breezer läuft auf Infrastruktur und Diensten, und die kosten jeden Monat Geld, ob jemand ein Abo hat oder nicht. Im Moment kostet der Betrieb mehr, als hereinkommt, und die Differenz zahle ich. Auch deshalb bleibt die wesentliche Hälfte gratis, statt rationiert zu werden: Die App soll sich über die tragen, die mehr Tiefe wollen.',
+      'Reich werden will ich damit nicht. Zuerst soll sie ihre eigenen Kosten decken. Dann soll sie genug einbringen, dass ich ihr mehr geben kann als die Abende und Wochenenden, die sie jetzt bekommt. Das ist das Einzige, was zwischen der App, wie sie ist, und der App steht, die ich will.',
+      'Und dann der Teil, um den es mir eigentlich geht: größere Drops, echte Giveaways, richtige Kooperationen mit Partnern. Geld, das aus dieser Community kommt, soll wieder in ihr landen. Das Ziel ist die größte Snus-Community, die es gibt, und so eine baut man nicht, indem man ihr etwas herauszieht.',
+      'Ich snuse selbst seit Jahren. Ob das gut oder schlecht ist, weiß ich ehrlich gesagt nicht. Auch deshalb kann die App beides: zählen für alle, die zählen wollen, und helfen für alle, die aufhören wollen.',
+    ],
     ctaHeading: 'Gratis starten. Aufrüsten, wenn du mehr willst.',
     storeNote:
       'Euro-Preise aus App Store und Google Play, Stand September 2026. Außerhalb des Euro-Raums legen die Stores den Landespreis fest, Wechselkurse und Steuern können ihn verschieben. Jederzeit im Store kündbar.',
@@ -246,6 +286,10 @@ export const pricing: Record<Locale, PricingCopy> = {
       {
         q: 'Was kostet Breezer Pro?',
         a: '2,99 € im Monat oder 19,99 € im Jahr, beides mit einer Gratiswoche, einmalig pro Person. Jährlich sind das 1,67 € im Monat und damit 44 Prozent weniger als monatlich. Außerhalb des Euro-Raums legen App Store und Google Play den Landespreis fest.',
+      },
+      {
+        q: 'Warum kostet Breezer überhaupt etwas?',
+        a: 'Weil der Betrieb jeden Monat Geld kostet, Infrastruktur und Dienste, ob jemand ein Abo hat oder nicht. Derzeit kostet er mehr, als hereinkommt. Pro trägt das, und genau deshalb liegt nichts Wesentliches dahinter: Die App soll sich über die tragen, die mehr Tiefe wollen, nicht über rationierte Grundfunktionen.',
       },
       {
         q: 'Was fehlt mir ohne Pro?',
@@ -336,9 +380,23 @@ export const pricing: Record<Locale, PricingCopy> = {
     referralHeading: 'Pro utan att betala',
     referralBody:
       'Bjud in tre vänner som registrerar sig och du får 30 dagar med fullt Pro. Inget kort, ingenting som förnyas, det tar slut av sig självt.',
-    missionHeading: 'Därför ser priset ut så här',
-    missionBody:
-      'Målet är att bygga den största snuscommunityn som finns, med de användbara funktionerna för varje typ av person i den: den som bara vill räkna, den som trappar ner, den som slutar, och den som gör något av det bara för att vännerna gör det. Breezer kostar just nu mer i drift än det drar in — Pro betalar servrarna och backend, inte vinsten.',
+    referralDemo: {
+      label: 'Vänner som gått med',
+      steps: [
+        'Dela din personliga inbjudningslänk',
+        'Vänner installerar Breezer och öppnar din länk',
+        'Tre vänner har gått med: en månad Pro är din',
+      ],
+      caption: 'Samma räknare finns i appen, under Bjud in vänner.',
+    },
+    founderEyebrow: 'Grundarens ord',
+    founderHeading: 'Varför det kostar något överhuvudtaget',
+    founderBody: [
+      'Breezer körs på infrastruktur och tjänster, och de kostar pengar varje månad, oavsett om någon prenumererar eller inte. Just nu kostar driften mer än det drar in, och mellanskillnaden betalar jag. Det är också därför den väsentliga hälften förblir gratis i stället för att ransoneras: appen ska bäras av dem som vill ha mer djup.',
+      'Jag försöker inte bli rik på det här. Först ska den täcka sina egna kostnader. Sedan ska den dra in tillräckligt för att jag ska kunna ge den mer än de kvällar och helger den får nu, för det är det enda som står mellan appen som den är och appen jag vill ha.',
+      'Och sedan den del jag faktiskt bryr mig om: större drops, riktiga giveaways, ordentliga samarbeten med partners. Pengar som kommer ur den här communityn ska hamna i den igen. Målet är den största snuscommunityn som finns, och en sådan bygger man inte genom att ta ur den.',
+      'Jag har snusat själv i flera år. Om det är bra eller dåligt vet jag ärligt talat inte. Det är en del av varför appen gör båda: den räknar för den som vill räkna, och hjälper den som vill sluta.',
+    ],
     ctaHeading: 'Börja gratis. Uppgradera om du vill ha mer.',
     storeNote:
       'Europriser från App Store och Google Play, kontrollerade i september 2026. Utanför euroområdet sätter butikerna lokalpriset. Säg upp när som helst i butiken.',
@@ -351,6 +409,10 @@ export const pricing: Record<Locale, PricingCopy> = {
       {
         q: 'Vad kostar Breezer Pro?',
         a: '2,99 € i månaden eller 19,99 € per år, båda med en gratis vecka, en gång per person. Årsplanen blir 1,67 € i månaden, 44 procent mindre än månadsvis. Utanför euroområdet sätter App Store och Google Play lokalpriset.',
+      },
+      {
+        q: 'Varför kostar Breezer något överhuvudtaget?',
+        a: 'För att driften kostar pengar varje månad, infrastruktur och tjänster, oavsett om någon prenumererar eller inte. Just nu kostar den mer än den drar in. Pro bär det, och just därför ligger inget väsentligt bakom det: appen ska bäras av dem som vill ha mer djup, inte av ransonerade grundfunktioner.',
       },
       {
         q: 'Vad förlorar jag utan Pro?',

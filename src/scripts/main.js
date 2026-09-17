@@ -1170,3 +1170,78 @@ if (document.readyState === 'loading') {
 } else {
   breezerInitCommunityStats();
 }
+
+/**
+ * The referral counter on the Pro page, which is the app's own widget rebuilt in
+ * `Pricing.astro`: three segments, three friends, one month of Pro.
+ *
+ * Nobody is signed in on a marketing page, so there is no count to read. It runs
+ * once, when the card comes into view, and stops at three: what it explains is
+ * the mechanic, and an explanation that loops is an advert. The page's only
+ * other movement, the sheen over the Pro card, makes the same bargain.
+ *
+ * Inline rather than a conditional import like the two below: it is twenty lines
+ * and a dynamic import would cost a round trip to save them.
+ */
+function breezerInitReferralDemo() {
+  const root = document.querySelector('[data-referral]');
+  if (!root) return;
+
+  const segments = Array.from(root.querySelectorAll('[data-referral-seg]'));
+  const counter = root.querySelector('[data-referral-count]');
+  const reward = root.querySelector('[data-referral-step="3"]');
+  if (!segments.length) return;
+
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const STEP_MS = 520;
+
+  function fill(count) {
+    segments.forEach((segment, i) => {
+      if (i < count) segment.setAttribute('data-filled', '');
+      else segment.removeAttribute('data-filled');
+    });
+    if (counter) counter.textContent = String(count);
+    // The last step is the reward, so it only reads as reached once the
+    // counter is: the same `count >= THRESHOLD` the app's screen uses.
+    if (reward && count >= segments.length) {
+      reward.setAttribute('data-done', '');
+      const num = reward.querySelector('[data-referral-num]');
+      const check = reward.querySelector('[data-referral-check]');
+      if (num) num.hidden = true;
+      if (check) check.hidden = false;
+    }
+  }
+
+  function run() {
+    // Reduced motion gets the explained state and no counting up, which is the
+    // same bargain every other moving thing on this site makes.
+    if (reduced) {
+      fill(segments.length);
+      return;
+    }
+    segments.forEach((_, i) => {
+      window.setTimeout(() => fill(i + 1), STEP_MS * (i + 1));
+    });
+  }
+
+  if (!('IntersectionObserver' in window)) {
+    run();
+    return;
+  }
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      io.disconnect();
+      run();
+    },
+    { threshold: 0.4 },
+  );
+  io.observe(root);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', breezerInitReferralDemo);
+} else {
+  breezerInitReferralDemo();
+}

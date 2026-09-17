@@ -4,8 +4,9 @@
  *
  * A product page, not an article: somebody arrives here to decide, so the page
  * is built to be read in the order a decision gets made — what it costs, what
- * each side gives you, where the free version stops, and only then the reasoning
- * behind the price.
+ * each side gives you, where the free version stops, how to get Pro without
+ * paying, and only then the reasoning behind the price, in the founder's own
+ * voice.
  *
  * The one loud element is the price expressed in cans. Breezer's reader already
  * buys something weekly, and a can is the unit they judge every other cost
@@ -26,6 +27,7 @@
  */
 import StoreButtons from './StoreButtons.astro';
 import Icon from './Icon.astro';
+import FounderPortrait from './FounderPortrait.astro';
 import type { Lang } from '../i18n/routes';
 import { pricing } from '../i18n/pricing';
 
@@ -201,16 +203,98 @@ const modes = [
       <p class="mt-6 max-w-[70ch] text-sm leading-relaxed text-body">{t.clarify}</p>
     </section>
 
-    <div class="mt-14 grid gap-5 md:grid-cols-2">
-      <section class="rounded-3xl border border-stroke bg-gray p-7 dark:border-stroke-dark dark:bg-dark sm:p-9">
-        <h2 class="text-xl font-bold text-black dark:text-white">{t.referralHeading}</h2>
-        <p class="mt-4 text-base leading-relaxed text-body dark:text-white/70">{t.referralBody}</p>
-      </section>
-      <section class="rounded-3xl border border-stroke bg-gray p-7 dark:border-stroke-dark dark:bg-dark sm:p-9">
-        <h2 class="text-xl font-bold text-black dark:text-white">{t.missionHeading}</h2>
-        <p class="mt-4 text-base leading-relaxed text-body dark:text-white/70">{t.missionBody}</p>
-      </section>
-    </div>
+    {/*
+      The referral counter from the app, rebuilt here rather than screenshotted,
+      the same choice the homepage's phone screens make: the threshold is three
+      in `react_Breezer/components/homecards/ReferralSection.jsx`, so it is three
+      segments here, and the three steps are that screen's own.
+
+      In the site's colours rather than the app's: #1FD9FF against a white card
+      is 1.6:1, and a dark app card dropped into a light page reads as a pasted
+      screenshot. The structure is the app's, the palette is this page's.
+
+      Nobody is signed in on a marketing page, so the counter is an explanation,
+      not a status. It starts empty, fills once when it comes into view, and the
+      caption underneath says where the real one lives. Without JavaScript it
+      stays at zero of three with the steps numbered, which still explains the
+      mechanic.
+    */}
+    <section class="mt-14 rounded-3xl border border-stroke bg-gray p-7 dark:border-stroke-dark dark:bg-dark sm:p-9">
+      <div class="grid gap-8 md:grid-cols-[1fr_minmax(0,330px)] md:items-start md:gap-12">
+        <div>
+          <h2 class="text-xl font-bold text-black dark:text-white">{t.referralHeading}</h2>
+          <p class="mt-4 max-w-[52ch] text-base leading-relaxed text-body dark:text-white/70">
+            {t.referralBody}
+          </p>
+        </div>
+
+        <div
+          class="rounded-2xl border border-stroke bg-white p-5 dark:border-stroke-dark dark:bg-black/25"
+          data-referral
+        >
+          <div class="flex items-baseline justify-between gap-3">
+            <p class="text-sm font-semibold text-black dark:text-white">{t.referralDemo.label}</p>
+            <p class="text-sm font-bold tabular-nums text-primary dark:text-primary-light">
+              <span data-referral-count>0</span> / 3
+            </p>
+          </div>
+
+          <div class="mt-3 flex gap-2">
+            {[0, 1, 2].map(() => (
+              <span
+                class="referral-seg relative h-2 flex-1 overflow-hidden rounded-full bg-stroke dark:bg-white/10"
+                data-referral-seg
+              >
+                <span class="referral-fill absolute inset-0"></span>
+              </span>
+            ))}
+          </div>
+
+          <ol class="mt-6 space-y-3">
+            {t.referralDemo.steps.map((step, i) => (
+              <li class="referral-step flex items-start gap-3" data-referral-step={i + 1}>
+                <span
+                  class="referral-badge mt-[1px] flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-stroke text-[11px] font-bold text-body dark:bg-white/10 dark:text-white/60"
+                  aria-hidden="true"
+                >
+                  <span data-referral-num>{i + 1}</span>
+                  <span data-referral-check hidden>✓</span>
+                </span>
+                <span class="referral-label min-w-0 text-[14px] leading-relaxed text-body dark:text-white/70">
+                  {step}
+                </span>
+              </li>
+            ))}
+          </ol>
+
+          <p class="mt-5 text-xs leading-relaxed text-body/80 dark:text-white/50">
+            {t.referralDemo.caption}
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/*
+      The last argument before the questions, and the only first-person passage
+      on the page: somebody who has just read where the free version ends is
+      owed the reason there is a price at all, and that reason is a person's,
+      not a company's.
+
+      Not a card. Three cards in a row and this one would read as the third
+      feature box rather than as somebody talking; a rule and a portrait is the
+      quietest way to change who is speaking. Not a `blockquote` either, unlike
+      the homepage's version of this: nothing is being quoted from elsewhere,
+      the eyebrow names the speaker, and the section still owes the page an
+      `h2` like every other one.
+    */}
+    <section class="mt-14 border-t border-stroke pt-12 dark:border-stroke-dark">
+      <p class="text-sm font-medium text-primary dark:text-primary-light">{t.founderEyebrow}</p>
+      <FounderPortrait class="mt-6" />
+      <h2 class="mt-6 text-2xl font-bold text-black dark:text-white sm:text-3xl">{t.founderHeading}</h2>
+      <div class="mt-5 max-w-[62ch] space-y-4 text-base leading-relaxed text-body">
+        {t.founderBody.map((para) => <p>{para}</p>)}
+      </div>
+    </section>
 
     <section class="mt-14">
       <h2 class="text-2xl font-bold text-black dark:text-white sm:text-3xl">{t.faqHeading}</h2>
@@ -248,6 +332,59 @@ const modes = [
 </main>
 
 <style>
+  /*
+    The referral counter's fill. Each segment is a track with the colour already
+    painted inside it and scaled away: `main.js` sets `data-filled` and the fill
+    grows from the left, on the compositor, instead of a colour swapping in.
+
+    Flat #1FD9FF, the light end of the brand gradient and the exact colour the
+    app paints these segments. It is the one thing on this page taken from the
+    app's palette rather than the site's: a gradient across a 2px bar reads as
+    two different fills across three segments, and the state is carried in words
+    by the counter beside it, which is in `primary` and legible.
+  */
+  .referral-fill {
+    background-color: #1fd9ff;
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+  .referral-seg[data-filled] .referral-fill {
+    transform: scaleX(1);
+  }
+
+  /*
+    The last step is the reward, so it is the one that changes when the counter
+    fills: the number becomes a tick and the line stops being grey. Written out
+    rather than composed from utilities, because the state sits on the row and
+    the change happens two elements down, which no Tailwind 3.1 variant reaches.
+  */
+  .referral-step[data-done] .referral-badge {
+    background-color: rgba(13, 107, 205, 0.12);
+    color: #0d6bcd;
+  }
+  .referral-step[data-done] .referral-label {
+    color: #161622;
+  }
+  :global(.dark) .referral-step[data-done] .referral-badge {
+    background-color: rgba(79, 169, 242, 0.18);
+    color: #4fa9f2;
+  }
+  :global(.dark) .referral-step[data-done] .referral-label {
+    color: #ffffff;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .referral-fill {
+      transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .referral-badge,
+    .referral-label {
+      transition:
+        background-color 300ms ease,
+        color 300ms ease;
+    }
+  }
+
   /*
     Body text on the brand gradient. Its light end is #1FD9FF, where white type
     at this size loses its edge; a shadow the colour of the gradient's own dark
