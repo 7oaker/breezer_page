@@ -8,26 +8,22 @@
  * set, one portrait and the sentence. Everything around it is already loud, and
  * a statement of intent that arrives dressed as an ad reads as an ad.
  *
- * Spoken, and marked up as spoken: a `blockquote` with a `cite` in the footer,
- * because the closing line is first person. An unsigned "love you all" is a
- * company pretending to be a person.
+ * Spoken, and marked up as spoken: a `blockquote`, because the statement is the
+ * founder's own rather than the site's. The eyebrow above it says whose, which
+ * is why there is no signature under it: one section this short does not need
+ * the word "founder" twice.
  *
- * The portrait is the same line drawing the blog byline uses, painted through a
- * CSS mask so the outline picks up the brand gradient instead of the palette it
- * was drawn in. Two nested elements, because a mask clips the element it sits
- * on — the ring has to be the parent or it gets masked away with the rest. The
- * reasoning for a drawing rather than a photograph is in `src/data/authors.ts`:
- * the accountability is real, the biometric exposure is not.
+ * The portrait is `FounderPortrait.astro`, shared with the Pro page's founder
+ * note: a line drawing rather than a photograph, for the reason given in
+ * `src/data/authors.ts`.
  */
-import { getAuthor } from '../../data/authors';
+import FounderPortrait from '../FounderPortrait.astro';
 import type { UI } from '../../i18n/ui';
 
 interface Props {
   t: UI;
 }
 const { t } = Astro.props;
-
-const portrait = getAuthor('Klaus Siebeneicher')?.image;
 ---
 
 <section id="vision" class="relative z-20 pt-[110px]">
@@ -35,36 +31,22 @@ const portrait = getAuthor('Klaus Siebeneicher')?.image;
     <figure class="mx-auto max-w-[760px] border-t border-stroke pt-14 text-center dark:border-stroke-dark">
       <p class="text-sm font-medium text-primary dark:text-primary-light">{t.vision_eyebrow}</p>
 
-      {portrait && (
-        <span
-          aria-hidden="true"
-          class="mx-auto mt-6 flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-primary/5 ring-1 ring-stroke dark:bg-white/5 dark:ring-stroke-dark"
-        >
-          <span
-            class="bg-gradient-1 block h-full w-full"
-            style={`-webkit-mask:url(${portrait}) center/88% no-repeat;mask:url(${portrait}) center/88% no-repeat;`}
-          ></span>
-        </span>
-      )}
+      <FounderPortrait class="mx-auto mt-6" />
 
       <blockquote
         class="wow fadeInUp mt-8"
         data-wow-delay=".2s"
       >
-        <p class="mx-auto max-w-[19ch] text-3xl font-bold leading-tight text-black dark:text-white sm:text-4xl md:text-[44px] md:leading-tight">
+        {/* No `ch` cap on this one: the line is short enough to sit on one at
+            every width the container allows, and a cap sized for a longer
+            sentence would break it in half for no reason. */}
+        <p class="text-3xl font-bold leading-tight text-black dark:text-white sm:text-4xl md:text-[44px] md:leading-tight">
           {t.vision_heading}
         </p>
         <p class="mx-auto mt-6 max-w-[62ch] text-base leading-relaxed text-body sm:text-lg">
           {t.vision_body}
         </p>
-        <p class="mx-auto mt-8 max-w-[36ch] text-xl font-semibold leading-relaxed text-black dark:text-white sm:text-2xl">
-          {t.vision_closing}
-        </p>
       </blockquote>
-
-      <figcaption class="mt-6 text-sm text-body dark:text-white/60">
-        <cite class="not-italic">{t.vision_signature}</cite>
-      </figcaption>
     </figure>
   </div>
 </section>

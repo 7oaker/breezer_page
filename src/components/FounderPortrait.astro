@@ -1,0 +1,43 @@
+---
+/**
+ * The founder's portrait, painted in the brand gradient.
+ *
+ * The same line drawing the blog byline uses, pulled through a CSS mask so the
+ * outline picks up the gradient instead of the palette it was drawn in. Two
+ * nested elements, because a mask clips the element it sits on: the ring has to
+ * be the parent or it gets masked away with the rest.
+ *
+ * The reasoning for a drawing rather than a photograph is in
+ * `src/data/authors.ts`: the accountability is real, the biometric exposure is
+ * not. An entry without an image renders nothing rather than a placeholder,
+ * which is the same rule the byline registry follows.
+ *
+ * `aria-hidden`, always: whoever is speaking is said in words next to it, and a
+ * decorative portrait announced to a screen reader is one more thing between the
+ * reader and the sentence.
+ */
+import { getAuthor } from '../data/authors';
+
+interface Props {
+  /** Placement and margins. The size below is the default for both callers. */
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+
+const portrait = getAuthor('Klaus Siebeneicher')?.image;
+---
+
+{portrait && (
+  <span
+    aria-hidden="true"
+    class:list={[
+      'flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-primary/5 ring-1 ring-stroke dark:bg-white/5 dark:ring-stroke-dark',
+      className,
+    ]}
+  >
+    <span
+      class="bg-gradient-1 block h-full w-full"
+      style={`-webkit-mask:url(${portrait}) center/88% no-repeat;mask:url(${portrait}) center/88% no-repeat;`}
+    ></span>
+  </span>
+)}
