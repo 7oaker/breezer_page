@@ -1,5 +1,5 @@
 import Swiper from 'swiper';
-import { Navigation } from 'swiper/modules';
+import { Navigation, Autoplay } from 'swiper/modules';
 // PostHog, deliberately outside the consent gate below: it runs cookieless and writes
 // nothing to the device, so ePrivacy consent is not engaged. Google Analytics does set
 // cookies and therefore stays gated. See src/scripts/analytics.js.
@@ -600,14 +600,29 @@ breezerInitFaq();
  * that element: the old document-wide `'.swiper-button-next'` selector would
  * hand both carousels the same pair of arrows, so the hidden one would move
  * whenever the visible one did.
+ *
+ * Each carousel rotates by itself until the visitor takes it over, the same
+ * bargain the stats screen's period selector makes (`src/scripts/stats-phone.js`).
+ * Standing still, it showed three of eleven screenshots to everybody who never
+ * reached for an arrow.
  */
 const screenSwipers = new Map();
+
+/**
+ * How long a screenshot holds before the carousel moves on by itself. Long
+ * enough to look at one, short enough that the movement is noticed rather than
+ * waited for: at 3 slides per view, a round through the eleven tracking screens
+ * takes about three quarters of a minute.
+ */
+const SCREENS_AUTOPLAY_MS = 4000;
+
+const screensReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 for (const el of document.querySelectorAll('.mySwiper')) {
   screenSwipers.set(
     el,
     new Swiper(el, {
-      modules: [Navigation],
+      modules: [Navigation, Autoplay],
       slidesPerView: 1,
       spaceBetween: 30,
       grabCursor: true,
@@ -623,9 +638,91 @@ for (const el of document.querySelectorAll('.mySwiper')) {
           spaceBetween: 40,
         },
       },
+      // The glide is the point of rotating at all, so it gets twice Swiper's
+      // default 300ms: the highlight on the middle slide cross-fades over 450ms
+      // (`.swiper-slide-next` in style.css) and a 300ms jump arrives before it.
+      // Arrow clicks travel at the same speed, which is the nicer half of it.
+      speed: 600,
+      autoplay: {
+        // `enabled` rather than leaving the parameter out: it is the documented
+        // off switch, and Swiper's own merge expects a module object with it.
+        enabled: !screensReduced,
+        delay: SCREENS_AUTOPLAY_MS,
+        disableOnInteraction: true,
+        pauseOnMouseEnter: true,
+      },
     }),
   );
 }
+
+/**
+ * What starts and stops the rotation, one entry per carousel, keyed by element
+ * so the Tracking / Quitting filter below can reach it.
+ *
+ * Swiper's own `disableOnInteraction` stops the instance but does not remember
+ * having done so, and this gate calls `start()` again every time the section
+ * comes back on screen. So the visitor's takeover is held here instead.
+ */
+const screenAutoplay = new Map();
+
+function breezerInitScreenAutoplay() {
+  if (screensReduced) return;
+
+  for (const [el, swiper] of screenSwipers) {
+    if (!swiper.autoplay) continue;
+
+    // Both carousels are built at load and one of them sits in a `hidden`
+    // panel, where every slide measures zero wide and nobody is looking.
+    const panel = el.closest('[data-screens-panel]');
+    let taken = false;
+    let onScreen = !('IntersectionObserver' in window);
+
+    const take = () => {
+      taken = true;
+      swiper.autoplay.stop();
+    };
+
+    // A finger or a mouse on the slides, a click on an arrow, or the keyboard
+    // arriving at one: all of them are somebody deciding to steer.
+    swiper.on('touchStart', take);
+    el.querySelectorAll('.swiper-button-prev, .swiper-button-next').forEach((button) => {
+      button.addEventListener('click', take);
+    });
+    el.addEventListener('focusin', take);
+
+    function sync() {
+      const run = onScreen && !document.hidden && !taken && !(panel && panel.hidden);
+      // `stop()` rather than `pause()`: pausing leaves the requestAnimationFrame
+      // loop that counts the delay down running, and nothing on this page runs
+      // per frame while it is off screen.
+      if (run) {
+        if (!swiper.autoplay.running) swiper.autoplay.start();
+      } else if (swiper.autoplay.running) {
+        swiper.autoplay.stop();
+      }
+    }
+
+    screenAutoplay.set(el, sync);
+
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          onScreen = entries.some((entry) => entry.isIntersecting);
+          sync();
+        },
+        { threshold: 0.3 },
+      );
+      io.observe(el);
+    }
+
+    document.addEventListener('visibilitychange', sync);
+    // Swiper starts autoplay at init; this is what takes it back down until the
+    // carousel is actually in front of somebody.
+    sync();
+  }
+}
+
+breezerInitScreenAutoplay();
 
 /**
  * The Tracking / Quitting filter.
@@ -656,6 +753,9 @@ function breezerInitScreenTabs() {
     const panel = panelFor(tab);
     const swiper = panel && screenSwipers.get(panel.querySelector('.mySwiper'));
     if (swiper) swiper.update();
+    // Both, not just the one opening: the other has just been hidden and has to
+    // stop rotating into a panel nobody can see.
+    screenAutoplay.forEach((sync) => sync());
     if (focus) tab.focus();
   };
 
