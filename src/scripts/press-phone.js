@@ -23,9 +23,18 @@ const MINUTES_PER_POUCH = 30;
 /** Names for the friend whose push arrives. Rotated so a repeat is not a replay. */
 const FRIENDS = ['Marcus', 'Jonas', 'Elin'];
 
-const FIRST_NOTIFICATION_MS = 6000;
+const FIRST_NOTIFICATION_MS = 2000;
 const NOTIFICATION_EVERY_MS = 14000;
 const NOTIFICATION_VISIBLE_MS = 5000;
+
+/**
+ * A press resets the clock to this instead of leaving the next push wherever the
+ * 14s cycle happens to be. The friend's pouch is the one thing on this screen
+ * that answers the visitor rather than the visitor answering it, and it only
+ * reads as an answer while they are still looking at the phone they just
+ * touched. The cycle picks up again from there.
+ */
+const PRESS_NOTIFICATION_MS = 1200;
 
 /**
  * The app greys the button out and disables it for 15 minutes after a pouch, so
@@ -180,6 +189,11 @@ export function init() {
     if (halo) halo.setAttribute('data-pressed', '');
     if (arrow) arrow.setAttribute('data-pressed', '');
 
+    // Pulled forward from wherever the ambient cycle stood, so the press gets an
+    // answer rather than silence. Declared below; hoisting is what lets the two
+    // read in the order they happen.
+    scheduleBanner(PRESS_NOTIFICATION_MS);
+
     if (!pressed) {
       pressed = true;
       track('hero_press_demo');
@@ -237,10 +251,13 @@ export function init() {
     tickTimer = null;
   }
 
-  // The friend's push. It fires on its own schedule rather than off a press, so
-  // the social hook lands for a visitor who never touches the button.
+  // The friend's push. It runs on a cycle of its own, so the social hook lands
+  // for a visitor who never touches the button, and a press pulls the next one
+  // forward so it also lands for the visitor who does.
   let bannerTimer = null;
   let hideTimer = null;
+  /** Reduced motion gets one push and no cycle, so nothing re-arms it. */
+  let bannerDone = false;
 
   function showBanner() {
     if (!banner) return;
@@ -259,18 +276,26 @@ export function init() {
     );
   }
 
-  function startBanner() {
-    if (bannerTimer || !banner) return;
+  function scheduleBanner(delay) {
+    if (!banner) return;
+    stopBanner();
     bannerTimer = window.setTimeout(() => {
       showBanner();
       // Reduced motion gets the notification once and then a still page, the
       // same bargain the rest of the site's ambient animation makes.
-      if (reduced) return;
+      if (reduced) {
+        bannerTimer = null;
+        bannerDone = true;
+        return;
+      }
       bannerTimer = window.setInterval(showBanner, NOTIFICATION_EVERY_MS);
-    }, FIRST_NOTIFICATION_MS);
+    }, delay);
   }
   function stopBanner() {
     if (!bannerTimer) return;
+    // Either handle can be live here: the first push is a timeout and the cycle
+    // after it an interval. The two share one id space, so clearing both is how
+    // one variable holds either.
     window.clearTimeout(bannerTimer);
     window.clearInterval(bannerTimer);
     bannerTimer = null;
@@ -278,13 +303,24 @@ export function init() {
 
   // Nothing runs while the phone is off-screen or the tab is in the background.
   let onScreen = true;
+  // The banner has its own answer to "is this visible", because it sits at the
+  // top of a 594px device: a fifth of the phone being on screen says nothing
+  // about whether the strip the push lands on is. Waiting for the banner itself
+  // is what lets the delay above be short instead of long enough to cover a
+  // scroll.
+  //
+  // Starts closed where an observer will answer within a frame, and open where
+  // there is none to answer at all, since without one the push would otherwise
+  // never arrive.
+  let bannerOnScreen = !('IntersectionObserver' in window);
 
   function sync() {
-    if (onScreen && !document.hidden) {
-      startTicking();
-      startBanner();
+    if (onScreen && !document.hidden) startTicking();
+    else stopTicking();
+
+    if (bannerOnScreen && !document.hidden) {
+      if (!bannerTimer && !bannerDone) scheduleBanner(FIRST_NOTIFICATION_MS);
     } else {
-      stopTicking();
       stopBanner();
     }
   }
@@ -298,6 +334,24 @@ export function init() {
       { threshold: 0.2 },
     );
     io.observe(root);
+
+    if (banner) {
+      // A ratio would be meaningless here: the hidden banner sits on
+      // `translateY(-120%)`, which puts most of its box above the screen
+      // window's `overflow: hidden`, so it is clipped to roughly a quarter of
+      // itself and never reads as more. So: any of it intersecting, against a
+      // viewport shortened by 90px at the bottom, which is the distance from the
+      // top of the screen window to the bottom edge of the banner where it lands.
+      // Intersecting then means the resting banner is fully in view.
+      const bannerIo = new IntersectionObserver(
+        (entries) => {
+          bannerOnScreen = entries.some((entry) => entry.isIntersecting);
+          sync();
+        },
+        { rootMargin: '0px 0px -90px 0px', threshold: 0 },
+      );
+      bannerIo.observe(banner);
+    }
   }
 
   document.addEventListener('visibilitychange', sync);

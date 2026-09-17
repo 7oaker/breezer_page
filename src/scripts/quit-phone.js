@@ -18,8 +18,12 @@ const MINUTES_PER_SNUS = 30;
  * screen loops its friend's notification on purpose, since that loop is the
  * social claim it is making, and repeating a "day 24 reached" would read as a
  * bug rather than as a second friend.
+ *
+ * The delay is short because the arming below waits for the banner itself to be
+ * on screen: it only has to be long enough for the push to read as arriving
+ * rather than as part of the mockup, not long enough to cover a scroll.
  */
-const NOTIFICATION_AFTER_MS = 4500;
+const NOTIFICATION_AFTER_MS = 700;
 const NOTIFICATION_VISIBLE_MS = 6000;
 
 /** `computeQuittingSavings` — mirrors QuitPhone.astro's server-side copy. */
@@ -124,12 +128,19 @@ export function init() {
     if (gainedNode) gainedNode.textContent = formatGained(savings.minutesGained);
   }
 
-  // The push. Armed only once the phone is actually on screen, so a visitor who
-  // scrolls straight past does not spend their one notification on an empty
-  // viewport.
+  // The push. Armed off the banner's own visibility rather than the phone's, so
+  // a visitor who scrolls straight past does not spend their one notification on
+  // an empty viewport, and the delay above can be short enough to still be there
+  // when they arrive. The banner sits at the top of a 594px device: the phone
+  // being a fifth on screen says nothing about whether the strip the push lands
+  // on is.
   const banner = root.querySelector('[data-quit-banner]');
   let bannerTimer = null;
   let bannerFired = false;
+  // Starts closed where an observer will answer within a frame, and open where
+  // there is none to answer at all, since without one the push would otherwise
+  // never arrive.
+  let bannerOnScreen = !('IntersectionObserver' in window);
 
   function startBanner() {
     if (!banner || bannerFired || bannerTimer) return;
@@ -152,19 +163,17 @@ export function init() {
   let onScreen = true;
 
   function sync() {
-    const shouldRun = onScreen && !document.hidden;
-    if (shouldRun) {
-      startBanner();
+    if (bannerOnScreen && !document.hidden) startBanner();
+    else stopBanner();
+
+    if (onScreen && !document.hidden) {
       if (!timer && !reduced) {
         update();
         timer = window.setInterval(update, 1000);
       }
-    } else {
-      stopBanner();
-      if (timer) {
-        window.clearInterval(timer);
-        timer = null;
-      }
+    } else if (timer) {
+      window.clearInterval(timer);
+      timer = null;
     }
   }
 
@@ -177,6 +186,24 @@ export function init() {
       { threshold: 0.2 },
     );
     io.observe(root);
+
+    if (banner) {
+      // A ratio would be meaningless here: the hidden banner sits on
+      // `translateY(-120%)`, which puts most of its box above the screen
+      // window's `overflow: hidden`, so it is clipped to roughly a quarter of
+      // itself and never reads as more. So: any of it intersecting, against a
+      // viewport shortened by 90px at the bottom, which is the distance from the
+      // top of the screen window to the bottom edge of the banner where it lands.
+      // Intersecting then means the resting banner is fully in view.
+      const bannerIo = new IntersectionObserver(
+        (entries) => {
+          bannerOnScreen = entries.some((entry) => entry.isIntersecting);
+          sync();
+        },
+        { rootMargin: '0px 0px -90px 0px', threshold: 0 },
+      );
+      bannerIo.observe(banner);
+    }
   }
 
   document.addEventListener('visibilitychange', sync);
