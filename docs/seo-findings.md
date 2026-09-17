@@ -641,3 +641,27 @@ Wirkungskontrolle zu C1 vorliegt (Abschnitt D, Mitte Oktober 2026).
 
 **Offen:** ob der Abschnitt Wirkung zeigt, ist erst ab Mitte November beurteilbar und wird
 sich mit der C1-Messung überlagern. Wer das später auswertet, muss beides trennen.
+
+## F. Der leere Handyrahmen in Google Images (17.09.2026)
+
+Befund: In Google Images erschien zum Titel `Breezer: Soziale Snus App – Tracken, Ranken &
+Aufhören` ein leerer weißer Handyrahmen. Kein Screenshot, kein Logo, nur Gehäuse und Notch.
+
+Ursache ist nicht das OG-Bild. Beim Teilen (WhatsApp, Slack, iMessage) zieht der Client
+`og:image`, und das sieht korrekt aus. Google Images ignoriert `og:image` vollständig und
+indexiert jedes `<img>` der Seite einzeln. `mobile-frame.png` lag fünfmal auf der Startseite,
+öfter als jedes andere Bild dort, mit `alt=""` und `aria-hidden`. Beides ist für Screenreader
+richtig und sagt dem Bildcrawler nichts. Transparentes RGBA rendert Google auf Weiß, daraus
+wurde die leere Fläche.
+
+Dass es `/de` traf und nicht `/`, ist Zufall: beide Sprachen referenzieren dieselbe gehashte
+Datei, und Google ordnet ein Bild genau einer Landing Page zu.
+
+Behoben, indem der Rahmen als CSS-Hintergrund statt als `<img>` gerendert wird. Google
+indexiert keine CSS-Hintergründe. Begründung und verworfene Alternativen (`noimageindex`,
+`robots.txt`-Disallow) in `docs/decisions.md`, Eintrag vom 17.09.2026.
+
+**Wirkungskontrolle.** Die alte Bild-URL ist nach dem Deploy tot (der Hash ändert sich mit der
+Umstellung), Google wirft sie erfahrungsgemäß in einigen Wochen aus dem Index. Über
+Search Console → Entfernungen geht es schneller. Zu prüfen ist dabei nur, dass die sechzehn
+App-Screenshots indexiert bleiben; die sollen ranken, der Rahmen nie.

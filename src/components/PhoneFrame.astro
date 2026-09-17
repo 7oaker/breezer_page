@@ -10,8 +10,18 @@
  * and the page background showed through. That gap was invisible in dark mode
  * and glaring white in light mode.
  *
- * The frame is decorative (aria-hidden); the screenshot carries the alt text,
- * so the meaning survives for screen readers and image search.
+ * The frame is decorative; the screenshot carries the alt text, so the meaning
+ * survives for screen readers and image search.
+ *
+ * It is painted as a CSS background rather than an `<img>`, and that is an SEO
+ * decision, not a styling one. As an element it was five separate `<img>` tags
+ * on the home page — the most repeated image there — and Google Images indexed
+ * it on its own: a transparent PNG flattened onto white, so the result was an
+ * empty white phone carrying the page's title. `alt=""` and `aria-hidden` make
+ * it invisible to screen readers but say nothing to the image crawler, and
+ * `noimageindex` would have taken the app screenshots down with it. Google does
+ * not index CSS backgrounds, so moving it here removes exactly the one image
+ * that should never have been indexed. Keep it a background.
  *
  * Omitting `src` renders the default slot into the screen window instead of an
  * image — the hero's live, pressable rebuild of the app goes through that path.
@@ -25,9 +35,12 @@
  * spread bleeds the backplate under the opaque bezel, where it is invisible,
  * and fills the fringe from behind.
  */
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import frame from '../assets/images/screens/mobile-frame.png';
+
+/** The same optimised variant `<Image>` would have emitted, as a URL. */
+const frameUrl = (await getImage({ src: frame, width: 295, height: 594 })).src;
 
 interface Props {
   /** Omit to render the default slot into the screen window instead. */
@@ -111,15 +124,10 @@ const decoding = eager ? 'sync' : 'async';
         )}
       </div>
       {!screenOnly && (
-        <Image
-          src={frame}
-          width={295}
-          height={594}
-          alt=""
+        <div
+          class="pointer-events-none absolute inset-0 bg-no-repeat"
+          style={`background-image: url(${frameUrl}); background-size: 100% 100%`}
           aria-hidden="true"
-          class="pointer-events-none absolute inset-0 h-full w-full"
-          loading={loading}
-          decoding="async"
         />
       )}
     </div>
