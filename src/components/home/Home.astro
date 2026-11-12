@@ -11,6 +11,7 @@ import QuitPhone from './QuitPhone.astro';
 import AppHandCursor from './AppHandCursor.astro';
 import CommunityStats from './CommunityStats.astro';
 import type { UI } from '../../i18n/ui';
+import { siteText } from '../../i18n/siteScreens';
 import type { Lang } from '../../i18n/routes';
 import img_author_04 from '../../assets/images/testimonials/author-04.png';
 import img_author_1 from '../../assets/images/testimonials/author-1.png';
@@ -207,7 +208,7 @@ const screenModes = [
                   it. `float-slow` still drifts the device; PressPhone pauses
                   that while someone is aiming at the button.
                 */}
-                <PressPhone t={t} lang={lang} class="float-slow" />
+                <PressPhone t={siteText(lang)} lang={lang} class="float-slow" />
                 <div
                   class="max-auto absolute top-0 left-0 right-0 pointer-events-none -z-10 aspect-square w-full rounded-full bg-gradient-1"
                 >
@@ -530,7 +531,7 @@ const screenModes = [
                     can slice consumption by day, week, month and year, which a
                     still can only ever show one of — so the selector is live.
                   */}
-                  <StatsPhone t={t} lang={lang} />
+                  <StatsPhone t={siteText(lang)} lang={lang} />
 
                   <div class="absolute top-0 right-5 pointer-events-none -z-10">
                     <svg
@@ -663,7 +664,7 @@ const screenModes = [
                     mode: a number moving in your favour every second. This one
                     runs.
                   */}
-                  <QuitPhone t={t} />
+                  <QuitPhone t={siteText(lang)} />
 
                   <div class="absolute top-0 right-5 pointer-events-none -z-10">
                     <svg

@@ -30,31 +30,54 @@ import '@fontsource/poppins/latin-800.css';
 interface Props {
   /** Extra classes for the outermost box, e.g. the hero's `float-slow`. */
   class?: string;
+  /**
+   * The screen alone, without `mobile-frame.png`, at a fixed scale. For the
+   * store images (`src/pages/dev/store/`), which draw their own device around
+   * it: the frame PNG is 295px wide and turns to mush at store-image size.
+   */
+  bare?: boolean;
+  /** With `bare`: how many px one screen px becomes. */
+  scale?: number;
   /** Anything else — each screen puts its own `data-*` hook on this element. */
   [key: string]: unknown;
 }
-const { class: className = '', ...rest } = Astro.props;
+const { class: className = '', bare = false, scale = 1, ...rest } = Astro.props;
 ---
 
-<div
-  class:list={['app-screen relative mx-auto w-full max-w-[295px]', className]}
-  data-app-screen
-  {...rest}
->
-  <PhoneFrame screenBg="#161622">
-    <div class="app-screen__fit">
+{
+  bare ? (
+    <div
+      class:list={['app-screen relative', className]}
+      style={`--app-screen-scale:${scale};width:${(261 * scale).toFixed(2)}px;height:${(566 * scale).toFixed(2)}px`}
+      data-app-screen
+      {...rest}
+    >
       <div class="app-screen__screen flex flex-col bg-[#161622] font-poppins antialiased">
         <slot />
       </div>
     </div>
-  </PhoneFrame>
-  {/*
-    Anything that has to sit over the device rather than inside its screen —
-    the hero's "press me" arrow overlaps the bezel the way the old painted-on
-    one did. Positioned by the caller against this 295x594 box.
-  */}
-  <slot name="overlay" />
-</div>
+  ) : (
+    <div
+      class:list={['app-screen relative mx-auto w-full max-w-[295px]', className]}
+      data-app-screen
+      {...rest}
+    >
+      <PhoneFrame screenBg="#161622">
+        <div class="app-screen__fit">
+          <div class="app-screen__screen flex flex-col bg-[#161622] font-poppins antialiased">
+            <slot />
+          </div>
+        </div>
+      </PhoneFrame>
+      {/*
+        Anything that has to sit over the device rather than inside its screen —
+        the hero's "press me" arrow overlaps the bezel the way the old painted-on
+        one did. Positioned by the caller against this 295x594 box.
+      */}
+      <slot name="overlay" />
+    </div>
+  )
+}
 
 <style>
   /* The caller may put `float-slow` on this same element, so the device drifts.

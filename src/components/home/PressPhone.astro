@@ -28,18 +28,30 @@
  */
 import { Image } from 'astro:assets';
 import AppScreen from './AppScreen.astro';
-import type { UI } from '../../i18n/ui';
+import StatusBar from '../store/StatusBar.astro';
+import type { AppText } from '../../i18n/appScreens';
 import type { Lang } from '../../i18n/routes';
 import pressButton from '../../assets/images/app/press-button-big.png';
 import pressButtonGray from '../../assets/images/app/press-button-big-gray.png';
 import appIcon from '../../assets/images/app/app-icon-dark.png';
+import merchShirt from '../../assets/images/store/merch/shirt.jpg';
 
 interface Props {
-  t: UI;
+  t: AppText;
   lang: Lang;
   class?: string;
+  /**
+   * For the store images: no frame PNG (the store page draws the device), Apple's
+   * 9:41 in the status bar, no push banner, and the merch draw where the home
+   * screen shows Drops, because the store listing does not advertise nicotine.
+   */
+  bare?: boolean;
+  /** With `bare`: which phone's status bar to draw. */
+  os?: 'ios' | 'android';
+  /** With `bare`: px per screen px. */
+  scale?: number;
 }
-const { t, lang, class: className = '' } = Astro.props;
+const { t, lang, class: className = '', bare = false, scale = 1, os = 'ios' } = Astro.props;
 
 /**
  * Seeded state, matching take-snus.png. The script reads these back out of the
@@ -106,16 +118,17 @@ const donutPct = Math.min(100, (SEED.today / SEED.limit) * 100);
 const brands = ['VELO', '77', 'Ace', 'Après', 'An'];
 ---
 
-<AppScreen class={className} data-press-phone data-seed={JSON.stringify(SEED)}>
+<AppScreen class={className} bare={bare} scale={scale} data-press-phone data-seed={JSON.stringify(SEED)}>
         <p class="sr-only">{t.app_demo_caption}</p>
 
         {/* Status bar. Static: a live clock here would be a second thing ticking
             for no gain, and it is the one element nobody reads. */}
+        {bare ? <StatusBar os={os} /> : (
         <div
           class="flex h-[26px] shrink-0 items-start justify-between px-[14px] pt-[13px] text-[10px] font-semibold leading-[11px] text-white"
           aria-hidden="true"
         >
-          <span>07:13</span>
+          <span>{bare ? '9:41' : '07:13'}</span>
           <span class="flex items-center gap-[3px]">
             <svg width="14" height="9" viewBox="0 0 14 9" fill="currentColor"
               ><rect x="0" y="6" width="2.4" height="3" rx=".6"></rect><rect
@@ -144,6 +157,7 @@ const brands = ['VELO', '77', 'Ace', 'Après', 'An'];
             >
           </span>
         </div>
+        )}
 
         {/* Top bar: streak, then the three chrome icons. */}
         <div class="mt-[19px] flex h-[20px] shrink-0 items-center justify-between px-[12px]">
@@ -437,6 +451,39 @@ const brands = ['VELO', '77', 'Ace', 'Après', 'An'];
             </div>
           </div>
 
+          {bare ? (
+            /* The app's LotteryTile: while a draw runs it takes this slot, under
+               the same heading, with the round's photo behind it (the real
+               Breezer shirt) and the app's dark gradient over it so the title
+               and the clock stay readable. */
+            <div class="relative w-1/2 overflow-hidden rounded-[11px] bg-[#1E1E2D] p-[9px]">
+              <Image
+                src={merchShirt}
+                width={1240}
+                height={992}
+                alt=""
+                aria-hidden="true"
+                class="absolute inset-0 h-full w-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+              <span
+                class="absolute inset-0"
+                style="background: linear-gradient(180deg, rgba(22,22,34,0.10) 0%, rgba(22,22,34,0.60) 55%, rgba(22,22,34,0.96) 100%)"
+                aria-hidden="true"
+              ></span>
+              <div class="relative flex h-full flex-col justify-between">
+                <div class="flex items-start justify-between">
+                  <span class="text-[11px] font-bold leading-none text-white/75">{t.app_drops}</span>
+                  <span class="rounded-[5px] bg-[#1FD9FF] px-[4px] py-[1px] text-[6px] font-bold leading-[8px] text-[#161622]">{t.app_merch_badge}</span>
+                </div>
+                <div>
+                  <p class="text-[9px] font-bold leading-[11px] text-white">{t.app_merch_title}</p>
+                  <p class="mt-[3px] text-[8px] font-semibold leading-[10px] text-[#1FD9FF]">{t.app_merch_ends}</p>
+                </div>
+              </div>
+            </div>
+          ) : (
           <div class="w-1/2 rounded-[11px] bg-gradient-to-br from-[#1E1E2D] to-[#232533] p-[9px]">
             <div class="flex items-center justify-between">
               <span class="text-[11px] font-bold leading-none text-white">{t.app_drops}</span>
@@ -456,6 +503,7 @@ const brands = ['VELO', '77', 'Ace', 'Après', 'An'];
               </li>
             </ul>
           </div>
+          )}
         </div>
 
         {/* Breezer's Chat. Only its header clears the frame's bottom edge, which
@@ -491,6 +539,7 @@ const brands = ['VELO', '77', 'Ace', 'Après', 'An'];
             paints the island over its first line. 26px is the status bar's own
             height, so the banner starts exactly where that ends — which is
             where iOS puts it. */}
+        {!bare && (
         <div
           class="press-phone__banner pointer-events-none absolute inset-x-[8px] top-[26px]"
           data-press-banner
@@ -521,6 +570,7 @@ const brands = ['VELO', '77', 'Ace', 'Après', 'An'];
             </div>
           </div>
         </div>
+        )}
   {/*
     The "press me" arrow, back from the hero screenshot this component replaced.
     It sits in AppScreen's overlay slot so it can overlap the bezel the way the

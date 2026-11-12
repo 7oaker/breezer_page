@@ -21,16 +21,22 @@
  * lives in `src/scripts/stats-phone.js`, reached through `data-stats-phone`.
  */
 import AppScreen from './AppScreen.astro';
-import type { UI } from '../../i18n/ui';
+import StatusBar from '../store/StatusBar.astro';
+import type { AppText } from '../../i18n/appScreens';
 import { fill } from '../../i18n/ui';
 import type { Lang } from '../../i18n/routes';
 
 interface Props {
-  t: UI;
+  t: AppText;
   lang: Lang;
   class?: string;
+  /** For the store images: no frame PNG, a fixed scale and Apple's 9:41. See PressPhone. */
+  bare?: boolean;
+  /** With `bare`: which phone's status bar to draw. */
+  os?: 'ios' | 'android';
+  scale?: number;
 }
-const { t, lang, class: className = '' } = Astro.props;
+const { t, lang, class: className = '', bare = false, scale = 1, os = 'ios' } = Astro.props;
 
 /**
  * The app's own daily limit for this account. 7 is what makes the seeded week
@@ -92,7 +98,12 @@ const weekIndex = (now.getDay() + 6) % 7; // Monday-first, as the app's week is
  * (three days with data, four empty) already reads as mid-week whenever anyone
  * looks at it.
  */
-const week = SERIES.week;
+// The store image shows a whole week of real-looking use rather than the
+// homepage's week-so-far: a chart that stops on Wednesday reads as broken in a
+// still. Monday stays the peak (and the only day over the limit), so the
+// "Monday hits hardest" caption still matches.
+const STORE_WEEK = [8, 6, 5, 7, 4, 6, 3];
+const week = bare ? STORE_WEEK : SERIES.week;
 
 const total = week.reduce((sum, v) => sum + v, 0);
 const limit = DAILY_LIMIT * 7;
@@ -161,6 +172,8 @@ const STRINGS = {
 
 <AppScreen
   class={className}
+  bare={bare}
+  scale={scale}
   data-stats-phone
   data-config={JSON.stringify(CONFIG)}
   data-strings={JSON.stringify(STRINGS)}
@@ -168,11 +181,12 @@ const STRINGS = {
   <p class="sr-only">{t.app_stats_demo_caption}</p>
 
   {/* Status bar */}
+  {bare ? <StatusBar os={os} /> : (
   <div
     class="flex h-[26px] shrink-0 items-start justify-between px-[14px] pt-[13px] text-[10px] font-semibold leading-[11px] text-white"
     aria-hidden="true"
   >
-    <span>06:54</span>
+    <span>{bare ? '9:41' : '06:54'}</span>
     <span class="flex items-center gap-[3px]">
       <svg width="14" height="9" viewBox="0 0 14 9" fill="currentColor"
         ><rect x="0" y="6" width="2.4" height="3" rx=".6"></rect><rect
@@ -199,6 +213,7 @@ const STRINGS = {
       >
     </span>
   </div>
+  )}
 
   {/* Header. Title follows the period, as in the app. */}
   <div class="mt-[22px] flex h-[20px] shrink-0 items-center justify-between px-[8px]">

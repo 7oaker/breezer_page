@@ -24,17 +24,23 @@
  */
 import { Image } from 'astro:assets';
 import AppScreen from './AppScreen.astro';
-import type { UI } from '../../i18n/ui';
+import StatusBar from '../store/StatusBar.astro';
+import { plural, type AppText } from '../../i18n/appScreens';
 import { fill } from '../../i18n/ui';
 import quitBg from '../../assets/images/app/quit-bg.jpg';
 import pouch from '../../assets/images/app/logo-small.png';
 import appIcon from '../../assets/images/app/app-icon-dark.png';
 
 interface Props {
-  t: UI;
+  t: AppText;
   class?: string;
+  /** For the store images: no frame PNG, a fixed scale, Apple's 9:41, no notification. See PressPhone. */
+  bare?: boolean;
+  /** With `bare`: which phone's status bar to draw. */
+  os?: 'ios' | 'android';
+  scale?: number;
 }
-const { t, class: className = '' } = Astro.props;
+const { t, class: className = '', bare = false, scale = 1, os = 'ios' } = Astro.props;
 
 /**
  * How long the sample account has been snus free. Anchored relative to page
@@ -152,9 +158,8 @@ const NEXT = [
   { kind: 'achievement', label: `€100 ${t.app_quit_saved}`, inDays: 16 },
 ];
 
-/** The app's `journey.inDays`, whose one/other split i18next handles for it. */
-const inDays = (count: number) =>
-  count === 1 ? t.app_quit_journey_in_day : fill(t.app_quit_journey_in_days, { count });
+/** The app's `journey.inDays`, in the plural form i18next would pick for `count`. */
+const inDays = (count: number) => fill(plural(t, t.app_quit_journey_in_days, count), { count });
 
 /** `spineTone` as the two colours the path uses, at the opacities it uses them. */
 const DOT = { earned: 'bg-[#1FD9FF]/50', health: 'bg-[#22c55e]/60' };
@@ -172,15 +177,16 @@ const CHIPS = [
 const CONFIG = { quitSeconds: QUIT_SECONDS, habit: HABIT };
 ---
 
-<AppScreen class={className} data-quit-phone data-config={JSON.stringify(CONFIG)}>
+<AppScreen class={className} bare={bare} scale={scale} data-quit-phone data-config={JSON.stringify(CONFIG)}>
   <p class="sr-only">{t.app_quit_demo_caption}</p>
 
   {/* Status bar */}
+  {bare ? <StatusBar os={os} /> : (
   <div
     class="flex h-[26px] shrink-0 items-start justify-between px-[14px] pt-[13px] text-[10px] font-semibold leading-[11px] text-white"
     aria-hidden="true"
   >
-    <span>07:04</span>
+    <span>{bare ? '9:41' : '07:04'}</span>
     <span class="flex items-center gap-[3px]">
       <svg width="14" height="9" viewBox="0 0 14 9" fill="currentColor"
         ><rect x="0" y="6" width="2.4" height="3" rx=".6"></rect><rect
@@ -207,6 +213,7 @@ const CONFIG = { quitSeconds: QUIT_SECONDS, habit: HABIT };
       >
     </span>
   </div>
+  )}
 
   {/* Top bar. Streak 1, so the flame is still the accent cyan. */}
   <div class="mt-[19px] flex h-[20px] shrink-0 items-center justify-between px-[12px]">
@@ -237,7 +244,7 @@ const CONFIG = { quitSeconds: QUIT_SECONDS, habit: HABIT };
   </div>
 
   <p class="mt-[14px] shrink-0 text-center text-[16px] font-bold leading-[20px] text-white">
-    {fill(t.app_quit_congrats, { name: 'Klaus' })}
+    {fill(t.app_quit_congrats, { name: bare ? 'Alex' : 'Klaus' })}
   </p>
 
   {/*
@@ -551,6 +558,7 @@ const CONFIG = { quitSeconds: QUIT_SECONDS, habit: HABIT };
     status bar's own height, so the banner starts exactly where that ends, which
     is where iOS puts it.
   */}
+  {!bare && (
   <div
     class="quit-phone__banner pointer-events-none absolute inset-x-[8px] top-[26px]"
     data-quit-banner
@@ -580,6 +588,7 @@ const CONFIG = { quitSeconds: QUIT_SECONDS, habit: HABIT };
       </div>
     </div>
   </div>
+  )}
 </AppScreen>
 
 <style>

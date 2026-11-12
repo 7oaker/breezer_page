@@ -1,0 +1,32 @@
+{
+  "en": {
+    "app_notif_body": "just took a snus. Track your own now 🔥",
+    "app_notif_ago": "2m ago",
+    "app_press_aria": "Log a snus",
+    "app_demo_caption": "Interactive demo of the Breezer app. Press the button to log a snus and watch the statistics update.",
+    "app_stats_demo_caption": "Interactive demo of the Breezer app's statistics screen. Switch between day, week, month and year.",
+    "app_quit_notif_title": "Mood swings",
+    "app_quit_notif_body": "Nearly over. One more day without snus and the irritability eases.",
+    "app_quit_demo_caption": "Live demo of the Breezer app's quit mode, counting up from a sample quit date."
+  },
+  "de": {
+    "app_notif_body": "hat gerade einen Snus genommen. Tracke deinen jetzt 🔥",
+    "app_notif_ago": "vor 2 Min.",
+    "app_press_aria": "Einen Snus eintragen",
+    "app_demo_caption": "Interaktive Demo der Breezer App. Drücke den Button, um einen Snus einzutragen, und sieh zu, wie sich die Statistik ändert.",
+    "app_stats_demo_caption": "Interaktive Demo des Statistik-Screens der Breezer App. Wechsle zwischen Tag, Woche, Monat und Jahr.",
+    "app_quit_notif_title": "Stimmungsschwankungen",
+    "app_quit_notif_body": "Fast überwunden. Noch ein Tag ohne Snus, dann lässt die Reizbarkeit nach.",
+    "app_quit_demo_caption": "Live-Demo des Aufhör-Modus der Breezer App, hochgezählt ab einem Beispiel-Datum."
+  },
+  "sv": {
+    "app_notif_body": "tog precis en snus. Logga din nu 🔥",
+    "app_notif_ago": "2 min sedan",
+    "app_press_aria": "Logga en snus",
+    "app_demo_caption": "Interaktiv demo av Breezer-appen. Tryck på knappen för att logga en snus och se statistiken uppdateras.",
+    "app_stats_demo_caption": "Interaktiv demo av Breezer-appens statistikskärm. Växla mellan dag, vecka, månad och år.",
+    "app_quit_notif_title": "Humörsvängningar",
+    "app_quit_notif_body": "Nästan över. En dag till utan snus, sedan lägger sig irritabiliteten.",
+    "app_quit_demo_caption": "Livedemo av Breezer-appens sluta-läge, som räknar upp från ett exempeldatum."
+  }
+}
