@@ -50,7 +50,7 @@ export function getStaticPaths() {
   );
 }
 
-const params = Astro.params as { page: PageId; lang: string; kind: 'header' | 'search' };
+const params = Astro.params as { page: PageId; lang: string; kind: 'header' | 'search' | 'play' };
 const { page, kind } = params;
 const lang = fromUrlLang(params.lang) as Lang;
 const { width: W, height: H } = MOTIONS.find((m) => m.kind === kind)!;
@@ -103,11 +103,13 @@ const chat: Line[] =
 const S = {
   header: { word: 150, widget: 340, logo: 130, wordY: 0.34, widgetY: 0.705, line: 46, chat: 32, chatW: 1000 },
   search: { word: 190, widget: 560, logo: 160, wordY: 0.22, widgetY: 0.63, line: 64, chat: 54, chatW: 1640 },
+  // 16:9 sits between the two: the search asset's proportions, a little tighter in height.
+  play: { word: 175, widget: 470, logo: 150, wordY: 0.24, widgetY: 0.65, line: 58, chat: 46, chatW: 1500 },
 }[kind];
 
 /* The widest a scene's word may run: within the middle the iPhone shows of a
    header (about half its width), and with a margin on the search asset. */
-const WORD_MAX = { header: 860, search: 1560 }[kind];
+const WORD_MAX = { header: 860, search: 1560, play: 1520 }[kind];
 const config = { scenes, W, H, widgetY: S.widgetY, wordMax: WORD_MAX };
 ---
 

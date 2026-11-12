@@ -694,6 +694,9 @@ export const PROMOS = [
 export const MOTIONS = [
   { kind: 'header', file: 'header.mp4', width: 1920, height: 823, scale: 2 },
   { kind: 'search', file: 'search.mp4', width: 1920, height: 1280, scale: 2 },
+  // Google Play's promo video, through YouTube: landscape 16:9, because a portrait upload
+  // becomes a YouTube Short and Play does not take Shorts. 4K like the others.
+  { kind: 'play', file: 'play.mp4', width: 1920, height: 1080, scale: 2 },
 ] as const;
 
 export function headlineFor(lang: Lang, page: PageId, frame: FrameId): string {
