@@ -1,0 +1,252 @@
+---
+/**
+ * The one enlarged detail of the `squad` frame (SquadScreen): a message from the squad's
+ * chat, floating in front of the squad board, so the image reads "a group that
+ * ranks together and talks".
+ *
+ * Rebuilt from `react_Breezer/components/chat/MessageCard.jsx` (somebody else's
+ * message): avatar, name, flag and `moment().fromNow()`, the bubble in
+ * `bg-black-200` with the flattened bottom-left corner, then Reply on the left
+ * and the reaction pills plus "+" on the right (`EmojiReactionBar`; the one Alex
+ * added is drawn as `reacted`). It sits on a cut of the chat screen's own
+ * background, because a dark bubble floating straight over the board's dark
+ * rows would disappear into them.
+ *
+ * The text is user content, so it is not an app string: one short message per
+ * language, written here. The author is the squad's #2 from SquadScreen
+ * (same MEMBER_LOCAL table, same avatar colour). On the default page, which stands for
+ * both paths, that member has quit and thanks the squad; on the track page they
+ * are tracking and stayed under their own daily limit. Neither message invites
+ * anybody to take more.
+ *
+ * Laid out in the app's 261px space and zoomed with the device plus 30%, so it
+ * is the same detail at a size that reads in a store thumbnail.
+ */
+import { MEMBER_LOCAL, QUIT_MESSAGE, TRACK_MESSAGE } from '../../../data/storeChat';
+import { appLocale } from '../../../lib/appLocale';
+
+interface Props {
+  lang: string;
+  page: 'default' | 'track' | 'quit';
+  os: 'ios' | 'android';
+  screenW: number;
+  screenH: number;
+  stageTop: number;
+  canvasW: number;
+}
+const { lang, page, os, screenW, screenH, stageTop } = Astro.props;
+const tr = appLocale(lang);
+
+const flag = (cc: string) => String.fromCodePoint(...[...cc.toUpperCase()].map((c) => 127397 + c.charCodeAt(0)));
+
+const AUTHOR_COLOR = '#68A3FE';
+
+
+
+/** `moment(...).fromNow()` for 12 minutes, in the app's moment locales (no = nb). */
+const AGO: Record<string, string> = {
+  en: '12 minutes ago',
+  de: 'vor 12 Minuten',
+  it: '12 minuti fa',
+  pl: '12 minut temu',
+  sv: 'för 12 minuter sedan',
+  no: '12 minutter siden',
+  cs: 'před 12 minutami',
+  sk: 'pred 12 minútami',
+  sl: 'pred 12 minutami',
+  hr: 'prije 12 minuta',
+  da: '12 minutter siden',
+  fi: '12 minuuttia sitten',
+  hu: '12 perce',
+};
+
+const [name, country] = MEMBER_LOCAL[lang] ?? MEMBER_LOCAL.en;
+/* A no-break space keeps the closing emoji with the last word instead of alone on a line. */
+const message = ((page === 'track' ? TRACK_MESSAGE : QUIT_MESSAGE)[lang] ?? QUIT_MESSAGE.en).replace(/ (\S+)$/u, ' $1');
+const ago = AGO[lang] ?? AGO.en;
+
+/* From EmojiReactionBar's set. Alex's own reaction is the highlighted one. */
+const reactions =
+  page === 'track'
+    ? [
+        { emoji: '🔥', count: 3, reacted: true },
+        { emoji: '👍', count: 2, reacted: false },
+      ]
+    : [
+        { emoji: '🔥', count: 5, reacted: true },
+        { emoji: '🎉', count: 3, reacted: false },
+      ];
+
+/*
+ * Its top edge on the top edge of member row 2 (the author's own row, which it
+ * covers), so Alex's row 1 stays whole above it. Android's canvas cuts the phone
+ * off sooner, so there it is zoomed a little less, and set a little wider so it
+ * still stands clear of the frame on both sides instead of lining up with it.
+ */
+const android = os === 'android';
+const scale = screenW / 261;
+const zoom = scale * (android ? 1.2 : 1.3);
+const panelW = android ? 248 : 232;
+const top = stageTop + screenH * 0.645;
+---
+
+<div class="cb" style={`top:${top.toFixed(1)}px`} aria-hidden="true">
+  <div style={`zoom:${zoom.toFixed(4)}`}>
+    <div class="cb-panel" style={`width:${panelW}px`}>
+      <span class="cb-avatar" style={`background:${AUTHOR_COLOR}`}>{name.charAt(0)}</span>
+      <div class="cb-body">
+        <div class="cb-head">
+          <span class="cb-name">{name}</span>
+          <span class="cb-flag">{flag(country)}</span>
+          <span class="cb-ago">{ago}</span>
+        </div>
+        <div class="cb-bubble">{message}</div>
+        <div class="cb-foot">
+          <span class="cb-reply">{tr('chat.reply')}</span>
+          <span class="cb-reactions">
+            {
+              reactions.map((r) => (
+                <span class:list={['cb-pill', r.reacted && 'cb-pill--on']}>
+                  <span class="cb-emoji">{r.emoji}</span>
+                  <span class="cb-n">{r.count}</span>
+                </span>
+              ))
+            }
+            <span class="cb-pill cb-plus">+</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cb {
+    position: absolute;
+    left: 50%;
+    translate: -50% 0;
+    z-index: 55;
+    filter: drop-shadow(0 30px 40px rgb(0 0 0 / 0.55));
+  }
+
+  .cb-panel {
+    display: flex;
+    /* Width is set inline: zoomed, about 300 of the screen's 261, wide enough
+       to stand clear of the frame on both sides, which is what puts it in front
+       of the phone. */
+    padding: 9px 10px 8px;
+    border: 1px solid rgb(55 65 81 / 0.55);
+    border-radius: 14px;
+    background: #161622;
+    font-family: 'Poppins', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .cb-avatar {
+    display: flex;
+    width: 21px;
+    height: 21px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border: 0.7px solid rgb(31 217 255 / 0.2);
+    border-radius: 9999px;
+    font-size: 9px;
+    font-weight: 400;
+    line-height: 1;
+    color: #2b303f;
+  }
+
+  .cb-body {
+    min-width: 0;
+    flex: 1;
+    margin-left: 5.3px;
+  }
+
+  .cb-head {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2.7px;
+    white-space: nowrap;
+  }
+  .cb-name {
+    margin-right: 2.7px;
+    font-size: 8px;
+    font-weight: 500;
+    line-height: 10.6px;
+    color: #9ca3af;
+  }
+  .cb-flag {
+    margin-right: 5.3px;
+    font-size: 8px;
+    line-height: 10.6px;
+  }
+  .cb-ago {
+    font-size: 6.6px;
+    line-height: 10.6px;
+    color: #4b5563;
+  }
+
+  .cb-bubble {
+    border-radius: 10.6px 10.6px 10.6px 4px;
+    background: #232533;
+    padding: 8px;
+    font-size: 9.3px;
+    font-weight: 400;
+    line-height: 14px;
+    color: #fff;
+  }
+
+  .cb-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 2.7px;
+  }
+  .cb-reply {
+    margin-left: 5.3px;
+    font-size: 8px;
+    font-weight: 500;
+    line-height: 10.6px;
+    color: #1fd9ff;
+  }
+  .cb-reactions {
+    display: flex;
+    align-items: center;
+    gap: 2.7px;
+  }
+  .cb-pill {
+    display: flex;
+    align-items: center;
+    padding: 1.3px 5.3px;
+    border: 0.7px solid rgb(55 65 81 / 0.4);
+    border-radius: 9999px;
+    background: rgb(30 30 45 / 0.6);
+  }
+  .cb-pill--on {
+    border-color: rgb(31 217 255 / 0.5);
+    background: rgb(31 217 255 / 0.2);
+  }
+  .cb-emoji {
+    font-size: 8.6px;
+    line-height: 11px;
+  }
+  .cb-n {
+    margin-left: 1.3px;
+    font-size: 8px;
+    font-weight: 500;
+    line-height: 11px;
+    color: #9ca3af;
+  }
+  .cb-pill--on .cb-n {
+    color: #1fd9ff;
+  }
+  .cb-plus {
+    padding: 1.3px 6.6px;
+    background: #232533;
+    font-size: 8px;
+    font-weight: 500;
+    line-height: 11px;
+    color: #d1d5db;
+  }
+</style>

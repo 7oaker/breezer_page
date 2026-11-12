@@ -1,0 +1,159 @@
+---
+/**
+ * The quit journey as a drawn path, without a phone: a line rising from the
+ * first day to the next milestone, the days behind solid, the days ahead dashed,
+ * today glowing. The milestones are the app's own (lib/quitMilestones.js,
+ * IMPROVEMENT_DAYS 1, 3, 7, 14, 30) with the app's labels; today is day 24, the
+ * same demo account as every screenshot.
+ *
+ * Meant to sit behind the headline, so it fades out towards its edges.
+ */
+import { appLocale } from '../../../lib/appLocale';
+
+interface Props {
+  lang: string;
+  width: number;
+  height: number;
+  /** Type size of the milestone labels in px. */
+  type: number;
+}
+const { lang, width: W, height: H, type } = Astro.props;
+const tr = appLocale(lang);
+
+const TODAY = 24;
+const NODES = [
+  { day: 1, label: tr('health.imp0Label') },
+  { day: 3, label: tr('health.imp1Label') },
+  { day: 7, label: tr('health.imp2Label') },
+  { day: 14, label: tr('health.imp3Label') },
+  { day: TODAY, label: `${TODAY} ${tr('journey.daysClean')}`, today: true },
+  { day: 30, label: tr('health.imp4Label') },
+];
+
+/* One cubic curve rising left to right; nodes spread along it evenly. */
+// The curve ends at 78% of the width: the rest is room for the labels, which
+// stand to the right of their nodes.
+const P = [
+  [W * 0.03, H * 0.92],
+  [W * 0.36, H * 0.98],
+  [W * 0.42, H * 0.12],
+  [W * 0.78, H * 0.06],
+];
+const at = (t: number) => {
+  const u = 1 - t;
+  const x = u ** 3 * P[0][0] + 3 * u * u * t * P[1][0] + 3 * u * t * t * P[2][0] + t ** 3 * P[3][0];
+  const y = u ** 3 * P[0][1] + 3 * u * u * t * P[1][1] + 3 * u * t * t * P[2][1] + t ** 3 * P[3][1];
+  return [x, y];
+};
+const T = [0.06, 0.24, 0.4, 0.55, 0.72, 0.9];
+const placed = NODES.map((n, i) => ({ ...n, xy: at(T[i]), t: T[i] }));
+const todayT = T[4];
+const curve = `M${P[0]} C${P[1]} ${P[2]} ${P[3]}`;
+const dot = type * 0.42;
+---
+
+<div class="journey-art" style={`width:${W}px;height:${H}px;--type:${type}px`}>
+  <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} aria-hidden="true">
+    <defs>
+      <linearGradient id="ja-line" x1="0" y1={H} x2={W} y2="0" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#1FD9FF" />
+        <stop offset="1" stop-color="#0D6BCD" />
+      </linearGradient>
+      <mask id="ja-past">
+        <rect x="0" y="0" width={placed[4].xy[0]} height={H} fill="#fff" />
+      </mask>
+      <mask id="ja-future">
+        <rect x={placed[4].xy[0]} y="0" width={W} height={H} fill="#fff" />
+      </mask>
+    </defs>
+    <path d={curve} fill="none" stroke="url(#ja-line)" stroke-width={type * 0.22} stroke-linecap="round" mask="url(#ja-past)" />
+    <path
+      d={curve}
+      fill="none"
+      stroke="url(#ja-line)"
+      stroke-width={type * 0.16}
+      stroke-linecap="round"
+      stroke-dasharray={`${type * 0.05} ${type * 0.55}`}
+      opacity="0.7"
+      mask="url(#ja-future)"
+    />
+    {
+      placed.map((n) =>
+        n.today ? (
+          <g>
+            <circle cx={n.xy[0]} cy={n.xy[1]} r={dot * 4.2} fill="rgb(31 217 255 / 0.10)" />
+            <circle cx={n.xy[0]} cy={n.xy[1]} r={dot * 2.6} fill="rgb(31 217 255 / 0.18)" />
+            <circle cx={n.xy[0]} cy={n.xy[1]} r={dot * 1.6} fill="url(#ja-line)" />
+          </g>
+        ) : (
+          <circle
+            cx={n.xy[0]}
+            cy={n.xy[1]}
+            r={dot}
+            fill={n.day < TODAY ? 'url(#ja-line)' : '#161622'}
+            stroke="url(#ja-line)"
+            stroke-width={type * 0.12}
+          />
+        ),
+      )
+    }
+  </svg>
+  {
+    placed.map((n) => (
+      <div
+        class:list={['node', n.today && 'node--today', n.day > TODAY && 'node--ahead']}
+        style={`left:${(n.xy[0] + dot * (n.today ? 3 : 1.9)).toFixed(1)}px;top:${n.xy[1].toFixed(1)}px`}
+      >
+        <span class="day">{n.today ? '' : n.day}</span>
+        <span class="text">{n.label}</span>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .journey-art {
+    position: relative;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .journey-art svg {
+    position: absolute;
+    inset: 0;
+    overflow: visible;
+  }
+
+  .node {
+    position: absolute;
+    translate: 0 -50%;
+    display: flex;
+    align-items: baseline;
+    gap: calc(var(--type) * 0.45);
+    white-space: nowrap;
+    font-size: var(--type);
+    line-height: 1.1;
+    color: rgb(255 255 255 / 0.62);
+  }
+
+  .day {
+    font-weight: 700;
+    color: rgb(255 255 255 / 0.92);
+  }
+
+  .node--ahead {
+    color: rgb(255 255 255 / 0.4);
+  }
+
+  .node--ahead .day {
+    color: rgb(255 255 255 / 0.55);
+  }
+
+  .node--today .text {
+    font-size: calc(var(--type) * 1.35);
+    font-weight: 700;
+    background: linear-gradient(120deg, #1fd9ff, #0d6bcd);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+</style>

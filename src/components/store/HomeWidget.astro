@@ -1,0 +1,145 @@
+---
+/**
+ * Breezer's small home-screen widget (iOS `systemSmall`), rebuilt from
+ * `react_Breezer/targets/widget/widgets.swift` rather than photographed: the
+ * photos in screens/widget/ are English only and show a carrier name and other
+ * apps' icons, which a store image must not.
+ *
+ * - `track`: today against the daily limit, the Take button (the widget logs a
+ *   pouch without opening the app, iOS 17+), and the time since the last one.
+ * - `quit`: the quit streak, pouches avoided and money saved.
+ *
+ * Laid out at 160px (Apple's small widget is 170pt) and scaled with `zoom`,
+ * which lays out again instead of scaling a bitmap, so the text stays sharp.
+ * The numbers are the same demo account as PressPhone and QuitPhone.
+ */
+import type { AppText } from '../../i18n/appScreens';
+import Eraser from './Eraser.astro';
+
+interface Props {
+  variant: 'track' | 'quit';
+  t: AppText;
+  /** Rendered width in px. */
+  size: number;
+}
+const { variant, t, size } = Astro.props;
+---
+
+<div class="hw" style={`zoom:${(size / 160).toFixed(4)}`}>
+  {
+    variant === 'track' ? (
+      <div class="hw-track">
+        <span class="hw-summary">2/7</span>
+        <span class="hw-take">
+          <Eraser size={15} color="#161622" />
+          {t.app_widget_take}
+        </span>
+        <span class="hw-ago">{t.app_widget_ago}</span>
+      </div>
+    ) : (
+      <div class="hw-quit">
+        <span class="hw-caption">{t.app_widget_quit_streak}</span>
+        <span class="hw-days">24 {t.app_widget_days}</span>
+        <span class="hw-line">
+          <span class="hw-label">{t.app_widget_avoided}</span>
+          <span class="hw-value">243</span>
+        </span>
+        <span class="hw-line">
+          <span class="hw-label">{t.app_widget_saved}</span>
+          <span class="hw-value">60.8 €</span>
+        </span>
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .hw {
+    width: 160px;
+    height: 160px;
+    box-sizing: border-box;
+    border-radius: 22px;
+    background: linear-gradient(160deg, #2a2a2e 0%, #1c1c1f 100%);
+    box-shadow:
+      inset 0 0 0 1px rgb(255 255 255 / 0.07),
+      0 18px 36px -12px rgb(0 0 0 / 0.75);
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .hw-track {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .hw-summary {
+    font-size: 19px;
+    font-weight: 600;
+    color: rgb(255 255 255 / 0.62);
+    letter-spacing: 0.01em;
+  }
+
+  .hw-take {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 20px;
+    border-radius: 999px;
+    background: #1fd9ff;
+    color: #161622;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .hw-ago {
+    font-size: 11px;
+    color: rgb(255 255 255 / 0.55);
+  }
+
+  .hw-quit {
+    height: 100%;
+    box-sizing: border-box;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .hw-caption {
+    font-size: 12px;
+    color: rgb(255 255 255 / 0.55);
+  }
+
+  .hw-days {
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 4px;
+    white-space: nowrap;
+  }
+
+  .hw-line {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+  }
+
+  .hw-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 0.55);
+  }
+
+  .hw-value {
+    font-size: 15px;
+    font-weight: 700;
+  }
+</style>

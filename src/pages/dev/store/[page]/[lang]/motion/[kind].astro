@@ -1,0 +1,848 @@
+---
+/**
+ * The App Store's two videos of one page, dev server only:
+ * - `header`: the iOS 27 product page header video, 21:9 (3840 x 1646);
+ * - `search`: the iOS 27 search results video, 3:2 (3840 x 2560).
+ * Both play muted and loop, 5 to 30 seconds (Apple's creative asset spec).
+ * Filmed frame by frame by scripts/capture-motion.mjs; `?play` plays it here.
+ *
+ * What it shows (Klaus, 11.11.2026: "tracking via widget is a banger, tracking
+ * and quitting animated, professional like Apple"):
+ * - track: the path's word, then Breezer's home-screen widget being tapped:
+ *   the Take button gives, the count rolls up, a ring spreads from the button;
+ * - quit: the path's word, then the quit widget counting its days up, with
+ *   pouches avoided and money saved running alongside;
+ * - together: the community, a few chat lines landing one after another and
+ *   reactions popping under them, the app's social side (Klaus: "tracken,
+ *   aufhören, gemeinsam");
+ * - brand: the logo over the scenes' own words as one line ("Tracken.
+ *   Aufhören. Gemeinsam."), one ring, and back to the start without a seam.
+ * The default page plays all four, a pure page its own path, the chat and the
+ * logo; the track page never says "quit", the quit page never "track".
+ * No "#1" or other ranking claim: Google forbids them in store graphics and
+ * Apple may ask for proof, so the line is what the app does instead.
+ *
+ * Everything sits on the middle: the iPhone shows only the centre of a 21:9
+ * header, under the status bar, so nothing important goes near the edges or
+ * the top fifth (seen on a device, App Store iOS 27).
+ *
+ * Every frame is a pure function of time: `window.__frame(t)` sets every
+ * element for second `t`, so a frame comes out the same however long the
+ * capture takes. No CSS animation, no requestAnimationFrame in the capture.
+ * The widgets are rebuilt from react_Breezer/targets/widget/widgets.swift, the
+ * same as components/store/HomeWidget.astro, with the numbers made to move.
+ */
+import '@fontsource/poppins/latin-ext-500.css';
+import '@fontsource/poppins/latin-ext-600.css';
+import '@fontsource/poppins/latin-ext-700.css';
+import '@fontsource/poppins/latin-ext-800.css';
+import '../../../../../../styles/style.css';
+import Eraser from '../../../../../../components/store/Eraser.astro';
+import logoWhite from '../../../../../../assets/images/logo/logo-white.svg?raw';
+import { appText } from '../../../../../../i18n/appScreens';
+import { CHAT_PEOPLE, CHAT_THREAD, MEMBER_LOCAL, QUIT_MESSAGE, TRACK_MESSAGE, TRACK_REPLY } from '../../../../../../data/storeChat';
+import { LANGS, MOTIONS, PAGES, copyFor, fromUrlLang, urlLang, type Lang, type PageId } from '../../../../../../data/storeShots';
+
+export function getStaticPaths() {
+  if (!import.meta.env.DEV) return [];
+  return (Object.keys(PAGES) as PageId[]).flatMap((page) =>
+    LANGS.flatMap((lang) => MOTIONS.map((m) => ({ params: { page, lang: urlLang(lang), kind: m.kind } }))),
+  );
+}
+
+const params = Astro.params as { page: PageId; lang: string; kind: 'header' | 'search' };
+const { page, kind } = params;
+const lang = fromUrlLang(params.lang) as Lang;
+const { width: W, height: H } = MOTIONS.find((m) => m.kind === kind)!;
+const t = appText(lang);
+const copy = copyFor(lang);
+
+/* The logo file keeps a margin around its artwork; cropped as in promo/[kind].astro. */
+const logo = logoWhite.replace('viewBox="0 0 1000 200" width="1000" height="200"', 'viewBox="46 26 945 148"');
+if (logo === logoWhite) throw new Error('logo-white.svg changed: re-measure its artwork and update the crop');
+
+const scenes = page === 'default' ? ['track', 'quit', 'together', 'brand'] : [page, 'together', 'brand'];
+
+/* The end line: the words of the scenes just seen. */
+const WORD: Record<string, string> = { track: copy.labels.track, quit: copy.labels.quit, together: copy.motion.together };
+const endWords = scenes.filter((s) => s !== 'brand').map((s) => `${WORD[s]}.`);
+
+/*
+ * The chat: the same invented people and lines as the chat and community
+ * screenshots (src/data/storeChat.ts). Trackers and quitters side by side on
+ * the default page, a tracker and Alex on the track page, the quitters' thread
+ * on the quit page. `own` is Alex, drawn as the app draws the viewer's own
+ * message: on the right, in the accent.
+ */
+type Line = { name: string; color: string; text: string; own?: boolean; react?: [string, number] };
+const [localName] = MEMBER_LOCAL[lang] ?? MEMBER_LOCAL.en;
+const LOCAL_COLOR = '#68A3FE';
+/* A no-break space keeps the closing emoji with the last word. */
+const glue = (text: string) => text.replace(/ (\S+)$/u, '\u00a0$1');
+const pick = (table: Record<string, string>) => glue(table[lang] ?? table.en);
+const thread = CHAT_THREAD[lang] ?? CHAT_THREAD.en;
+const chat: Line[] =
+  page === 'default'
+    ? [
+        { name: CHAT_PEOPLE.sofia.name, color: CHAT_PEOPLE.sofia.color, text: pick(TRACK_MESSAGE), react: ['🔥', 4] },
+        { name: localName, color: LOCAL_COLOR, text: pick(QUIT_MESSAGE), react: ['🎉', 7] },
+      ]
+    : page === 'track'
+      ? [
+          { name: localName, color: LOCAL_COLOR, text: pick(TRACK_MESSAGE), react: ['🔥', 5] },
+          { name: 'Alex', color: '', text: pick(TRACK_REPLY), own: true },
+        ]
+      : [
+          { name: CHAT_PEOPLE.lena.name, color: CHAT_PEOPLE.lena.color, text: glue(thread.lena) },
+          { name: CHAT_PEOPLE.marek.name, color: CHAT_PEOPLE.marek.color, text: glue(thread.marek), react: ['👍', 6] },
+          { name: 'Alex', color: '', text: glue(thread.alex), own: true },
+        ];
+
+/* Sizes per format, in CSS px: the word, the widget, the logo; and the heights
+   (as shares of the canvas) of the word's and the widget's centres. */
+const S = {
+  header: { word: 150, widget: 340, logo: 130, wordY: 0.34, widgetY: 0.705, line: 46, chat: 32, chatW: 1000 },
+  search: { word: 190, widget: 560, logo: 160, wordY: 0.22, widgetY: 0.63, line: 64, chat: 54, chatW: 1640 },
+}[kind];
+
+/* The widest a scene's word may run: within the middle the iPhone shows of a
+   header (about half its width), and with a margin on the search asset. */
+const WORD_MAX = { header: 860, search: 1560 }[kind];
+const config = { scenes, W, H, widgetY: S.widgetY, wordMax: WORD_MAX };
+---
+
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <title>motion {page} {lang} {kind}</title>
+  </head>
+  <body>
+    <main
+      class="canvas"
+      data-config={JSON.stringify(config)}
+      style={`width:${W}px;height:${H}px;--word:${S.word}px;--widget:${S.widget}px;--zoom:${(S.widget / 160).toFixed(4)};--logo:${S.logo}px;--line:${S.line}px;--lineMax:${WORD_MAX + 40}px;--chat:${S.chat}px;--chatW:${S.chatW}px;--wordY:${S.wordY * H}px;--widgetY:${S.widgetY * H}px`}
+    >
+      <div class="light" data-light aria-hidden="true"></div>
+      <div class="rings" data-rings aria-hidden="true">
+        {Array.from({ length: 8 }, () => <span />)}
+      </div>
+
+      {
+        scenes.includes('track') && (
+          <section data-scene="track">
+            <h1 class="word" data-part="word">{copy.labels.track}</h1>
+            <div class="widget" data-part="widget">
+              <div class="widget-face">
+                <div class="w-track">
+                  <span class="w-sum">
+                    <span class="roll" data-roll="count" />
+                    <span>/7</span>
+                  </span>
+                  <span class="w-take" data-take>
+                    <Eraser size={15} color="#161622" />
+                    {t.app_widget_take}
+                  </span>
+                  <span class="w-ago">
+                    <span data-ago>{t.app_widget_ago}</span>
+                    <span data-now>{t.app_widget_now}</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
+        )
+      }
+
+      {
+        scenes.includes('quit') && (
+          <section data-scene="quit">
+            <h1 class="word" data-part="word">{copy.labels.quit}</h1>
+            <div class="widget" data-part="widget">
+              <div class="widget-face">
+                <div class="w-quit">
+                  <span class="w-caption">{t.app_widget_quit_streak}</span>
+                  <span class="w-days">
+                    <span class="roll" data-roll="days" /> {t.app_widget_days}
+                  </span>
+                  <span class="w-line">
+                    <span class="w-label">{t.app_widget_avoided}</span>
+                    <span class="w-value" data-avoided>243</span>
+                  </span>
+                  <span class="w-line">
+                    <span class="w-label">{t.app_widget_saved}</span>
+                    <span class="w-value" data-saved>60.8 €</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
+        )
+      }
+
+      <section data-scene="together">
+        <h1 class="word" data-part="word">{copy.motion.together}</h1>
+        <div class="chat" data-part="chat">
+          {
+            chat.map((m) => (
+              <div class:list={['msg', m.own && 'msg--own']} data-msg>
+                {!m.own && (
+                  <span class="msg__avatar" style={`background:${m.color}`}>
+                    {m.name.charAt(0)}
+                  </span>
+                )}
+                <div class="msg__col">
+                  {!m.own && <span class="msg__name">{m.name}</span>}
+                  <p class="msg__bubble">{m.text}</p>
+                  {m.react && (
+                    <span class="msg__react" data-react data-emoji={m.react[0]} data-count={m.react[1]}>
+                      {m.react[0]} <span data-react-count>1</span>
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <section data-scene="brand">
+        <div class="brand" data-part="word">
+          <div class="logo" set:html={logo} />
+          <p class="line">{endWords.map((w) => <span data-end-word>{w}</span>)}</p>
+        </div>
+      </section>
+
+      <div class="touch" data-touch aria-hidden="true"></div>
+    </main>
+
+    <script>
+      type Scene = 'track' | 'quit' | 'together' | 'brand';
+      const canvas = document.querySelector<HTMLElement>('.canvas')!;
+      const cfg = JSON.parse(canvas.dataset.config!) as { scenes: Scene[]; W: number; H: number; widgetY: number; wordMax: number };
+
+      /* ---- time helpers ---- */
+      const clamp = (x: number, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+      const prog = (t: number, a: number, b: number) => clamp((t - a) / (b - a));
+      const outExpo = (p: number) => (p >= 1 ? 1 : 1 - Math.pow(2, -10 * p));
+      const outCubic = (p: number) => 1 - Math.pow(1 - p, 3);
+      const inCubic = (p: number) => p * p * p;
+      const inOut = (p: number) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
+      /* A press: in fast, out with a small overshoot, like a spring. */
+      const press = (t: number, at: number) => {
+        const down = prog(t, at - 0.09, at);
+        const up = prog(t, at, at + 0.45);
+        const spring = up >= 1 ? 0 : Math.exp(-6 * up) * Math.cos(up * 14);
+        return t < at ? -0.08 * outCubic(down) : -0.08 * spring;
+      };
+
+      /* ---- the timeline: each scene's length; neighbours overlap by OVERLAP ---- */
+      /* A pure page has one path, so its chat and its end card hold a little
+         longer: Apple's reference data names 15 to 30 s for the search results
+         video (`t15~30` in its spec name, though its duration field says 5 s),
+         and a page's video must not be the one that fails processing. */
+      const pure = cfg.scenes.length === 3;
+      const LENGTH: Record<Scene, number> = { track: 5.4, quit: 5.2, together: pure ? 6.0 : 5.0, brand: pure ? 4.8 : 3.6 };
+      const OVERLAP = 0.35;
+      const starts: Partial<Record<Scene, number>> = {};
+      let clock = 0;
+      for (const s of cfg.scenes) {
+        starts[s] = clock;
+        clock += LENGTH[s] - OVERLAP;
+      }
+      const DURATION = clock + OVERLAP;
+      (window as unknown as { __duration: number }).__duration = Number(DURATION.toFixed(3));
+
+      /* Taps on the track widget and day ticks on the quit widget, in scene time. */
+      const TAPS = [1.35, 2.45, 3.55];
+      const TICKS = [1.5, 2.25, 3.0, 3.75];
+      const DAY0 = 20;
+
+      /* ---- elements ---- */
+      const q = <T extends HTMLElement>(sel: string, root: ParentNode = document) => root.querySelector<T>(sel)!;
+      const sceneEl = (s: Scene) => document.querySelector<HTMLElement>(`[data-scene="${s}"]`);
+      const rings = [...document.querySelectorAll<HTMLElement>('[data-rings] span')];
+      const touch = q('[data-touch]');
+      const light = q('[data-light]');
+
+      /* A rolling number: the old value slides up and out, the new one up and in. */
+      function roll(el: HTMLElement, from: string, to: string, p: number) {
+        if (el.dataset.from !== from || el.dataset.to !== to) {
+          el.innerHTML = `<span>${from}</span><span>${to}</span>`;
+          el.dataset.from = from;
+          el.dataset.to = to;
+        }
+        const [a, b] = el.children as unknown as HTMLElement[];
+        const e = outExpo(p);
+        a.style.transform = `translateY(${-e * 70}%)`;
+        a.style.opacity = String(1 - e);
+        b.style.transform = `translateY(${(1 - e) * 70}%)`;
+        b.style.opacity = String(e);
+      }
+
+      /* Enter from below out of a blur, leave upward into one. */
+      function move(el: HTMLElement, t: number, inAt: number, outAt: number, dist: number) {
+        const i = outExpo(prog(t, inAt, inAt + 0.8));
+        const o = inCubic(prog(t, outAt, outAt + 0.5));
+        const y = (1 - i) * dist - o * dist * 0.8;
+        const blur = (1 - i) * 16 + o * 16;
+        el.style.opacity = String(i * (1 - o));
+        el.style.filter = blur > 0.05 ? `blur(${blur.toFixed(2)}px)` : 'none';
+        return { y, s: 0.94 + 0.06 * i - 0.03 * o };
+      }
+
+      /* Where the Take button sits when the widget is at rest. */
+      let takeCentre = { x: cfg.W / 2, y: cfg.H * cfg.widgetY };
+
+      function ring(r: HTMLElement, t: number, at: number, size: number, centre = takeCentre) {
+        const p = prog(t, at, at + 1.6);
+        if (p <= 0 || p >= 1) {
+          r.style.opacity = '0';
+          return;
+        }
+        const e = outCubic(p);
+        r.style.left = `${centre.x}px`;
+        r.style.top = `${centre.y}px`;
+        r.style.width = `${size * (0.6 + e * 2.6)}px`;
+        r.style.borderWidth = `${Math.max(1.5, size * 0.012 * (1 - e * 0.6))}px`;
+        r.style.opacity = String(0.55 * (1 - p));
+      }
+
+      function track(t: number) {
+        const el = sceneEl('track');
+        if (!el) return;
+        const len = LENGTH.track;
+        const word = q('[data-part="word"]', el);
+        const widget = q('[data-part="widget"]', el);
+        const w = move(word, t, 0, len - OVERLAP - 0.5, 50);
+        word.style.transform = `translate(-50%, -50%) translateY(${w.y}px) scale(${w.s})`;
+        const g = move(widget, t, 0.15, len - OVERLAP - 0.42, 80);
+        const tap = TAPS.reduce((acc, at) => acc + press(t, at), 0);
+        widget.style.transform = `translate(-50%, -50%) translateY(${g.y}px) scale(${g.s})`;
+        const take = q('[data-take]', el);
+        take.style.transform = `scale(${1 + tap * 1.6})`;
+
+        let count = 2;
+        let p = 1;
+        TAPS.forEach((at, i) => {
+          if (t >= at) {
+            count = 3 + i;
+            p = prog(t, at, at + 0.5);
+          }
+        });
+        roll(q('[data-roll="count"]', el), String(t >= TAPS[0] ? count - 1 : 2), String(count), t >= TAPS[0] ? p : 1);
+
+        const now = prog(t, TAPS[0], TAPS[0] + 0.4);
+        q('[data-ago]', el).style.opacity = String(1 - now);
+        q('[data-now]', el).style.opacity = String(now);
+
+        /* A touch, the way Apple films a tap: a soft disc that arrives, gives and goes. */
+        const tIn = prog(t, TAPS[0] - 0.45, TAPS[0] - 0.1);
+        const tOut = prog(t, TAPS[TAPS.length - 1] + 0.25, TAPS[TAPS.length - 1] + 0.6);
+        touch.style.opacity = String(outCubic(tIn) * (1 - tOut) * 0.9);
+        touch.style.left = `${takeCentre.x}px`;
+        touch.style.top = `${takeCentre.y}px`;
+        touch.style.transform = `translate(-50%, -50%) scale(${(1 + tap * 2.2) * (0.9 + 0.1 * outCubic(tIn))})`;
+
+        TAPS.forEach((at, i) => {
+          ring(rings[i * 2], t, at, cfg.H * 0.36);
+          ring(rings[i * 2 + 1], t, at + 0.14, cfg.H * 0.36);
+        });
+      }
+
+      function quit(t: number) {
+        const el = sceneEl('quit');
+        if (!el) return;
+        const len = LENGTH.quit;
+        const word = q('[data-part="word"]', el);
+        const widget = q('[data-part="widget"]', el);
+        const w = move(word, t, 0, len - OVERLAP - 0.5, 50);
+        word.style.transform = `translate(-50%, -50%) translateY(${w.y}px) scale(${w.s})`;
+        const g = move(widget, t, 0.15, len - OVERLAP - 0.42, 80);
+        const beat = TICKS.reduce((acc, at) => acc + press(t, at) * 0.35, 0);
+        widget.style.transform = `translate(-50%, -50%) translateY(${g.y}px) scale(${g.s * (1 - beat * 0.4)})`;
+
+        let day = DAY0;
+        let p = 1;
+        TICKS.forEach((at, i) => {
+          if (t >= at) {
+            day = DAY0 + 1 + i;
+            p = prog(t, at, at + 0.5);
+          }
+        });
+        roll(q('[data-roll="days"]', el), String(t >= TICKS[0] ? day - 1 : DAY0), String(day), t >= TICKS[0] ? p : 1);
+
+        /* Avoided and saved run continuously from day 20 to day 24. */
+        const run = inOut(prog(t, TICKS[0] - 0.3, TICKS[TICKS.length - 1] + 0.4));
+        const d = DAY0 + run * (TICKS.length);
+        q('[data-avoided]', el).textContent = String(Math.round((243 * d) / 24));
+        q('[data-saved]', el).textContent = `${((60.8 * d) / 24).toFixed(1)} €`;
+
+        const centre = { x: cfg.W / 2, y: cfg.H * cfg.widgetY };
+        TICKS.forEach((at, i) => ring(rings[i], t, at, cfg.H * 0.36, centre));
+      }
+
+      /* Chat lines land one after another, the way a group chat fills; a
+         reaction pops under a line and counts up as more people add theirs. */
+      function together(t: number) {
+        const el = sceneEl('together');
+        if (!el) return;
+        const len = LENGTH.together;
+        const out = len - OVERLAP - 0.45;
+        const word = q('[data-part="word"]', el);
+        const w = move(word, t, 0, len - OVERLAP - 0.5, 50);
+        word.style.transform = `translate(-50%, -50%) translateY(${w.y}px) scale(${w.s})`;
+        const box = q('[data-part="chat"]', el);
+        const o = inCubic(prog(t, out, out + 0.5));
+        box.style.opacity = String(1 - o);
+        box.style.filter = o > 0.01 ? `blur(${(o * 16).toFixed(2)}px)` : 'none';
+        box.style.transform = `translateX(-50%) translateY(${-o * 60}px)`;
+        const msgs = [...el.querySelectorAll<HTMLElement>('[data-msg]')];
+        const step = msgs.length > 2 ? 0.75 : 0.95;
+        msgs.forEach((m, i) => {
+          const at = 0.45 + i * step;
+          const p = prog(t, at, at + 0.55);
+          /* A spring: overshoot once, settle. */
+          const spring = p >= 1 ? 1 : 1 - Math.exp(-7 * p) * Math.cos(p * 9);
+          m.style.opacity = String(outCubic(prog(t, at, at + 0.25)));
+          m.style.transform = `translateY(${(1 - spring) * 70}px) scale(${0.9 + 0.1 * spring})`;
+          const react = m.querySelector<HTMLElement>('[data-react]');
+          if (react) {
+            const r0 = at + 0.5;
+            const rp = prog(t, r0, r0 + 0.35);
+            const pop = rp >= 1 ? 1 : 1 - Math.exp(-8 * rp) * Math.cos(rp * 11);
+            react.style.opacity = String(rp > 0 ? 1 : 0);
+            react.style.transform = `scale(${pop})`;
+            const total = Number(react.dataset.count);
+            const n = 1 + Math.floor((total - 1) * outCubic(prog(t, r0 + 0.2, r0 + 1.6)));
+            q('[data-react-count]', react).textContent = String(n);
+          }
+        });
+      }
+
+      function brand(t: number, isLast: boolean) {
+        const el = sceneEl('brand');
+        if (!el) return;
+        const len = LENGTH.brand;
+        const box = q('[data-part="word"]', el);
+        /* The last scene fades out in place, so the loop ends on the empty
+           background it starts from. */
+        const b = move(box, t, 0, isLast ? len - 0.7 : len - OVERLAP - 0.5, 40);
+        box.style.transform = `translate(-50%, -50%) translateY(${isLast ? Math.max(0, b.y) : b.y}px) scale(${b.s})`;
+        /* The end line arrives word by word after the logo. */
+        el.querySelectorAll<HTMLElement>('[data-end-word]').forEach((wd, i) => {
+          const p = outExpo(prog(t, 0.45 + i * 0.22, 1.15 + i * 0.22));
+          wd.style.opacity = String(p);
+          wd.style.transform = `translateY(${(1 - p) * 24}px)`;
+        });
+        const centre = { x: cfg.W / 2, y: cfg.H / 2 };
+        ring(rings[6], t, 0.35, cfg.H * 0.42, centre);
+        ring(rings[7], t, 0.5, cfg.H * 0.42, centre);
+      }
+
+      function measure() {
+        const take = document.querySelector<HTMLElement>('[data-take]');
+        if (!take) return;
+        const c = canvas.getBoundingClientRect();
+        const r = take.getBoundingClientRect();
+        takeCentre = { x: r.left - c.left + r.width / 2, y: r.top - c.top + r.height / 2 };
+      }
+
+      function frame(time: number) {
+        rings.forEach((r) => (r.style.opacity = '0'));
+        touch.style.opacity = '0';
+        for (const s of cfg.scenes) {
+          const el = sceneEl(s)!;
+          const local = time - starts[s]!;
+          const on = local > -0.01 && local < LENGTH[s] + 0.01;
+          el.style.visibility = on ? 'visible' : 'hidden';
+          if (!on) continue;
+          if (s === 'track') track(local);
+          if (s === 'quit') quit(local);
+          if (s === 'together') together(local);
+          if (s === 'brand') brand(local, s === cfg.scenes[cfg.scenes.length - 1]);
+        }
+        /* The light drifts once around per loop, so the last frame meets the first. */
+        const a = (time / DURATION) * Math.PI * 2;
+        light.style.transform = `translate(-50%, -50%) translate(${Math.cos(a) * cfg.W * 0.06}px, ${Math.sin(a) * cfg.H * 0.05}px)`;
+      }
+
+      /* Measure the Take button with the widget at rest, then start at 0. */
+      /*
+       * Fit the words of every language before the first frame. A scene's word
+       * ("Tillsammans", "Společně") shrinks to the width the iPhone shows; a line
+       * in a widget ("24 päivää", a long Take label) shrinks to the widget's
+       * inner width instead of running out of it. Measured on layout widths
+       * (offsetWidth / scrollWidth), which transforms do not touch.
+       */
+      function fit() {
+        document.querySelectorAll<HTMLElement>('.word').forEach((w) => {
+          if (w.offsetWidth > cfg.wordMax) {
+            const size = parseFloat(getComputedStyle(w).fontSize);
+            w.style.fontSize = `${((size * cfg.wordMax) / w.offsetWidth).toFixed(1)}px`;
+          }
+        });
+        document.querySelectorAll<HTMLElement>('.w-days, .w-take, .w-caption, .w-sum').forEach((el) => {
+          const box = el.parentElement!;
+          const room = box.clientWidth - parseFloat(getComputedStyle(box).paddingLeft) - parseFloat(getComputedStyle(box).paddingRight);
+          if (el.scrollWidth > room) {
+            const size = parseFloat(getComputedStyle(el).fontSize);
+            el.style.fontSize = `${((size * room) / el.scrollWidth).toFixed(2)}px`;
+          }
+        });
+      }
+
+      document.fonts.ready.then(() => {
+        /* The widgets' numbers at their widest ("24", "5") before fitting. */
+        frame(starts.quit !== undefined ? starts.quit + 4.5 : 0);
+        if (starts.track !== undefined) frame(starts.track + 4.0);
+        fit();
+        if (starts.track !== undefined) {
+          frame(starts.track + 1.2);
+          const take = document.querySelector<HTMLElement>('[data-take]')!;
+          take.style.transform = 'none';
+          measure();
+        }
+        frame(0);
+        (window as unknown as { __frame: (t: number) => void }).__frame = frame;
+        canvas.dataset.ready = '';
+        if (new URLSearchParams(location.search).has('play')) {
+          const t0 = performance.now();
+          const tick = () => {
+            frame(((performance.now() - t0) / 1000) % DURATION);
+            requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+        }
+      });
+    </script>
+
+    <style is:global>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #0b4fbf;
+      }
+
+      /* Neither the dev toolbar nor a stale Vite error overlay belongs in a frame. */
+      astro-dev-toolbar,
+      vite-error-overlay {
+        display: none !important;
+      }
+
+      .canvas {
+        position: relative;
+        overflow: hidden;
+        font-family: 'Poppins', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        color: #fff;
+        background: linear-gradient(160deg, #3fc3fb 0%, #1b95ee 34%, #0d6bcd 70%, #0a47b4 100%);
+      }
+
+      .light {
+        position: absolute;
+        left: 50%;
+        top: 46%;
+        width: 120%;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: radial-gradient(closest-side, rgb(170 238 255 / 0.5), rgb(90 205 255 / 0.16) 45%, transparent 72%);
+        pointer-events: none;
+      }
+
+      .rings span {
+        position: absolute;
+        aspect-ratio: 1;
+        translate: -50% -50%;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        opacity: 0;
+      }
+
+      section {
+        position: absolute;
+        inset: 0;
+        visibility: hidden;
+      }
+
+      .word {
+        position: absolute;
+        left: 50%;
+        top: var(--wordY);
+        margin: 0;
+        font-size: var(--word);
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.035em;
+        white-space: nowrap;
+        text-shadow: 0 6px 40px rgb(2 22 70 / 0.3);
+      }
+
+      /* Positioned and moved here; drawn at 160px (Apple's small widget) in the
+         face and scaled with zoom, so the text is laid out again rather than
+         blown up. Zoom on the positioned box would scale its offsets too. */
+      .widget {
+        position: absolute;
+        left: 50%;
+        top: var(--widgetY);
+      }
+
+      .widget-face {
+        position: relative;
+        width: 160px;
+        height: 160px;
+        zoom: var(--zoom);
+        box-sizing: border-box;
+        border-radius: 24px;
+        background: linear-gradient(160deg, #2c2c31 0%, #1b1b1f 100%);
+        box-shadow:
+          inset 0 0 0 1px rgb(255 255 255 / 0.08),
+          0 24px 50px -14px rgb(2 18 60 / 0.75);
+      }
+
+      .w-track {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+      }
+
+      .w-sum {
+        display: inline-flex;
+        font-size: 21px;
+        font-weight: 600;
+        color: rgb(255 255 255 / 0.66);
+        letter-spacing: 0.01em;
+        line-height: 1.15;
+      }
+
+      .roll {
+        position: relative;
+        display: inline-grid;
+        overflow: hidden;
+      }
+
+      .roll > span {
+        grid-area: 1 / 1;
+        text-align: right;
+      }
+
+      .w-sum .roll {
+        color: #fff;
+      }
+
+      .w-take {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 9px 20px;
+        border-radius: 999px;
+        background: #1fd9ff;
+        color: #161622;
+        font-size: 17px;
+        font-weight: 600;
+        line-height: 1;
+        box-shadow: 0 0 22px rgb(31 217 255 / 0.35);
+      }
+
+      .w-ago {
+        display: grid;
+        font-size: 11px;
+        color: rgb(255 255 255 / 0.55);
+      }
+
+      .w-ago > span {
+        grid-area: 1 / 1;
+        text-align: center;
+      }
+
+      .w-quit {
+        height: 100%;
+        box-sizing: border-box;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .w-caption {
+        font-size: 12px;
+        color: rgb(255 255 255 / 0.55);
+      }
+
+      .w-days {
+        font-size: 26px;
+        font-weight: 700;
+        line-height: 1.1;
+        margin-bottom: 4px;
+        white-space: nowrap;
+      }
+
+      .w-line {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.15;
+      }
+
+      .w-label {
+        font-size: 9px;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: rgb(255 255 255 / 0.55);
+      }
+
+      .w-value {
+        font-size: 15px;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .brand {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(var(--line) * 0.5);
+      }
+
+      .logo {
+        height: var(--logo);
+        filter: drop-shadow(0 10px 30px rgb(2 22 70 / 0.35));
+      }
+
+      .logo svg {
+        display: block;
+        width: auto;
+        height: 100%;
+      }
+
+      /* The end line, word by word; it may wrap, but only between words and
+         within the middle the iPhone shows of a header. */
+      .line {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0 0.32em;
+        max-width: var(--lineMax);
+        margin: 0;
+        font-size: var(--line);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        text-shadow: 0 4px 30px rgb(2 22 70 / 0.3);
+      }
+
+      .line span {
+        display: inline-block;
+      }
+
+      /* The chat column: as wide as its longest line and centred as a block, its
+         lines in the app's MessageCard colours. */
+      .chat {
+        position: absolute;
+        left: 50%;
+        top: calc(var(--wordY) + var(--word) * 0.72);
+        width: max-content;
+        max-width: var(--chatW);
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--chat) * 0.7);
+        font-size: var(--chat);
+      }
+
+      .msg {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.45em;
+        max-width: 100%;
+        transform-origin: left bottom;
+      }
+
+      .msg--own {
+        align-self: flex-end;
+        transform-origin: right bottom;
+      }
+
+      .msg__avatar {
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        width: 1.9em;
+        height: 1.9em;
+        margin-top: 1.1em;
+        border-radius: 50%;
+        font-weight: 700;
+        font-size: 0.9em;
+        color: #fff;
+        box-shadow: 0 0 0 0.08em rgb(31 217 255 / 0.25);
+      }
+
+      .msg__col {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        min-width: 0;
+      }
+
+      .msg--own .msg__col {
+        align-items: flex-end;
+      }
+
+      .msg__name {
+        margin: 0 0 0.25em 0.2em;
+        font-size: 0.68em;
+        font-weight: 600;
+        color: rgb(255 255 255 / 0.8);
+      }
+
+      .msg__bubble {
+        margin: 0;
+        padding: 0.6em 0.85em;
+        border-radius: 1.1em 1.1em 1.1em 0.4em;
+        background: #232533;
+        font-weight: 500;
+        line-height: 1.35;
+        color: #fff;
+        box-shadow: 0 0.6em 1.6em -0.6em rgb(2 18 60 / 0.6);
+      }
+
+      .msg--own .msg__bubble {
+        border-radius: 1.1em 1.1em 0.4em 1.1em;
+        background: #1fd9ff;
+        color: #161622;
+      }
+
+      /* EmojiReactionBar's pill, the viewer's own reaction in the accent. */
+      .msg__react {
+        margin: -0.35em 0 0 0.5em;
+        padding: 0.12em 0.5em;
+        border-radius: 999px;
+        border: 0.06em solid rgb(31 217 255 / 0.6);
+        background: #1b1b26;
+        font-size: 0.7em;
+        font-weight: 700;
+        color: #fff;
+        opacity: 0;
+        transform-origin: left top;
+      }
+
+      .touch {
+        position: absolute;
+        width: calc(var(--widget) * 0.26);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgb(255 255 255 / 0.55) 0%, rgb(255 255 255 / 0.35) 60%, rgb(255 255 255 / 0.1) 100%);
+        box-shadow: 0 0 0 2px rgb(255 255 255 / 0.5);
+        opacity: 0;
+        z-index: 20;
+        pointer-events: none;
+      }
+    </style>
+  </body>
+</html>

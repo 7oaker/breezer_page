@@ -1,0 +1,243 @@
+---
+/**
+ * One store image, dev server only. Source for scripts/capture-store.mjs; in a
+ * production build getStaticPaths returns nothing, so the route does not exist
+ * there and never reaches breezer.now.
+ *
+ * Layout (Klaus, 11.11.2026: clean, one message, one phone): an optional path
+ * label and the headline centred in the space above the device, the device
+ * standing at the same height in every image so the gallery does not jump when
+ * swiped, and a soft light behind it. The background is Breezer's blue gradient
+ * (`brandGradient` in src/data/storeShots.ts), the same on every image.
+ *
+ * Where the phone content comes from:
+ * - press, stats, quit: the homepage's rebuilt screens in their store mode
+ *   (`bare`), with the words from src/i18n/appScreens.ts;
+ * - widgets: components/store/WidgetsScreen + HomeWidget;
+ * - every other frame: components/store/screens/<Frame>Screen.astro, picked up
+ *   by file name, plus an optional <Frame>Breakout.astro for the one enlarged
+ *   detail in front of the device. A frame without a screen answers 404, which
+ *   the capture script skips, so a missing screen never becomes an empty image.
+ */
+import '@fontsource/poppins/latin-ext-400.css';
+import '@fontsource/poppins/latin-ext-500.css';
+import '@fontsource/poppins/latin-ext-600.css';
+import '@fontsource/poppins/latin-ext-700.css';
+import '@fontsource/poppins/latin-ext-800.css';
+import '../../../../../../styles/style.css';
+import { Image } from 'astro:assets';
+import FramePhone from '../../../../../../components/store/FramePhone.astro';
+import Title from '../../../../../../components/store/Title.astro';
+import HomeWidget from '../../../../../../components/store/HomeWidget.astro';
+import { appText, hasAppText } from '../../../../../../i18n/appScreens';
+import pressHand from '../../../../../../assets/images/app/press-hand.png';
+import {
+  copyFor,
+  DEVICES,
+  LANGS,
+  PAGES,
+  PATH_COLOR,
+  headlineFor,
+  labelOf,
+  pathOf,
+  urlLang,
+  fromUrlLang,
+  brandGradient,
+  type FrameId,
+  type Lang,
+  type PageId,
+} from '../../../../../../data/storeShots';
+
+export function getStaticPaths() {
+  if (!import.meta.env.DEV) return [];
+  return (Object.keys(PAGES) as PageId[]).flatMap((page) =>
+    LANGS.flatMap((lang) =>
+      DEVICES.flatMap((device) =>
+        PAGES[page].map((frame) => ({ params: { page, lang: urlLang(lang), device: device.id, frame } })),
+      ),
+    ),
+  );
+}
+
+const params = Astro.params as { page: PageId; lang: string; device: string; frame: FrameId };
+const { page, device: deviceId, frame } = params;
+const lang = fromUrlLang(params.lang) as Lang;
+const device = DEVICES.find((d) => d.id === deviceId)!;
+
+// A store image in a language the phone cannot speak would show English inside a
+// German page. Refuse instead of falling back.
+if (!hasAppText(lang)) throw new Error(`No app-screen words for "${lang}" in src/i18n/appScreens.ts`);
+const t = appText(lang);
+
+/* Screens and breakouts by file name: JourneyScreen.astro is the `journey` frame. */
+type Comp = (props: Record<string, unknown>) => unknown;
+const byFrame = (files: Record<string, { default: Comp }>, suffix: string) =>
+  Object.fromEntries(
+    Object.entries(files).map(([file, mod]) => {
+      const name = file.split('/').pop()!.replace(`${suffix}.astro`, '');
+      return [name.charAt(0).toLowerCase() + name.slice(1), mod.default];
+    }),
+  ) as Record<string, Comp>;
+const screens = byFrame(import.meta.glob('../../../../../../components/store/screens/*Screen.astro', { eager: true }), 'Screen');
+const breakouts = byFrame(import.meta.glob('../../../../../../components/store/screens/*Breakout.astro', { eager: true }), 'Breakout');
+
+const BUILT_IN: FrameId[] = ['press', 'stats', 'quit', 'widgets'];
+const Screen = screens[frame];
+const Breakout = breakouts[frame];
+const exists = BUILT_IN.includes(frame) || Boolean(Screen);
+if (!exists) Astro.response.status = 404;
+
+const path = pathOf(page, frame);
+const colors = PATH_COLOR[path];
+const labelPath = labelOf(page, frame);
+const label = labelPath ? copyFor(lang).labels[labelPath] : null;
+const headline = headlineFor(lang, page, frame);
+
+const W = device.width;
+const H = device.height;
+const os = device.os;
+const ios = os === 'ios';
+
+/*
+ * Everything relative to the image width, so both formats come out of one rule.
+ * The screen is the app's 261px layout scaled up; the device grows around it.
+ */
+const screenW = W * (ios ? 0.78 : 0.66);
+const scale = screenW / 261;
+const screenH = 566 * scale;
+const stageTop = H * (ios ? 0.27 : 0.3);
+const titleSize = W * (ios ? 0.098 : 0.088);
+const handW = screenW * 0.5;
+
+/*
+ * The widgets image: the lock screen in the phone, and the home-screen widgets
+ * enlarged in front of it, the one detail the image is about. Both paths side by
+ * side on the default page (the one place they meet), one path on a pure page.
+ */
+const widgetPaths: ('track' | 'quit')[] = page === 'default' ? ['track', 'quit'] : [page];
+const widgetSize = screenW * (widgetPaths.length === 2 ? 0.43 : 0.52);
+const widgetsTop = stageTop + screenH * 0.47;
+---
+
+{
+  exists ? (
+    <html lang={lang}>
+      <head>
+        <meta charset="utf-8" />
+        <meta name="robots" content="noindex" />
+        <title>
+          store {page} {lang} {deviceId} {frame}
+        </title>
+      </head>
+      <body>
+        <main class="canvas" style={`width:${W}px;height:${H}px;--glow:${colors.glow};background:${brandGradient()}`}>
+          <div class="glow" aria-hidden="true" />
+          <Title headline={headline} label={label} accent={colors.text} solid={colors.solid} size={titleSize} height={stageTop} />
+
+          <div class="stage" style={`top:${stageTop.toFixed(1)}px`}>
+            <FramePhone frame={frame} page={page} lang={lang} os={os} screenWidth={screenW} />
+          </div>
+
+          {frame === 'widgets' && (
+            <div class="widgets" style={`top:${widgetsTop.toFixed(1)}px;gap:${(screenW * 0.05).toFixed(1)}px`}>
+              {widgetPaths.map((variant) => (
+                <HomeWidget variant={variant} t={t} size={widgetSize} />
+              ))}
+            </div>
+          )}
+
+          {Breakout && <Breakout lang={lang} page={page} os={os} screenW={screenW} screenH={screenH} stageTop={stageTop} canvasW={W} />}
+
+          {frame === 'press' && (
+            <div class="hand" data-store-hand style={`width:${handW.toFixed(1)}px`} aria-hidden="true">
+              <Image src={pressHand} width={640} height={1130} alt="" loading="eager" />
+            </div>
+          )}
+        </main>
+
+        {frame === 'press' && (
+          <script>
+            // Puts the fingertip on the PRESS button wherever layout put the button,
+            // so the hand never has to be re-measured when the screen changes. The
+            // fingertip is 16.33% in from the image's left edge on its top row
+            // (measured in components/home/AppHandCursor.astro).
+            const hand = document.querySelector<HTMLElement>('[data-store-hand]');
+            const button = document.querySelector<HTMLElement>('[data-press-button]');
+            const canvas = document.querySelector<HTMLElement>('.canvas');
+            if (hand && button && canvas) {
+              const b = button.getBoundingClientRect();
+              const c = canvas.getBoundingClientRect();
+              const w = hand.getBoundingClientRect().width;
+              hand.style.left = `${b.left - c.left + b.width / 2 - w * 0.1633}px`;
+              hand.style.top = `${b.top - c.top + b.height * 0.52}px`;
+              hand.dataset.placed = '';
+            }
+          </script>
+        )}
+
+        <style is:global>
+          html,
+          body {
+            margin: 0;
+            padding: 0;
+            background: #161622;
+          }
+
+          /* The dev toolbar would otherwise end up in the image. */
+          astro-dev-toolbar {
+            display: none !important;
+          }
+
+          .canvas {
+            position: relative;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            -webkit-font-smoothing: antialiased;
+          }
+
+          /* A soft light behind the device, so the dark phone lifts off the blue. */
+          .glow {
+            position: absolute;
+            inset: 30% -10% -10%;
+            background: radial-gradient(closest-side, var(--glow), transparent 75%);
+            pointer-events: none;
+          }
+
+          .stage {
+            position: absolute;
+            left: 50%;
+            translate: -50% 0;
+          }
+
+          .widgets {
+            position: absolute;
+            left: 50%;
+            translate: -50% 0;
+            z-index: 55;
+            display: flex;
+            filter: drop-shadow(0 30px 40px rgb(0 0 0 / 0.55));
+          }
+
+          .hand {
+            position: absolute;
+            z-index: 60;
+            visibility: hidden;
+            filter: drop-shadow(0 18px 28px rgb(0 0 0 / 0.55));
+          }
+
+          .hand[data-placed] {
+            visibility: visible;
+          }
+
+          .hand img {
+            display: block;
+            width: 100%;
+            height: auto;
+          }
+        </style>
+      </body>
+    </html>
+  ) : (
+    <p>no screen for {frame} yet</p>
+  )
+}

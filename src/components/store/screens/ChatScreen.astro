@@ -1,0 +1,565 @@
+---
+/**
+ * `react_Breezer/app/(tabs)/chat.jsx` in one of two rooms:
+ *
+ * - `quitters` (the store's `chat` image): as somebody in quit mode lands in
+ *   it. TopBar with the quitters' title (`home.quitting.quittersChat`), the
+ *   ChannelSelector on the quitters' Global room. The second segment is the
+ *   squad room, which ChannelSelector appends for anybody in a squad and which
+ *   stays while quitting (CLAUDE.md, Squads).
+ * - `squad` (the `community` image, through CommunityScreen): the squad's own
+ *   room, which chat.jsx titles with the squad's name, the 🛡️ BNGZ segment
+ *   selected. Members talking, an @mention, reactions: the app's social side and
+ *   the hint that squads exist, without a second screen (Klaus, 12.11.2026).
+ *
+ * The squad is the press screen's demo squad, Bangerz [BNGZ].
+ *
+ * CHAT_THREAD (src/data/storeChat.ts) is user content, so they are written per language rather than run
+ * through the app's locales, and every name is invented: no real user and no
+ * photo, initials on a colour the way Appwrite's default avatars are.
+ *
+ * No milestone line. The app posts those in English to every reader
+ * (`lib/milestoneMessages.js`, CLAUDE.md "Translated vs. fixed-language
+ * text"), so in twelve of thirteen images it would read as a missed
+ * translation, and on the Play format there is no room for it above the
+ * question without cutting the question.
+ *
+ * Timestamps are moment's `fromNow()`, which is what MessageCard prints, run
+ * from react_Breezer's own moment and locale files so they read exactly as the
+ * app writes them (moment calls Norwegian `nb`, as lib/i18n.js does).
+ *
+ * THE INPUT BAR AND THE CROP. The store image cuts the device off at the bottom
+ * (the route stands it at the same height in every image and lets the canvas
+ * edge take the rest), which would take the input bar with it: it sits at the
+ * very bottom of the screen. So the list and the bar are laid out in the part
+ * of the screen the image actually shows, and the bar's own gradient runs on
+ * under the edge, the way it runs into the home indicator on the phone. The
+ * crop is worked out from the route's geometry below; if that changes, this has
+ * to follow.
+ *
+ * Styled in the scoped block at the bottom rather than with Tailwind's
+ * arbitrary values: every size is an app point times 261/393, and they read
+ * better side by side than strung along class attributes.
+ */
+import {
+  CHAT_PEOPLE,
+  CHAT_THREAD,
+  MEMBER_LOCAL,
+  QUIT_MESSAGE,
+  SQUAD,
+  SQUAD_ASK,
+  SQUAD_CHEER_QUIT,
+  SQUAD_CHEER_TRACK,
+  SQUAD_MORNING,
+  SQUAD_PEOPLE,
+  SQUAD_PROUD,
+  TRACK_MESSAGE,
+  TRACK_REPLY,
+} from '../../../data/storeChat';
+import { createRequire } from 'node:module';
+import { resolve } from 'node:path';
+import AppScreen from '../../home/AppScreen.astro';
+import StatusBar from '../StatusBar.astro';
+import { appLocale } from '../../../lib/appLocale';
+import { DEVICES } from '../../../data/storeShots';
+
+interface Props {
+  lang: string;
+  page: 'default' | 'track' | 'quit';
+  os: 'ios' | 'android';
+  scale: number;
+  room?: 'quitters' | 'squad';
+}
+const { lang, page, os, scale, room = 'quitters' } = Astro.props;
+const squadRoom = room === 'squad';
+const tr = appLocale(lang);
+const ios = os === 'ios';
+
+/*
+ * How much of the 566px screen the image shows. Mirrors the route
+ * (pages/dev/store/[page]/[lang]/[device]/[frame].astro: stageTop) and
+ * Device.astro (ring + bezel above the screen).
+ */
+const device = DEVICES.find((d) => d.os === os)!;
+const screenW = 261 * scale;
+const stageTop = device.height * (ios ? 0.27 : 0.3);
+const aboveScreen = screenW * (ios ? 0.013 + 0.024 : 0.011 + 0.02);
+const visible = (device.height - stageTop - aboveScreen) / scale;
+const cut = Math.max(0, 566 - visible);
+/** MessageInput's py-3 (8px) above the image edge; the rest of the bar runs on under it. */
+const barBottom = cut + 8;
+
+/* moment, from the app's node_modules, so `fromNow()` is the app's own wording. */
+const APP_DIR = resolve(process.env.BREEZER_APP_DIR ?? '../react_Breezer');
+const requireApp = createRequire(`${APP_DIR}/package.json`);
+const moment = requireApp('moment');
+const momentLocale = lang === 'no' ? 'nb' : lang;
+if (momentLocale !== 'en') requireApp(`moment/locale/${momentLocale}`);
+const ago = (minutes: number): string => moment().locale(momentLocale).subtract(minutes, 'minutes').fromNow();
+
+const words = CHAT_THREAD[lang];
+if (!words) throw new Error(`ChatScreen: no chat messages for "${lang}"`);
+const line = (table: Record<string, string>): string => {
+  const text = table[lang];
+  if (!text) throw new Error(`ChatScreen: no squad line for "${lang}"`);
+  return text;
+};
+
+/** EmojiReactionBar's pills: `mine` is the viewer's own reaction, drawn in the accent. */
+type Reaction = { emoji: string; count: number; mine?: boolean };
+
+type Item =
+  | { kind: 'other'; name: string; color: string; text: string; minutes: number; mention?: string; reactions: Reaction[] }
+  | { kind: 'own'; text: string; minutes: number; reactions: Reaction[] };
+
+const person = (who: keyof typeof CHAT_PEOPLE) => CHAT_PEOPLE[who];
+const [localName] = MEMBER_LOCAL[lang] ?? MEMBER_LOCAL.en;
+
+/**
+ * Oldest first, as the inverted FlatList shows them: newest at the bottom.
+ * Reactions only from EmojiReactionBar's own eight (🔥 💀 😂 🫡 😮 👍 🤦 🎉).
+ *
+ * The squad room tells the page's story: on the default page the reader's
+ * countryman has quit and the room cheers (he still sits on the board, see
+ * SquadScreen); on the track page he stayed under
+ * his limit for a week and Alex answers with his own streak.
+ */
+const THREAD: Item[] = !squadRoom
+  ? [
+      { kind: 'other', ...person('lena'), text: words.lena, minutes: 21, reactions: [] },
+      { kind: 'other', ...person('marek'), text: words.marek, minutes: 14, mention: 'Lena', reactions: [{ emoji: '👍', count: 4, mine: true }] },
+      { kind: 'other', ...person('sofia'), text: words.sofia, minutes: 9, reactions: [{ emoji: '🔥', count: 2 }] },
+      { kind: 'own', text: words.alex, minutes: 2, reactions: [{ emoji: '🔥', count: 1 }] },
+    ]
+  : [
+      { kind: 'other', ...SQUAD_PEOPLE.lea, text: line(SQUAD_MORNING), minutes: 41, reactions: [{ emoji: '🫡', count: 4 }] },
+      { kind: 'other', ...SQUAD_PEOPLE.oskar, text: line(SQUAD_ASK), minutes: 26, reactions: [{ emoji: '👍', count: 3 }] },
+      {
+        kind: 'other',
+        name: localName,
+        color: SQUAD_PEOPLE.local.color,
+        text: line(page === 'track' ? TRACK_MESSAGE : QUIT_MESSAGE),
+        minutes: 18,
+        reactions:
+          page === 'track'
+            ? [{ emoji: '🔥', count: 5, mine: true }, { emoji: '👍', count: 2 }]
+            : [{ emoji: '🔥', count: 6, mine: true }, { emoji: '🎉', count: 4 }],
+      },
+      {
+        kind: 'other',
+        ...SQUAD_PEOPLE.mila,
+        text: line(page === 'track' ? SQUAD_CHEER_TRACK : SQUAD_CHEER_QUIT),
+        minutes: 11,
+        mention: localName,
+        reactions: [{ emoji: page === 'track' ? '😂' : '👍', count: 2 }],
+      },
+      { kind: 'own', text: line(page === 'track' ? TRACK_REPLY : SQUAD_PROUD), minutes: 3, reactions: [{ emoji: '🎉', count: 2 }] },
+    ];
+
+/** Ionicons glyphs from the app's font (`@expo/vector-icons`), in a 512 box. */
+const ION = {
+  'image-outline':
+    'M81 66Q81 66 83.5 65.5Q86 65 87.5 64.5Q89 64 259 64Q399 64 416 64.5Q433 65 443 70Q471 83 479 113Q480 119 480 256Q480 393 479 399Q470 431 440 443Q431 447 411.5 447.5Q392 448 256 448Q120 448 100.5 447.5Q81 447 72 443Q42 431 33 399Q32 393 32 256Q32 119 33 113Q41 83 69 70Q76 67 81 66ZM428 98L423 96L256 96L89 96L84 98Q68 105 65 122Q64 128 64 222L64 316L113 272Q163 229 168 226Q190 214 212 225Q220 229 266 275L312 321L327 307Q344 289 355 286Q360 284 369.5 284Q379 284 386 286Q395 289 424 314L448 333L448 231Q448 128 447 122Q444 105 428 98ZM325 129Q349 124 367 139.5Q385 155 384 179Q383 196 371 208Q360 221 342.5 223.5Q325 226 311 217Q295 207 290 190Q286 177 290 163Q298 135 325 129ZM343 162Q341 160 336 160.5Q331 161 329 162Q322 165 320.5 172.5Q319 180 324 186Q332 195 342 191Q347 188 350 183Q354 176 351 170Q348 164 343 162ZM198 254Q189 249 179 257Q177 259 120 309L64 359L64 373Q64 387 65 392Q69 407 85 414L90 416L154 416L217 417L253 380L290 344L245 300Q201 255 198 254ZM378 318Q378 318 378 318Q375 316 370.5 316Q366 316 364 317Q362 317 313 366Q264 415 264 416Q264 416 343 416Q343 416 422 416L427 414Q448 406 448 381Q448 381 448 375L415 348Q381 320 378 318Z',
+  send: 'M35 49Q35 49 35 49Q41 48 46 49Q49 50 261.5 138Q474 226 479 228Q494 236 495.5 254Q497 272 483 282Q479 285 262 374Q262 374 46 464L40 464Q29 464 22 456Q17 451 16.5 443Q16 435 16 382Q17 320 18 317Q22 309 30 306Q34 304 151.5 282Q269 260 270 259Q271 258 271 256Q271 254 270 253.5Q269 253 153 231.5Q37 210 33 209Q23 206 19 197Q19 197 17 193L16 131Q16 69 17 66Q21 51 35 49Z',
+} as const;
+
+/**
+ * Text split into plain runs and emoji, so every emoji gets a box of its own
+ * (`.chat-emoji`). Inside the scaled screen Chrome otherwise clips a colour
+ * emoji at a fractional size to about half its width.
+ */
+const EMOJI = /(\p{Extended_Pictographic}️?(?:‍\p{Extended_Pictographic}️?)*)/u;
+const runs = (text: string) =>
+  text
+    .split(EMOJI)
+    .filter(Boolean)
+    .map((part) => ({ part, emoji: EMOJI.test(part) }));
+
+/** ChannelSelector's labels: the squad by its tag, so it always fits its half. */
+const SEGMENTS = [
+  { label: '🌍 Global', active: !squadRoom },
+  { label: `🛡️ ${SQUAD.tag}`, active: squadRoom },
+];
+/** chat.jsx: the squad's name in its own room, the mode's title elsewhere. */
+const title = squadRoom ? SQUAD.name : tr('home.quitting.quittersChat');
+---
+
+<AppScreen bare scale={scale}>
+  <StatusBar os={os} />
+
+  {/* Safe area, then TopBar: back arrow, the room's title, an empty right slot. */}
+  <div class="chat-top" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#CDCDE0" stroke-width="2.2"
+      ><path d="M20 12H4M4 12l6-6M4 12l6 6" stroke-linecap="round" stroke-linejoin="round"></path></svg
+    >
+    <span class="chat-top__title">{title}</span>
+    <span class="chat-top__slot"></span>
+  </div>
+
+  {/* ChannelSelector: the app's SegmentControl, 40pt high, cyan on the selected
+      room. Track colour as StatsPhone samples it off iOS. */}
+  <div class="chat-segments" aria-hidden="true">
+    {
+      SEGMENTS.map((segment) => (
+        <span class:list={['chat-segment', segment.active && 'chat-segment--on']}>
+          <span>{runs(segment.label).map((r) => (r.emoji ? <span class="chat-emoji">{r.part}</span> : r.part))}</span>
+        </span>
+      ))
+    }
+  </div>
+
+  {/* MessageList. Inverted in the app, so it is anchored at the bottom and the
+      oldest message is the one the top edge cuts. */}
+  <div class="chat-list">
+    {
+      THREAD.map((item) => {
+        if (item.kind === 'own') {
+          return (
+            <div class="chat-msg chat-msg--own">
+              <div class="chat-col chat-col--own">
+                <div class="chat-bubble chat-bubble--own">
+                  <p>{runs(item.text).map((r) => (r.emoji ? <span class="chat-emoji">{r.part}</span> : r.part))}</p>
+                </div>
+                <div class="chat-foot">
+                  <span class="chat-row">
+                    <span class="chat-plus">+</span>
+                    {item.reactions.map((r) => (
+                      <span class:list={['chat-pill', r.mine && 'chat-pill--mine']}>
+                        <span class="chat-pill__emoji">{r.emoji}</span>
+                        <span class="chat-pill__count">{r.count}</span>
+                      </span>
+                    ))}
+                  </span>
+                  <span class="chat-foot__time">{ago(item.minutes)}</span>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        return (
+          <div class="chat-msg">
+            <span class="chat-avatar" style={`background:${item.color}`} aria-hidden="true">
+              {item.name.charAt(0)}
+            </span>
+            <div class="chat-col">
+              <div class="chat-meta">
+                <span class="chat-meta__name">{item.name}</span>
+                <span class="chat-meta__time">{ago(item.minutes)}</span>
+              </div>
+              <div class="chat-bubble">
+                <p>
+                  {item.mention && (
+                    <>
+                      <span class="chat-mention">@{item.mention}</span>{' '}
+                    </>
+                  )}
+                  {runs(item.text).map((r) => (r.emoji ? <span class="chat-emoji">{r.part}</span> : r.part))}
+                </p>
+              </div>
+              <div class="chat-foot">
+                <span class="chat-foot__reply">{tr('chat.reply')}</span>
+                <span class="chat-row">
+                  {item.reactions.map((r) => (
+                    <span class:list={['chat-pill', r.mine && 'chat-pill--mine']}>
+                      <span class="chat-pill__emoji">{r.emoji}</span>
+                      <span class="chat-pill__count">{r.count}</span>
+                    </span>
+                  ))}
+                  <span class="chat-plus">+</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        );
+      })
+    }
+  </div>
+
+  {/* MessageInput, at rest: image button, the empty field with its 300 counter,
+      and the send button greyed out, as it is until there is something to send. */}
+  <div class="chat-input" style={`padding-bottom:${barBottom.toFixed(1)}px`} aria-hidden="true">
+    <span class="chat-input__button">
+      <svg width="13.3" height="13.3" viewBox="0 0 512 512" fill="#6b7280"><path d={ION['image-outline']} /></svg>
+    </span>
+    <span class="chat-input__field">
+      <span class="chat-input__placeholder">{tr('chat.messagePlaceholder')}</span>
+      <span class="chat-input__count">300</span>
+    </span>
+    <span class="chat-input__button chat-input__button--send">
+      <svg width="12" height="12" viewBox="0 0 512 512" fill="#4b5563"><path d={ION.send} /></svg>
+    </span>
+  </div>
+</AppScreen>
+
+<style>
+  /* TopBar: SafeAreaView's inset below the status bar, then p-3. */
+  .chat-top {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 13px;
+    padding: 8px;
+  }
+  .chat-top__title {
+    overflow: hidden;
+    padding: 0 6px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 21px;
+    color: #fff;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .chat-top__slot {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  /* ChannelSelector: mx-4 mb-3, a 40pt segmented control with 8pt corners. */
+  .chat-segments {
+    display: flex;
+    flex-shrink: 0;
+    height: 26.6px;
+    margin: 0 10.6px 8px;
+    padding: 2px;
+    border-radius: 5.3px;
+    background: #1d2330;
+  }
+  .chat-segment {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 500;
+    line-height: 1;
+    color: #fff;
+  }
+  .chat-segment--on {
+    background: #1fd9ff;
+    font-weight: 600;
+  }
+
+  /* MessageList: paddingHorizontal 16, and the inverted list's paddingTop 16
+     lands under the newest message. */
+  .chat-list {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+    padding: 0 10.6px 10.6px;
+  }
+
+  /* MessageCard, regular: mb-3, at most 80% wide, avatar w-8 with mr-2. */
+  .chat-msg {
+    display: flex;
+    flex-shrink: 0;
+    align-items: flex-start;
+    max-width: 80%;
+    margin-bottom: 8px;
+  }
+  .chat-msg--own {
+    align-self: flex-end;
+    margin-right: 5.3px;
+  }
+  .chat-avatar {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 21.3px;
+    height: 21.3px;
+    margin-right: 5.3px;
+    border: 0.7px solid rgb(31 217 255 / 0.2);
+    border-radius: 9999px;
+    font-size: 9px;
+    font-weight: 600;
+    line-height: 1;
+    color: #fff;
+  }
+  .chat-col {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .chat-col--own {
+    align-items: flex-end;
+  }
+  .chat-meta {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2.7px;
+    line-height: 10.6px;
+    white-space: nowrap;
+  }
+  .chat-meta__name {
+    margin-right: 2.7px;
+    font-size: 8px;
+    font-weight: 500;
+    color: #9ca3af;
+  }
+  .chat-meta__time {
+    font-size: 6.6px;
+    color: #4b5563;
+  }
+
+  /* rounded-2xl with the corner nearest the sender cut to rounded-md, p-3,
+     and RN's default 14pt text. */
+  .chat-bubble {
+    padding: 8px;
+    border-radius: 10.6px 10.6px 10.6px 4px;
+    background: #232533;
+  }
+  .chat-bubble p {
+    margin: 0;
+    font-size: 9.3px;
+    line-height: 14px;
+    color: #fff;
+  }
+  .chat-bubble--own {
+    border-radius: 10.6px 10.6px 4px 10.6px;
+    background: #1fd9ff;
+  }
+  .chat-bubble--own p {
+    color: #161622;
+  }
+  .chat-mention {
+    font-weight: 500;
+    color: #1fd9ff;
+    text-decoration: underline;
+    text-decoration-thickness: 0.7px;
+    text-underline-offset: 1.5px;
+  }
+
+  /* The row under the bubble: Reply on the left and the reactions on the right,
+     or for your own message the reactions on the left and the time on the right. */
+  .chat-foot {
+    display: flex;
+    align-self: stretch;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    margin-top: 2.7px;
+  }
+  .chat-foot__reply {
+    margin-left: 5.3px;
+    font-size: 8px;
+    font-weight: 500;
+    line-height: 10.6px;
+    color: #1fd9ff;
+  }
+  .chat-foot__time {
+    font-size: 8px;
+    line-height: 10.6px;
+    color: #4b5563;
+    white-space: nowrap;
+  }
+  .chat-row {
+    display: flex;
+    align-items: center;
+    gap: 2.7px;
+  }
+
+  /* EmojiReactionBar's pill and the "+" that opens the picker: px-2 / px-2.5,
+     2pt vertical padding, a hairline border. */
+  .chat-pill,
+  .chat-plus {
+    display: inline-flex;
+    align-items: center;
+    padding: 1.3px 5.3px;
+    border: 0.7px solid rgb(55 65 81 / 0.4);
+    border-radius: 9999px;
+    line-height: 10.6px;
+  }
+  .chat-pill {
+    background: rgb(30 30 45 / 0.6);
+  }
+  .chat-pill--mine {
+    border-color: rgb(31 217 255 / 0.5);
+    background: rgb(31 217 255 / 0.2);
+  }
+  .chat-pill__emoji {
+    display: inline-block;
+    min-width: 1.25em;
+    font-size: 8.6px;
+    text-align: center;
+  }
+  /* See `runs()`: a box of its own, or the emoji loses its right half. */
+  .chat-emoji {
+    display: inline-block;
+    min-width: 1.25em;
+    text-align: center;
+  }
+  .chat-pill__count {
+    margin-left: 1.3px;
+    font-size: 8px;
+    font-weight: 500;
+    color: #9ca3af;
+  }
+  .chat-pill--mine .chat-pill__count {
+    color: #1fd9ff;
+  }
+  .chat-plus {
+    padding: 1.3px 6.6px;
+    background: #232533;
+    font-size: 8px;
+    font-weight: 500;
+    color: #d1d5db;
+  }
+
+  /* MessageInput: px-4 py-3 on a horizontal gradient; w-11 buttons with
+     rounded-xl, the field rounded-2xl with px-4 py-2 and its counter below. */
+  .chat-input {
+    display: flex;
+    flex-shrink: 0;
+    align-items: flex-end;
+    padding: 8px 10.6px;
+    background: linear-gradient(90deg, #1e1e2d, #232533);
+  }
+  .chat-input__button {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 29px;
+    height: 29px;
+    margin-right: 5.3px;
+    border-radius: 8px;
+    background: rgb(30 30 45 / 0.6);
+  }
+  .chat-input__button--send {
+    margin-right: 0;
+  }
+  .chat-input__field {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+    margin-right: 5.3px;
+    padding: 5.3px 10.6px;
+    border-radius: 10.6px;
+    background: rgb(30 30 45 / 0.6);
+  }
+  .chat-input__placeholder {
+    overflow: hidden;
+    font-size: 10.6px;
+    line-height: 15px;
+    color: #9ca3af;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .chat-input__count {
+    align-self: flex-end;
+    margin-top: 2.7px;
+    font-size: 8px;
+    line-height: 10.6px;
+    color: #4b5563;
+  }
+</style>

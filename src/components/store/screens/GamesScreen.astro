@@ -1,0 +1,285 @@
+---
+/**
+ * Pouch Catch mid-run, for the store's games image. Laid out in AppScreen's
+ * 261 x 566 space like the other rebuilt screens.
+ *
+ * Everything is lifted from react_Breezer rather than judged by eye:
+ * - the screen around the game from `games/runtime/GameHost.jsx` (SafeAreaView,
+ *   the HUD, then the field with an 8pt margin and an 18pt radius);
+ * - the HUD from `games/runtime/GameHud.jsx`: back chevron, title, lives as
+ *   filled and empty dots, the score in cans and the pouches in the current can.
+ *   It sets no font family, so it is the system face, not Poppins;
+ * - the field, the can and the sprites from `games/pouch-catch/view.rn.jsx`,
+ *   `skins.js` (the stock theme, tracking mode) and `config.js`. Positions are
+ *   in the engine's 100 x 100 field units, so they read like engine state;
+ * - the pouch is `assets/images/pouch.png`, tinted the way RN's tintColor does
+ *   it (the image's alpha as a mask over the skin colour).
+ *
+ * No seasonal object and no quit-mode flames: the image must not depend on the
+ * date, and on the default page the game stands for both paths, so it shows the
+ * mode most players see.
+ */
+import AppScreen from '../../home/AppScreen.astro';
+import StatusBar from '../StatusBar.astro';
+import { appLocale } from '../../../lib/appLocale';
+import pouch from '../../../assets/images/store/games/pouch.png';
+
+interface Props {
+  lang: string;
+  page: 'default' | 'track' | 'quit';
+  os: 'ios' | 'android';
+  scale: number;
+}
+const { lang, os, scale } = Astro.props;
+const tr = appLocale(lang);
+
+/* games/pouch-catch/config.js */
+const POUCH_W = 9.5; // field units
+const POUCH_ASPECT = 0.5292;
+const CAN_W = 22;
+const CAN_H = 8;
+const DOSE = 20; // pouches per can
+const MAX_LIVES = 3;
+
+/* The run on screen: the third can done, the fourth two thirds full, one life lost. */
+const RUN = { cans: 3, inCan: 14, lives: 2, canX: 46 };
+
+/* skins.js, stock theme, tracking. */
+const FILL = { good: '#F5F5F0', bad: '#8A6544', gold: '#FFC64A', life: '#FF5CA8' } as const;
+type Kind = keyof typeof FILL;
+
+/*
+ * What is falling, in field units, with the drift that sets in by the third
+ * can. Kept to the upper part of the field: the lower part is behind the
+ * breakout (GamesBreakout.astro) and below the edge of the image, where the can
+ * is. The heart is there because a life has been lost: the engine only offers
+ * one while `spoiled > 0`.
+ */
+const SPRITES: { kind: Kind; x: number; y: number; rot: number }[] = [
+  { kind: 'good', x: 70, y: 6, rot: -14 },
+  { kind: 'life', x: 21, y: 10, rot: 0 },
+  { kind: 'bad', x: 46, y: 18, rot: 31 },
+  { kind: 'gold', x: 80, y: 27, rot: -22 },
+  { kind: 'good', x: 27, y: 32, rot: 18 },
+  { kind: 'good', x: 61, y: 41, rot: -33 },
+  { kind: 'bad', x: 17, y: 50, rot: 12 },
+  { kind: 'good', x: 85, y: 52, rot: 24 },
+];
+
+const dots = '●'.repeat(RUN.lives) + '○'.repeat(MAX_LIVES - RUN.lives);
+const font =
+  os === 'ios'
+    ? "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif"
+    : "Roboto, 'Helvetica Neue', Arial, sans-serif";
+const mask = `url("${pouch.src}") center / contain no-repeat`;
+
+/* Ionicons, outlines read from the app's own Ionicons.ttf, on its 512 grid. */
+const CHEVRON =
+  'M322 89Q329 87 337 90.5Q345 94 349 101Q355 112 349 123Q348 126 283 191Q283 191 218 256L283 321Q348 386 349 389Q353 396 351 404Q350 413 342.5 419Q335 425 326 424Q319 423 309 414Q299 405 239 345Q178 284 169 274Q160 264 160 256Q160 248 168.5 238.5Q177 229 237 169Q309 96 313.5 93Q318 90 322 89Z';
+const HEART =
+  'M148 65Q163 63 180 66Q216 74 247 104Q254 112 256 112Q258 112 267 103Q296 74 332 66Q339 64 352 64Q365 64 373 66Q407 73 431 97Q455 121 462 155Q473 211 441 275Q406 345 313 415Q284 437 272.5 443.5Q261 450 247 447Q241 445 224 433Q84 335 56 236Q43 191 50 156Q61 101 110 76Q127 67 148 65Z';
+---
+
+<AppScreen bare scale={scale}>
+  <div class="gs" style={`font-family:${font}`} aria-hidden="true">
+    <StatusBar os={os} />
+
+    <div class="gs-head">
+      <svg class="gs-back" viewBox="0 0 512 512" fill="#E8E8EF"><path d={CHEVRON}></path></svg>
+      <span class="gs-title">{tr('games.pouchCatch.title')}</span>
+      <span class="gs-lives">{dots}</span>
+    </div>
+
+    <div class="gs-score">
+      <span class="gs-n">{RUN.cans}</span>
+      <span class="gs-unit">{tr('games.pouchCatch.unit')}</span>
+      <span class="gs-spacer"></span>
+      <span class="gs-progress">{RUN.inCan}/{DOSE}</span>
+    </div>
+
+    <div class="gs-field">
+      <span class="gs-line" style={`top:${100 - CAN_H}%`}></span>
+
+      {
+        SPRITES.map((s) =>
+          s.kind === 'life' ? (
+            <svg
+              class="gs-glyph"
+              viewBox="0 0 512 512"
+              fill={FILL.life}
+              style={`left:${s.x}%;top:${s.y}%;width:${(POUCH_W * 1.12).toFixed(2)}%`}
+            >
+              <path d={HEART} />
+            </svg>
+          ) : (
+            <span
+              class="gs-pouch"
+              style={`left:${s.x}%;top:${s.y}%;width:${(POUCH_W * (s.kind === 'gold' ? 1.08 : 1)).toFixed(2)}%;aspect-ratio:${(1 / POUCH_ASPECT).toFixed(4)};rotate:${s.rot}deg;background:${FILL[s.kind]};-webkit-mask:${mask};mask:${mask}`}
+            />
+          ),
+        )
+      }
+
+      <div class="gs-can" style={`left:${RUN.canX}%;top:${100 - CAN_H}%;width:${CAN_W}%;height:${CAN_H}%`}>
+        <div class="gs-band">
+          <div class="gs-level" style={`height:${((RUN.inCan / DOSE) * 100).toFixed(1)}%`}></div>
+        </div>
+        <div class="gs-lid"></div>
+        <div class="gs-base"></div>
+      </div>
+    </div>
+  </div>
+</AppScreen>
+
+<style>
+  .gs {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    background: #161622;
+  }
+
+  /* GameHost's SafeAreaView: the 59pt inset under the island, of which the status bar is 26px. */
+  .gs-head {
+    display: flex;
+    align-items: center;
+    margin-top: 13px;
+    padding: 5.3px 8px;
+  }
+
+  .gs-back {
+    width: 16px;
+    height: 16px;
+    padding: 2.7px;
+    flex-shrink: 0;
+  }
+
+  .gs-title {
+    flex: 1;
+    margin-left: 2.7px;
+    color: #e8e8ef;
+    font-size: 10.6px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  /* The iOS face on both: Roboto has no ●, Android falls back to a symbol font
+     whose dots are this size, while the Mac's stand-in for Roboto draws them tiny. */
+  .gs-lives {
+    min-width: 40px;
+    text-align: right;
+    color: #ff6b8a;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .gs-score {
+    display: flex;
+    align-items: baseline;
+    padding: 0 12px 5.3px;
+  }
+
+  .gs-n {
+    min-width: 29px;
+    color: #fff;
+    font-size: 22.6px;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+
+  .gs-unit {
+    margin-left: 4px;
+    color: #8b8b9e;
+    font-size: 8.6px;
+  }
+
+  .gs-spacer {
+    flex: 1;
+  }
+
+  .gs-progress {
+    min-width: 46px;
+    text-align: right;
+    color: #8b8b9e;
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  /* fieldWrap: margin 8pt, radius 18pt; the bottom also clears the home indicator. */
+  .gs-field {
+    position: relative;
+    flex: 1;
+    margin: 5.3px 5.3px 28px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #12121c;
+  }
+
+  .gs-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgb(255 255 255 / 0.06);
+  }
+
+  .gs-pouch,
+  .gs-glyph {
+    position: absolute;
+    display: block;
+    translate: -50% -50%;
+  }
+
+  .gs-glyph {
+    aspect-ratio: 1;
+  }
+
+  .gs-can {
+    position: absolute;
+    translate: -50% 0;
+    box-sizing: border-box;
+    border: 1px solid rgb(0 0 0 / 0.5);
+    border-radius: 6px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #1d7fe0, #0d4e9e);
+  }
+
+  /* view.rn.jsx: lid 26%, base 17%, the level rises in the band between them. */
+  .gs-band {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 26%;
+    height: 57%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .gs-level {
+    width: 100%;
+    background: linear-gradient(180deg, #9febff, #4fc8e8);
+  }
+
+  .gs-lid,
+  .gs-base {
+    position: absolute;
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, #fdfdff, #d8d8e2);
+  }
+
+  .gs-lid {
+    top: 0;
+    height: 26%;
+    box-sizing: border-box;
+    border-bottom: 1px solid rgb(0 0 0 / 0.5);
+  }
+
+  .gs-base {
+    bottom: 0;
+    height: 17%;
+  }
+</style>

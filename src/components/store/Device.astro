@@ -1,0 +1,122 @@
+---
+/**
+ * The device around a rebuilt app screen in the store images. Drawn in CSS
+ * rather than with `mobile-frame.png`, which is 295px wide and would be scaled
+ * up four times to reach a 1320px store image.
+ *
+ * Sized from the screen inward: the caller says how wide the screen is (the app
+ * screen is laid out at 261px and scaled to it), and ring, bezel and corners
+ * follow as fractions of that, so the same part is right in every format.
+ * iPhone in dark titanium with the Dynamic Island, Android in matte black with a
+ * punch-hole camera. Both stay quiet: the screen is what the image is about.
+ */
+interface Props {
+  os: 'ios' | 'android';
+  /** Width of the screen window in px. */
+  screenWidth: number;
+}
+const { os, screenWidth: sw } = Astro.props;
+const ios = os === 'ios';
+
+const ring = sw * (ios ? 0.013 : 0.011);
+const bezel = sw * (ios ? 0.024 : 0.02);
+const screenRadius = sw * (ios ? 0.128 : 0.085);
+
+/* Side buttons: [side, distance from the top as a share of the screen width, length]. */
+const buttons: ['l' | 'r', number, number][] = ios
+  ? [['l', 0.4, 0.075], ['l', 0.56, 0.14], ['l', 0.74, 0.14], ['r', 0.62, 0.22]]
+  : [['r', 0.52, 0.13], ['r', 0.76, 0.26]];
+---
+
+<div
+  class:list={['device', `device-${os}`]}
+  style={`--ring:${ring.toFixed(2)}px;--bezel:${bezel.toFixed(2)}px;--sr:${screenRadius.toFixed(2)}px;--sw:${sw.toFixed(2)}px`}
+>
+  {
+    buttons.map(([side, at, len]) => (
+      <span
+        class:list={['device-button', side === 'l' ? 'left' : 'right']}
+        style={`top:${(at * sw).toFixed(1)}px;height:${(len * sw).toFixed(1)}px`}
+      />
+    ))
+  }
+  <div class="device-bezel">
+    <div class="device-screen">
+      <slot />
+      {ios ? <span class="island" aria-hidden="true" /> : <span class="camera" aria-hidden="true" />}
+    </div>
+  </div>
+</div>
+
+<style>
+  .device {
+    position: relative;
+    padding: var(--ring);
+    border-radius: calc(var(--sr) + var(--bezel) + var(--ring));
+    background:
+      linear-gradient(90deg, rgb(255 255 255 / 0.18), transparent 4%, transparent 96%, rgb(255 255 255 / 0.14)),
+      linear-gradient(160deg, #6b6e74 0%, #3a3c41 24%, #232428 52%, #34363b 80%, #5c5f65 100%);
+    box-shadow:
+      0 0 0 1px rgb(0 0 0 / 0.7),
+      0 40px 80px -30px rgb(0 0 0 / 0.9),
+      0 80px 160px -60px rgb(0 0 0 / 0.8);
+  }
+
+  .device-android {
+    background: linear-gradient(160deg, #3a3b3f 0%, #232427 45%, #1b1c1f 70%, #303236 100%);
+  }
+
+  .device-bezel {
+    padding: var(--bezel);
+    border-radius: calc(var(--sr) + var(--bezel));
+    background: #050506;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.05);
+  }
+
+  .device-screen {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--sr);
+    background: #161622;
+  }
+
+  /* Apple's island: 126 x 37 pt on a 440 pt screen, 11 pt from the top. */
+  .island {
+    position: absolute;
+    top: calc(var(--sw) * 0.025);
+    left: 50%;
+    width: calc(var(--sw) * 0.286);
+    height: calc(var(--sw) * 0.084);
+    translate: -50% 0;
+    border-radius: 999px;
+    background: #000;
+    z-index: 30;
+  }
+
+  .camera {
+    position: absolute;
+    top: calc(var(--sw) * 0.028);
+    left: 50%;
+    width: calc(var(--sw) * 0.032);
+    height: calc(var(--sw) * 0.032);
+    translate: -50% 0;
+    border-radius: 999px;
+    background: radial-gradient(circle at 35% 35%, #2a2d36, #000 60%);
+    z-index: 30;
+  }
+
+  .device-button {
+    position: absolute;
+    width: calc(var(--ring) * 1.15);
+    border-radius: 2px;
+    background: linear-gradient(90deg, #45474c, #85888e 50%, #45474c);
+  }
+
+  .left {
+    left: calc(var(--ring) * -0.95);
+  }
+
+  .right {
+    right: calc(var(--ring) * -0.95);
+  }
+</style>

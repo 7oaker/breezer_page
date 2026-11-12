@@ -1,0 +1,163 @@
+---
+/**
+ * A push notification over the top of a store screen, the way it drops in on
+ * the phone: the one the homepage's PressPhone shows (Klaus, 12.11.2026: "wie
+ * auf der webpage"). The words are Breezer's own push from
+ * `react_Breezer/functions/notify-on-snus` (title: the friend's name, body: the
+ * localized line, `app_notif_body`), so the image shows a real notification.
+ *
+ * Drawn in the screen's own 261px, inside AppScreen, so it sits where the
+ * system puts it and scales with the screen:
+ * - iOS: the banner under the status bar, as PressPhone draws it (16pt corners,
+ *   app icon, name and time on one line, the body below);
+ * - Android: a heads-up notification (larger corners, the app's name and the
+ *   time in a header row, then title and body), since an iOS banner on an
+ *   Android phone would be the wrong phone.
+ *
+ * The time is the app's own word for "now" (`widget.now`), which is what both
+ * systems print on a notification that just arrived.
+ */
+import { Image } from 'astro:assets';
+import appIcon from '../../assets/images/app/app-icon-dark.png';
+
+interface Props {
+  os: 'ios' | 'android';
+  /** The friend whose pouch triggered the push: the notification's title. */
+  name: string;
+  body: string;
+  time: string;
+}
+const { os, name, time } = Astro.props;
+/* A no-break space keeps the closing emoji with the last word. */
+const body = Astro.props.body.replace(/ (\S+)$/u, ' $1');
+---
+
+{
+  os === 'ios' ? (
+    <div class="push push--ios" aria-hidden="true">
+      <Image src={appIcon} width={52} height={52} alt="" class="push__icon" loading="eager" />
+      <div class="push__text">
+        <div class="push__head">
+          <span class="push__title">{name}</span>
+          <span class="push__time">{time}</span>
+        </div>
+        <p class="push__body">{body}</p>
+      </div>
+    </div>
+  ) : (
+    <div class="push push--android" aria-hidden="true">
+      <div class="push__app">
+        <Image src={appIcon} width={32} height={32} alt="" class="push__app-icon" loading="eager" />
+        <span>Breezer</span>
+        <span class="push__dot">•</span>
+        <span>{time}</span>
+      </div>
+      <span class="push__title">{name}</span>
+      <p class="push__body">{body}</p>
+    </div>
+  )
+}
+
+<style>
+  .push {
+    position: absolute;
+    z-index: 30;
+    left: 8px;
+    right: 8px;
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+  }
+
+  /* PressPhone's banner: top 26px, bg #1c1c1e at 85 %, blur behind. */
+  .push--ios {
+    top: 26px;
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    padding: 8px;
+    border-radius: 16px;
+    background: rgb(28 28 30 / 0.88);
+    box-shadow: 0 10px 24px -8px rgb(0 0 0 / 0.7);
+    backdrop-filter: blur(12px);
+  }
+
+  .push--ios :global(.push__icon) {
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    border-radius: 7px;
+  }
+
+  .push__text {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .push__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 6px;
+  }
+
+  .push__title {
+    overflow: hidden;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 13px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .push__time {
+    flex-shrink: 0;
+    font-size: 8px;
+    line-height: 13px;
+    color: #9ca3af;
+  }
+
+  .push__body {
+    margin: 0;
+    font-size: 10px;
+    line-height: 13px;
+    color: rgb(255 255 255 / 0.9);
+  }
+
+  /* Material heads-up: below the status bar, 20dp corners, header row first. */
+  .push--android {
+    top: 22px;
+    left: 6px;
+    right: 6px;
+    display: flex;
+    flex-direction: column;
+    padding: 9px 11px 10px;
+    border-radius: 18px;
+    background: #2b2c31;
+    box-shadow: 0 10px 24px -8px rgb(0 0 0 / 0.7);
+  }
+
+  .push__app {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 4px;
+    font-size: 7.5px;
+    line-height: 10px;
+    color: #c4c7c5;
+  }
+
+  .push--android :global(.push__app-icon) {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+  }
+
+  .push__dot {
+    font-size: 6px;
+  }
+
+  .push--android .push__body {
+    font-size: 9.5px;
+    color: #e3e3e3;
+  }
+</style>

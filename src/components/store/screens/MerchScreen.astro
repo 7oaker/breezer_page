@@ -1,0 +1,326 @@
+---
+/**
+ * An open merch draw, for the store's merch image: the lottery detail screen
+ * (`react_Breezer/app/lottery/[id].jsx`) for a round anyone can enter for free.
+ * Laid out in AppScreen's 261 x 566 space like the other rebuilt screens; sizes
+ * are the app's points times 0.6641.
+ *
+ * - The photo is the round's own: full width at 0.8 of the width, darkened at
+ *   the top for the status bar and fading into the background at the bottom,
+ *   with the back button floating over it. It is the real Breezer shirt from
+ *   `react_Breezer/assets/images/merch-shirts.jpg`, cut to one shirt.
+ * - Badge from `components/lottery/LotteryBadge.jsx` (the free one, not Pro),
+ *   the entry count, the title, then `LotteryTimeline` in its large form at the
+ *   first station with the countdown under it (`lotteryDetail.js`), the enter
+ *   button (`LotteryActionButton`, open state), the terms link and the free
+ *   entry note.
+ * - "Breezer Shirt" is the round's title, content rather than UI, so it stays
+ *   the same in every language. The round's optional description is left out
+ *   for the same reason: it would be one language on every page.
+ * - No winner anywhere: the round is still running.
+ */
+import { Image } from 'astro:assets';
+import AppScreen from '../../home/AppScreen.astro';
+import StatusBar from '../StatusBar.astro';
+import { appLocale } from '../../../lib/appLocale';
+import shirt from '../../../assets/images/store/merch/shirt.jpg';
+
+interface Props {
+  lang: string;
+  page: 'default' | 'track' | 'quit';
+  os: 'ios' | 'android';
+  scale: number;
+}
+const { lang, os, scale } = Astro.props;
+const tr = appLocale(lang);
+
+/* The round: two weeks long, 5 days 3 hours to go, so the run segment is about 63% done. */
+const ROUND = { title: 'Breezer Shirt', entries: 128, days: 5, hours: 3, elapsed: 0.63 };
+
+/* LotteryTimeline: the run takes the first 66% of the rail, then the draw, then the winner. */
+const RUN_SEGMENT = 0.66;
+const fill = ROUND.elapsed * RUN_SEGMENT;
+const stations = [
+  { key: 'lottery.stageRunning', at: 0 },
+  { key: 'lottery.stageDraw', at: RUN_SEGMENT },
+  { key: 'lottery.stageWinner', at: 1 },
+];
+
+/* Ionicons chevron-back, read from the app's own Ionicons.ttf, on its 512 grid. */
+const CHEVRON =
+  'M322 89Q329 87 337 90.5Q345 94 349 101Q355 112 349 123Q348 126 283 191Q283 191 218 256L283 321Q348 386 349 389Q353 396 351 404Q350 413 342.5 419Q335 425 326 424Q319 423 309 414Q299 405 239 345Q178 284 169 274Q160 264 160 256Q160 248 168.5 238.5Q177 229 237 169Q309 96 313.5 93Q318 90 322 89Z';
+---
+
+<AppScreen bare scale={scale}>
+  <div class="ms" aria-hidden="true">
+    <div class="ms-photo">
+      <Image src={shirt} alt="" width={1240} height={992} loading="eager" />
+      <span class="ms-shade-top"></span>
+      <span class="ms-shade-bottom"></span>
+    </div>
+
+    <StatusBar os={os} />
+
+    <span class="ms-back">
+      <svg viewBox="0 0 512 512" fill="#fff"><path d={CHEVRON}></path></svg>
+    </span>
+
+    <div class="ms-body">
+      <div class="ms-row">
+        <span class="ms-badge">{tr('lottery.badge')}</span>
+        <span class="ms-entries">{ROUND.entries} {tr('lottery.entriesLabel')}</span>
+      </div>
+      <p class="ms-title">{ROUND.title}</p>
+
+      <div class="ms-timeline">
+        <div class="ms-rail">
+          <span class="ms-rail-base"></span>
+          <span class="ms-rail-fill" style={`width:${(fill * 100).toFixed(1)}%`}></span>
+          {
+            stations.map((s, i) => (
+              <span class:list={['ms-dot', i === 0 && 'ms-dot--current']} style={`left:${s.at * 100}%`} />
+            ))
+          }
+        </div>
+        <div class="ms-labels">
+          {
+            stations.map((s, i) => (
+              <span class:list={['ms-label', `ms-label--${i}`, i === 0 && 'ms-label--current']}>{tr(s.key)}</span>
+            ))
+          }
+        </div>
+        <p class="ms-detail">{tr('lottery.endsIn', { days: ROUND.days, hours: ROUND.hours })}</p>
+      </div>
+
+      <span class="ms-enter">{tr('lottery.enter')}</span>
+      <p class="ms-terms">{tr('lottery.terms')}</p>
+      <p class="ms-note">{tr('lottery.freeEntryNote')}</p>
+    </div>
+  </div>
+</AppScreen>
+
+<style>
+  .ms {
+    position: absolute;
+    inset: 0;
+    background: #161622;
+    color: #fff;
+  }
+
+  /* SCREEN_WIDTH x SCREEN_WIDTH * 0.8, cover. */
+  .ms-photo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 261px;
+    height: 208.8px;
+  }
+
+  .ms-photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* 120pt of rgba(22,22,34,0.75) to clear, so the status bar and the back button read. */
+  .ms-shade-top {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 79.7px;
+    background: linear-gradient(180deg, rgb(22 22 34 / 0.75), transparent);
+  }
+
+  /* The lower 55%: clear, then 40%, then the background itself. One extra stop eases
+     the landing, which the white of a product photo otherwise shows as a hard band; it
+     overhangs the photo by a pixel because the photo ends on a fractional pixel, and
+     the edge row let a white line through under the title. */
+  .ms-shade-bottom {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: calc(55% + 1px);
+    background: linear-gradient(180deg, transparent, rgb(22 22 34 / 0.4) 50%, rgb(22 22 34 / 0.86) 80%, #161622);
+  }
+
+  /* SafeAreaView top (59pt), then m-3, p-2 around a 24pt chevron, bg-black-100/70. */
+  .ms-back {
+    position: absolute;
+    top: 47px;
+    left: 8px;
+    z-index: 3;
+    display: flex;
+    padding: 5.3px;
+    border-radius: 999px;
+    background: rgb(30 30 45 / 0.7);
+  }
+
+  .ms-back svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* px-5, -mt-10 into the photo. */
+  .ms-body {
+    position: absolute;
+    top: 182.2px;
+    left: 13.3px;
+    right: 13.3px;
+  }
+
+  .ms-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5.3px;
+  }
+
+  .ms-badge {
+    padding: 2.7px 6.6px;
+    border-radius: 999px;
+    background: #1fd9ff;
+    color: #161622;
+    font-size: 8px;
+    font-weight: 700;
+    line-height: 10.6px;
+  }
+
+  .ms-entries {
+    margin-left: 8px;
+    color: #9ca3af;
+    font-size: 8px;
+    line-height: 10.6px;
+  }
+
+  .ms-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 21.2px;
+  }
+
+  .ms-timeline {
+    margin-top: 13.3px;
+  }
+
+  /* The row is as tall as the current dot (20pt); the rail (5pt) runs through its middle. */
+  .ms-rail {
+    position: relative;
+    height: 13.3px;
+  }
+
+  .ms-rail-base,
+  .ms-rail-fill {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    height: 3.3px;
+    translate: 0 -50%;
+    border-radius: 999px;
+  }
+
+  .ms-rail-base {
+    width: 100%;
+    background: #232533;
+  }
+
+  .ms-rail-fill {
+    background: #1fd9ff;
+  }
+
+  .ms-dot {
+    position: absolute;
+    top: 50%;
+    width: 10.6px;
+    height: 10.6px;
+    translate: -50% -50%;
+    border-radius: 999px;
+    background: #232533;
+  }
+
+  .ms-dot--current {
+    width: 13.3px;
+    height: 13.3px;
+    box-sizing: border-box;
+    border: 2px solid #161622;
+    background: #1fd9ff;
+  }
+
+  .ms-labels {
+    position: relative;
+    height: 13.3px;
+    margin-top: 5.3px;
+  }
+
+  .ms-label {
+    position: absolute;
+    top: 0;
+    color: #6b7280;
+    font-size: 9.3px;
+    font-weight: 600;
+    line-height: 13.3px;
+    white-space: nowrap;
+    /* numberOfLines={1}: the app truncates rather than wraps. */
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ms-label--0 {
+    left: 0;
+  }
+
+  .ms-label--1 {
+    left: 66%;
+    width: 79.7px;
+    margin-left: -39.8px;
+    text-align: center;
+  }
+
+  .ms-label--2 {
+    right: 0;
+  }
+
+  .ms-label--current {
+    color: #1fd9ff;
+  }
+
+  .ms-detail {
+    margin: 8px 0 0;
+    font-size: 10.6px;
+    font-weight: 500;
+    line-height: 16px;
+  }
+
+  /* Large LotteryActionButton: mt-4, py-4, rounded-xl, text-lg. */
+  .ms-enter {
+    display: block;
+    margin-top: 10.6px;
+    padding: 10.6px 0;
+    border-radius: 8px;
+    background: #1fd9ff;
+    color: #161622;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 18.6px;
+    text-align: center;
+  }
+
+  .ms-terms {
+    margin: 10.6px 0 0;
+    color: #9ca3af;
+    font-size: 9.3px;
+    line-height: 13.3px;
+    text-align: center;
+    text-decoration: underline;
+  }
+
+  .ms-note {
+    margin: 13.3px 0 0;
+    color: #6b7280;
+    font-size: 8px;
+    line-height: 10.6px;
+    text-align: center;
+  }
+</style>

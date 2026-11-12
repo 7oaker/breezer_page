@@ -1,0 +1,101 @@
+---
+/**
+ * The status bar of every rebuilt screen in the store images, in AppScreen's
+ * 261px space: 9:41, the time Apple uses in its own product shots, then signal,
+ * wifi and battery. Android gets its own glyphs, so a Play image does not show
+ * an iPhone's battery.
+ *
+ * `light` is for screens on a light or photographic background (the lock
+ * screen); the app itself is always dark.
+ */
+interface Props {
+  os?: 'ios' | 'android';
+  /** Dark glyphs instead of white. */
+  dark?: boolean;
+}
+const { os = 'ios', dark = false } = Astro.props;
+---
+
+<div class:list={['sb', dark && 'sb--dark']} aria-hidden="true">
+  <span>9:41</span>
+  {
+    os === 'ios' ? (
+      <span class="sb-icons">
+        <svg width="14" height="9" viewBox="0 0 14 9" fill="currentColor">
+          <rect x="0" y="6" width="2.4" height="3" rx=".6" />
+          <rect x="3.6" y="4" width="2.4" height="5" rx=".6" />
+          <rect x="7.2" y="2" width="2.4" height="7" rx=".6" />
+          <rect x="10.8" y="0" width="2.4" height="9" rx=".6" />
+        </svg>
+        <svg width="12" height="9" viewBox="0 0 16 12" fill="none" stroke="currentColor">
+          <path d="M1 4a10 10 0 0 1 14 0" stroke-width="1.6" stroke-linecap="round" />
+          <path d="M4 7a6 6 0 0 1 8 0" stroke-width="1.6" stroke-linecap="round" />
+          <circle cx="8" cy="10" r="1.2" fill="currentColor" stroke="none" />
+        </svg>
+        <span class="sb-battery">
+          <span>100</span>
+        </span>
+      </span>
+    ) : (
+      <span class="sb-icons">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 21 1 8.5A16 16 0 0 1 23 8.5L12 21Z" />
+        </svg>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M22 22V2L2 22h20Z" />
+        </svg>
+        <svg width="7" height="11" viewBox="0 0 14 24" fill="currentColor">
+          <path d="M4 1h6v2h2a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h2V1Z" />
+        </svg>
+      </span>
+    )
+  }
+</div>
+
+<style>
+  .sb {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    height: 26px;
+    shrink: 0;
+    flex-shrink: 0;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 13px 14px 0;
+    box-sizing: border-box;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 11px;
+    color: #fff;
+  }
+
+  .sb--dark {
+    color: #161622;
+  }
+
+  .sb-icons {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .sb-battery {
+    display: inline-flex;
+    align-items: center;
+    height: 10px;
+    padding: 0 3px;
+    border-radius: 3px;
+    background: currentColor;
+  }
+
+  .sb-battery span {
+    color: #161622;
+    font-size: 7px;
+    font-weight: 700;
+  }
+
+  .sb--dark .sb-battery span {
+    color: #fff;
+  }
+</style>

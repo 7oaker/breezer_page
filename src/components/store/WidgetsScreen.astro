@@ -1,0 +1,277 @@
+---
+/**
+ * The iPhone lock screen with Breezer's lock-screen widgets, for the store's
+ * widgets image. Laid out in AppScreen's 261 x 566 space like the other
+ * rebuilt screens, so it scales and sits in the device the same way.
+ *
+ * What is on it comes from `react_Breezer/targets/widget/widgets.swift`:
+ * - `accessoryRectangular` while tracking: today against the limit, the log
+ *   icon, and the time since the last pouch;
+ * - the same family while quitting: the quit streak and the money saved;
+ * - `accessoryCircular`: today against the limit over the log icon.
+ *
+ * `show` picks which ones: both paths side by side on the default page, one
+ * path on a pure page. No carrier name and no other app anywhere, which is why
+ * this is rebuilt instead of photographed.
+ */
+import AppScreen from '../home/AppScreen.astro';
+import Eraser from './Eraser.astro';
+import type { AppText } from '../../i18n/appScreens';
+
+interface Props {
+  t: AppText;
+  lang: string;
+  show: 'both' | 'track' | 'quit';
+  scale: number;
+}
+const { t, lang, show, scale } = Astro.props;
+
+// A fixed Wednesday, so the date line does not change with the day the images
+// are rendered on.
+const date = new Intl.DateTimeFormat(lang, { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date(2026, 10, 11));
+const saved = `60.8 € ${t.app_widget_saved.toLocaleLowerCase(lang)}`;
+---
+
+<AppScreen bare scale={scale}>
+  <div class="ls" aria-hidden="true">
+    <div class="ls-wall"></div>
+
+    <div class="ls-status">
+      <span></span>
+      <span class="ls-icons">
+        <svg width="14" height="9" viewBox="0 0 14 9" fill="currentColor"
+          ><rect x="0" y="6" width="2.4" height="3" rx=".6"></rect><rect x="3.6" y="4" width="2.4" height="5" rx=".6"
+          ></rect><rect x="7.2" y="2" width="2.4" height="7" rx=".6"></rect><rect x="10.8" y="0" width="2.4" height="9" rx=".6"
+          ></rect></svg
+        >
+        <svg width="12" height="9" viewBox="0 0 16 12" fill="none" stroke="currentColor"
+          ><path d="M1 4a10 10 0 0 1 14 0" stroke-width="1.6" stroke-linecap="round"></path><path
+            d="M4 7a6 6 0 0 1 8 0"
+            stroke-width="1.6"
+            stroke-linecap="round"></path><circle cx="8" cy="10" r="1.2" fill="currentColor" stroke="none"></circle></svg
+        >
+        <span class="ls-battery"><span>100</span></span>
+      </span>
+    </div>
+
+    <p class="ls-date">{date}</p>
+    <p class="ls-time">9:41</p>
+
+    <div class:list={['ls-widgets', show === 'quit' && 'ls-widgets--single']}>
+      {
+        show !== 'quit' && (
+          <div class="acc-rect acc-track">
+            <span class="acc-row">
+              <span class="acc-big">2/7</span>
+              <Eraser size={13} color="#1FD9FF" />
+            </span>
+            <span class="acc-small">{t.app_widget_ago}</span>
+          </div>
+        )
+      }
+      {
+        show !== 'track' && (
+          <div class="acc-rect acc-quit">
+            <span class="acc-small">{t.app_widget_quit_streak}</span>
+            <span class="acc-big">24 {t.app_widget_days}</span>
+            <span class="acc-small">{saved}</span>
+          </div>
+        )
+      }
+      {
+        show === 'track' && (
+          <div class="acc-circle">
+            <span class="acc-mid">2/7</span>
+            <Eraser size={14} color="#1FD9FF" />
+          </div>
+        )
+      }
+    </div>
+
+    <div class="ls-bottom">
+      <span class="ls-round">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"
+          ><path d="M8 2h8l-1 5H9L8 2Zm1 6h6v13a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V8Zm3 3a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z"
+          ></path></svg
+        >
+      </span>
+      <span class="ls-round">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"
+          ><path
+            d="M9 4h6l1.5 2H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3.5L9 4Zm3 4.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9Zm0 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"
+          ></path></svg
+        >
+      </span>
+    </div>
+    <span class="ls-home"></span>
+  </div>
+</AppScreen>
+
+<style>
+  .ls {
+    position: absolute;
+    inset: 0;
+    color: #fff;
+    overflow: hidden;
+  }
+
+  /* A wallpaper in Breezer's own blues, deep enough that white reads on it. */
+  .ls-wall {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(120% 60% at 20% 8%, rgb(79 169 242 / 0.55), transparent 60%),
+      radial-gradient(90% 55% at 85% 35%, rgb(31 217 255 / 0.28), transparent 65%),
+      radial-gradient(120% 70% at 50% 110%, rgb(13 107 205 / 0.55), transparent 70%),
+      linear-gradient(180deg, #1d4f9e 0%, #163a78 45%, #10224a 100%);
+  }
+
+  .ls-status {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    height: 26px;
+    padding: 13px 14px 0;
+    box-sizing: border-box;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 11px;
+  }
+
+  .ls-icons {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .ls-battery {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 10px;
+    padding: 0 3px;
+    border-radius: 3px;
+    background: rgb(255 255 255 / 0.9);
+    color: #163a78;
+    font-size: 7px;
+    font-weight: 700;
+  }
+
+  .ls-date {
+    position: relative;
+    margin: 30px 0 0;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgb(255 255 255 / 0.85);
+  }
+
+  .ls-time {
+    position: relative;
+    margin: -4px 0 0;
+    text-align: center;
+    font-size: 72px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: rgb(255 255 255 / 0.92);
+  }
+
+  .ls-widgets {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 0 16px;
+  }
+
+  .ls-widgets--single {
+    justify-content: flex-start;
+    padding-left: 30px;
+  }
+
+  .acc-rect {
+    width: 104px;
+    height: 46px;
+    box-sizing: border-box;
+    padding: 5px 9px;
+    border-radius: 11px;
+    background: rgb(255 255 255 / 0.14);
+    backdrop-filter: blur(6px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1.15;
+  }
+
+  .acc-track {
+    align-items: center;
+  }
+
+  .acc-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .acc-big {
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .acc-small {
+    font-size: 8.5px;
+    color: rgb(255 255 255 / 0.72);
+    white-space: nowrap;
+  }
+
+  .acc-circle {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.14);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+  }
+
+  .acc-mid {
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .ls-bottom {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 26px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 30px;
+  }
+
+  .ls-round {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgb(0 0 0 / 0.28);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ls-home {
+    position: absolute;
+    left: 50%;
+    bottom: 7px;
+    width: 88px;
+    height: 3.5px;
+    translate: -50% 0;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.85);
+  }
+</style>

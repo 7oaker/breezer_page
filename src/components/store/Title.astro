@@ -1,0 +1,100 @@
+---
+/**
+ * The words on a store image: an optional path label, then the headline.
+ *
+ * `*so*` in the headline becomes the accent, set on a line of its own so the
+ * emphasis is never broken across lines. Sentence case rather than capitals:
+ * German and the Slavic languages carry long words that break badly in caps.
+ *
+ * The label only appears on the default page, where tracking and quitting share
+ * one gallery; it names the path in the app's own words ("Tracken",
+ * "Aufhören"). On a pure page it would be noise.
+ *
+ * Vertically centred in the space above the device, so a two-line headline sits
+ * in the middle instead of sticking to the top edge, and every device in the
+ * gallery stands at the same height no matter how long its headline is.
+ */
+interface Props {
+  headline: string;
+  label: string | null;
+  /** Accent colour. A solid colour only: no gradients in text (Klaus, 11.11.2026). */
+  accent: string;
+  /** Solid colour for the label's dot and text. */
+  solid: string;
+  /** Headline size in px. */
+  size: number;
+  /** Height of the area above the device in px. */
+  height: number;
+}
+const { headline, label, accent, solid, size, height } = Astro.props;
+
+const parts = headline.split(/(\*[^*]+\*)/).filter(Boolean);
+---
+
+<header class="title" style={`height:${height.toFixed(1)}px;--t:${size.toFixed(2)}px;--solid:${solid}`}>
+  {
+    label && (
+      <p class="label">{label}</p>
+    )
+  }
+  <h1>
+    {
+      parts.map((p) =>
+        p.startsWith('*') ? (
+          <span class="accent" style={`color:${accent}`}>
+            {p.slice(1, -1)}
+          </span>
+        ) : (
+          p
+        ),
+      )
+    }
+  </h1>
+</header>
+
+<style>
+  .title {
+    position: relative;
+    z-index: 50;
+    box-sizing: border-box;
+    width: 84%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* `safe center`: a headline that does not fit grows downward instead of
+       out through the top edge. */
+    justify-content: safe center;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* The path's name, nothing around it: the word alone says which path the
+     image belongs to. Large enough to read at search-result size. */
+  .label {
+    margin: 0 0 calc(var(--t) * 0.34);
+    color: #ffffff;
+    opacity: 0.92;
+    font-size: calc(var(--t) * 0.46);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1.1;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: var(--t);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+    color: #ffffff;
+    text-shadow: 0 2px 24px rgb(6 50 110 / 0.3);
+  }
+
+  /* The accent always starts a line of its own. */
+  .accent {
+    display: block;
+  }
+</style>

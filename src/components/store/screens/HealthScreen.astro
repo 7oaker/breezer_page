@@ -1,0 +1,372 @@
+---
+/**
+ * The health screen for the store's `health` image: `react_Breezer/app/(tabs)/health.jsx`
+ * on its first page ("Körper"), as somebody on day 24 of quitting sees it.
+ *
+ * Two cards, in the app's order: the withdrawal symptoms (components/health/
+ * SymptomsCard.jsx), each a curve that rises and then eases, and the health
+ * improvements (ImprovementsCard.jsx), each a day by which the body has come
+ * back a step. The values are not typed in: they are the app's own curves and
+ * days (lib/quitMilestones.js, copied below) evaluated at the demo account's
+ * 24 days 7 hours, the same moment as QuitPhone and GoalsScreen. Shown with Pro,
+ * so no row is locked.
+ *
+ * The bars are the cards' FallbackProgressBar (react-native-gifted-charts has no
+ * ProgressBar, so the fallback is what ships): 12pt, gray-700, rose until full,
+ * green when full. Sizes are the app's points times 261/393 (AppScreen's
+ * contract). Icons are Ionicons glyphs out of the app's own font, flipped into a
+ * 512 box; the heart in TopBar is the app's `icons.heart` PNG.
+ */
+import AppScreen from '../../home/AppScreen.astro';
+import StatusBar from '../StatusBar.astro';
+import { appLocale } from '../../../lib/appLocale';
+
+interface Props {
+  lang: string;
+  page: 'default' | 'track' | 'quit';
+  os: 'ios' | 'android';
+  scale: number;
+}
+const { lang, os, scale } = Astro.props;
+const tr = appLocale(lang);
+
+/** 24 days 7 hours, the demo account everywhere in the store images. */
+const DAYS = 24 + 7 / 24;
+
+/** lib/quitMilestones.js: symptomPoints, IMPROVEMENT_DAYS, piecewiseLinear. */
+const SYMPTOM_POINTS = [
+  [[0, 0], [1, 30], [3, 90], [5, 90], [7, 60], [14, 20], [30, 10], [90, 10]],
+  [[0, 0], [1, 20], [2, 20], [4, 80], [7, 80], [14, 40], [30, 10]],
+  [[0, 0], [1, 20], [2, 70], [4, 70], [7, 30], [21, 10]],
+  [[0, 0], [1, 10], [3, 60], [4, 60], [10, 30], [21, 10]],
+  [[0, 0], [1, 40], [3, 40], [5, 70], [10, 30], [21, 10]],
+  [[0, 0], [2, 20], [7, 60], [14, 60], [60, 30], [90, 15]],
+] as const;
+const IMPROVEMENT_DAYS = [1, 3, 7, 14, 30, 90, 180, 365, 365 * 5];
+
+function piecewiseLinear(points: readonly (readonly [number, number])[], d: number): number {
+  if (d <= points[0][0]) return points[0][1];
+  for (let i = 1; i < points.length; i++) {
+    if (d <= points[i][0]) {
+      const [d0, v0] = points[i - 1];
+      const [d1, v1] = points[i];
+      return v0 + (v1 - v0) * Math.min(1, Math.max(0, (d - d0) / (d1 - d0)));
+    }
+  }
+  return points[points.length - 1][1];
+}
+
+/** ImprovementsCard's formatDays. */
+const formatDays = (d: number) => (d < 30 ? `${d}d` : d < 365 ? `${Math.round(d / 30)}mo` : `${Number.isInteger(d / 365) ? d / 365 : (d / 365).toFixed(1)}yr`);
+
+const symptoms = SYMPTOM_POINTS.map((points, i) => {
+  const value = Math.min(100, Math.max(0, Math.round(piecewiseLinear(points, DAYS))));
+  return { label: tr(`health.sym${i}`), value, low: value <= 15 };
+});
+const improvements = IMPROVEMENT_DAYS.map((d, i) => {
+  const value = Math.min(100, Math.round((DAYS / d) * 100));
+  return { label: tr(`health.imp${i}Label`), title: tr(`health.imp${i}Title`), value, done: value >= 100, days: formatDays(d) };
+});
+
+/** Ionicons glyphs, from the font the app ships (`@expo/vector-icons`). */
+const ION = {
+  pulse: 'M171 49Q171 49 171 49Q185 44 191 58Q192 61 217.5 216Q243 371 244 372.5Q245 374 265.5 301Q286 228 288 222Q291 213 298 210Q302 207 308 209Q314 211 317 215Q319 218 333 261Q333 261 347 304L367 304L386 304L390 298Q397 283 412.5 276.5Q428 270 443 274Q465 279 474 297Q491 330 464 355Q450 369 429 368Q416 367 405 360Q395 353 390 342Q390 342 386 336L361 336Q335 336 332 335Q325 333 322 327Q320 324 313 301Q311 295 309 290Q307 285 306 282Q305 279 305 279Q305 279 280 366Q255 453 254 456Q251 462 244 463Q232 467 226 456Q224 452 198.5 298.5Q173 145 173 144Q173 144 170 156Q167 168 161.5 188.5Q156 209 150 234Q127 325 126 328Q123 334 116 335Q113 336 78.5 336Q44 336 40.5 334Q37 332 35 328Q26 315 40 306Q40 306 44 304L72 304L100 304L130 181Q161 59 162 56Q165 51 171 49Z',
+  'trending-up': 'M345 130Q345 130 345 130Q349 128 408 128Q467 128 471 130Q478 133 480 141Q480 146 480 203Q480 203 480 260L478 264Q473 272 465 272Q457 272 451 265Q451 265 448 262L448 222L448 183L383 248Q319 312 314 315Q303 322 288 322Q277 322 271 320Q265 318 261 315Q257 312 228.5 283.5Q200 255 198 254Q192 252 186 254Q184 255 121 318Q58 381 54 383Q48 385 41 382Q35 379 33 372Q31 365 35 359Q37 355 99 294Q148 245 158.5 235.5Q169 226 177 223Q192 219 207 223Q218 227 251 260Q276 285 281.5 288.5Q287 292 294 289Q297 288 361 224Q361 224 425 160L389 160Q353 160 349 159Q340 157 337 150Q333 136 345 130Z',
+  checkmark: 'M411 113Q411 113 411 113Q416 111 420 113Q428 115 431 123Q434 131 429.5 137Q425 143 313 270.5Q201 398 199 398Q194 401 188 399Q184 398 133.5 347.5Q83 297 81 295Q77 286 83 279Q91 268 103 274Q105 275 148 318Q148 318 191 361L193 358Q195 356 299.5 236.5Q404 117 406 115.5Q408 114 411 113Z',
+} as const;
+
+/** TopBar's right icon on this screen (`icons.heart`, assets/icons/heart.png). */
+const HEART_ICON = 'data:image/png;base64,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';
+
+const SEGMENTS = [tr('health.tabHealth'), tr('health.tabJournal'), tr('blog.tab')];
+---
+
+<AppScreen bare scale={scale}>
+  <StatusBar os={os} />
+
+  {/* Safe area, then TopBar: back arrow, `health.title`, `icons.heart`. */}
+  <div class="mt-[13px] flex shrink-0 items-center justify-between p-[8px]" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#CDCDE0" stroke-width="2.2"
+      ><path d="M20 12H4M4 12l6-6M4 12l6 6" stroke-linecap="round" stroke-linejoin="round"></path></svg
+    >
+    <span class="truncate px-[6px] text-[16px] font-semibold leading-[21px] text-white">{tr('health.title')}</span>
+    <img src={HEART_ICON} width="16" height="16" alt="" class="h-[16px] w-[16px] shrink-0" />
+  </div>
+
+  {/* SegmentControl (mx-3 mt-2): the body page is the one shown. */}
+  <div class="hs-segments" aria-hidden="true">
+    {SEGMENTS.map((label, i) => <span class:list={['hs-segment', i === 0 && 'hs-segment--on']}>{label}</span>)}
+  </div>
+
+  <div class="hs-scroll" aria-hidden="true">
+    <div class="hs-card">
+      <div class="hs-card__head">
+        <span class="hs-card__icon hs-card__icon--rose">
+          <svg width="10.6" height="10.6" viewBox="0 0 512 512" fill="#fb7185"><path d={ION.pulse} /></svg>
+        </span>
+        <span class="hs-card__title">{tr('health.symptomsTitle')}</span>
+      </div>
+      {
+        symptoms.map((s) => (
+          <div class="hs-row">
+            <div class="hs-row__top">
+              <span class="hs-sym-label">{s.label}</span>
+              <span class:list={['hs-badge', s.low ? 'hs-badge--low' : 'hs-badge--high']}>{s.value}%</span>
+            </div>
+            <div class="hs-bar">
+              <span class:list={['hs-bar__fill', s.value >= 100 && 'hs-bar__fill--full']} style={`width:${s.value}%`} />
+            </div>
+          </div>
+        ))
+      }
+      <p class="hs-note">{tr('health.symptomsNote')}</p>
+    </div>
+
+    <div class="hs-card" data-health-improvements>
+      <div class="hs-card__head">
+        <span class="hs-card__icon hs-card__icon--green">
+          <svg width="10.6" height="10.6" viewBox="0 0 512 512" fill="#34d399"><path d={ION['trending-up']} /></svg>
+        </span>
+        <span class="hs-card__title">{tr('health.improvementsTitle')}</span>
+      </div>
+      {
+        improvements.map((m) => (
+          <div class="hs-row" data-health-row>
+            <div class="hs-row__top">
+              <span class="hs-imp">
+                <span class:list={['hs-dot', m.done ? 'hs-dot--done' : 'hs-dot--open']}>
+                  {m.done ? (
+                    <svg width="8" height="8" viewBox="0 0 512 512" fill="#fff"><path d={ION.checkmark} /></svg>
+                  ) : (
+                    <span class="hs-dot__pct">{m.value}%</span>
+                  )}
+                </span>
+                <span class:list={['hs-imp__label', m.done && 'hs-imp__label--done']}>{m.label}</span>
+              </span>
+              <span class:list={['hs-imp__pct', m.done && 'hs-imp__pct--done']}>{m.value}%</span>
+            </div>
+            <div class="hs-bar">
+              <span class:list={['hs-bar__fill', m.done && 'hs-bar__fill--full']} style={`width:${m.value}%`} />
+            </div>
+            <div class="hs-row__foot">
+              <span class:list={['hs-imp__title', m.done && 'hs-imp__title--done']}>{m.title}</span>
+              <span class="hs-imp__days">{m.days}</span>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</AppScreen>
+
+<style>
+  /* SegmentControl as ChatScreen draws it: 40pt high, cyan on the selected page. */
+  .hs-segments {
+    display: flex;
+    flex-shrink: 0;
+    height: 26.6px;
+    margin: 5.3px 8px 0;
+    padding: 2px;
+    border-radius: 5.3px;
+    background: #1d2330;
+  }
+
+  .hs-segment {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 500;
+    line-height: 1;
+    color: #fff;
+  }
+
+  .hs-segment--on {
+    background: #1fd9ff;
+    font-weight: 600;
+  }
+
+  /* ScrollView px-3; each card mt-3, rounded-2xl, p-4, #1E1E2D to #232533. */
+  .hs-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    padding: 0 8px;
+  }
+
+  .hs-card {
+    margin-top: 8px;
+    padding: 10.6px;
+    border-radius: 10.6px;
+    background: linear-gradient(135deg, #1e1e2d 0%, #232533 100%);
+  }
+
+  .hs-card__head {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10.6px;
+  }
+
+  .hs-card__icon {
+    display: flex;
+    margin-right: 5.3px;
+    padding: 4px;
+    border-radius: 5.3px;
+  }
+
+  .hs-card__icon--rose {
+    background: rgb(244 63 94 / 0.15);
+  }
+
+  .hs-card__icon--green {
+    background: rgb(34 197 94 / 0.15);
+  }
+
+  .hs-card__title {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 16px;
+    color: #fff;
+  }
+
+  /* Each row mb-5; the bar is 12pt. */
+  .hs-row {
+    margin-bottom: 13.3px;
+  }
+
+  .hs-row__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  .hs-sym-label {
+    flex: 1;
+    font-size: 8px;
+    line-height: 10.6px;
+    color: #9ca3af;
+  }
+
+  .hs-badge {
+    padding: 1.3px 5.3px;
+    border-radius: 5.3px;
+    font-size: 8px;
+    font-weight: 700;
+    line-height: 10.6px;
+  }
+
+  .hs-badge--low {
+    background: rgb(34 197 94 / 0.15);
+    color: #4ade80;
+  }
+
+  .hs-badge--high {
+    background: rgb(244 63 94 / 0.15);
+    color: #fb7185;
+  }
+
+  .hs-bar {
+    height: 8px;
+    overflow: hidden;
+    border-radius: 4px;
+    background: #374151;
+  }
+
+  .hs-bar__fill {
+    display: block;
+    height: 100%;
+    background: #f43f5e;
+  }
+
+  .hs-bar__fill--full {
+    background: #22c55e;
+  }
+
+  .hs-note {
+    margin: 0.7px 0 0;
+    padding: 8px;
+    border-radius: 8px;
+    background: rgb(30 30 45 / 0.4);
+    font-size: 8px;
+    line-height: 10.6px;
+    color: #6b7280;
+  }
+
+  .hs-imp {
+    display: flex;
+    align-items: center;
+  }
+
+  /* The status dot: w-6 h-6, green with a check when reached. */
+  .hs-dot {
+    display: flex;
+    width: 16px;
+    height: 16px;
+    margin-right: 5.3px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+  }
+
+  .hs-dot--done {
+    background: #22c55e;
+  }
+
+  .hs-dot--open {
+    border: 0.7px solid rgb(107 114 128 / 0.4);
+    background: rgb(75 85 99 / 0.6);
+  }
+
+  .hs-dot__pct {
+    font-size: 6px;
+    font-weight: 700;
+    color: #9ca3af;
+  }
+
+  .hs-imp__label {
+    font-size: 9.3px;
+    font-weight: 600;
+    line-height: 13px;
+    color: #fff;
+  }
+
+  .hs-imp__label--done,
+  .hs-imp__pct--done {
+    color: #4ade80;
+  }
+
+  .hs-imp__pct {
+    font-size: 8px;
+    font-weight: 700;
+    color: #6b7280;
+  }
+
+  .hs-row__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+  }
+
+  .hs-imp__title {
+    flex: 1;
+    padding-right: 5.3px;
+    font-size: 8px;
+    line-height: 10.6px;
+    color: #6b7280;
+  }
+
+  .hs-imp__title--done {
+    color: rgb(74 222 128 / 0.7);
+  }
+
+  .hs-imp__days {
+    font-size: 6.6px;
+    color: #4b5563;
+  }
+</style>

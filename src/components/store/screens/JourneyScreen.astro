@@ -1,0 +1,419 @@
+---
+/**
+ * The quitting journey for the store's `journey` image:
+ * `react_Breezer/app/(tabs)/journey.jsx` with its rows from
+ * `components/journey/JourneyNode.jsx`, on day 24 of the demo account.
+ *
+ * Every node below is what `buildJourney({ days: 24, userHabit: HABIT,
+ * customGoals: [GOAL], hasProAccess: true })` in `lib/quitJourney.js` returns
+ * for those days, so the path agrees with the quit home image (QuitPhone): 20
+ * and 24 behind, then 25, 30 and 40, exactly the rungs its strip draws. Health
+ * and symptoms are the same for everybody; the money, pouch and pack days come
+ * from 10 pouches a day at 6 EUR for 24, which is also what puts the user's own
+ * goal (100 EUR, GoalsScreen's) on day 40, beside the built-in 100 EUR.
+ *
+ * Scrolled the way the app lands: today near the top with the last finished
+ * day above it (the app's `viewPosition: 0.2`), so the path reads both ways
+ * from where the user stands. The header with the big day count sits above day
+ * 1 and is therefore off screen, as it is in the app at this point.
+ *
+ * Pro, so no padlocks. Left out on purpose: the "N people have got this far"
+ * line under the health days. Those counts come from the live database, and a
+ * number about real people does not belong in a demo image.
+ *
+ * Sizes are the app's points times 261/393 (AppScreen's contract). Icons are
+ * the Ionicons glyphs from the app's own font, flipped into a 512 box.
+ */
+import AppScreen from '../../home/AppScreen.astro';
+import StatusBar from '../StatusBar.astro';
+import { appLocale } from '../../../lib/appLocale';
+
+interface Props {
+  lang: string;
+  page: 'default' | 'track' | 'quit';
+  os: 'ios' | 'android';
+  scale: number;
+}
+const { lang, os, scale } = Astro.props;
+const tr = appLocale(lang);
+
+/**
+ * The user's own goal: what they typed, so it is in their language rather than
+ * a translation key. Kept in step with GoalsScreen, which shows the same goal
+ * from the achievements side. 100 is the target the app's form starts at.
+ */
+const GOAL_TITLE: Record<string, string> = {
+  en: 'Weekend trip',
+  de: 'Städtetrip',
+  it: 'Weekend al mare',
+  pl: 'Weekend w górach',
+  sv: 'Helgresa',
+  no: 'Helgetur',
+  cs: 'Víkend na horách',
+  sk: 'Víkend v Tatrách',
+  sl: 'Vikend na morju',
+  hr: 'Vikend na moru',
+  da: 'Weekendtur',
+  fi: 'Tallinnan-reissu',
+  hu: 'Hétvégi kirándulás',
+};
+const goalTitle = GOAL_TITLE[lang] ?? GOAL_TITLE.en;
+
+/** The account's currency, a symbol in front of the figure the way `achievementText` writes it. */
+const CURRENCY = '€';
+
+/** The press icon on the right of TopBar (`icons.press`, assets/icons/press.png). */
+const PRESS_ICON =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA/pJREFUeNrsW+1R20AQPWnyH6UCTAVohgKQO7ArMK6AoQKPK4BUYLsCORUYCmDGVGBRQUQFyV2yIuvLPt3Zks3JZGduzmDQ7bvdfbv3oUgdUJ6fi0x3qW7n1CvqE/pc6ramz6Z/Nf3VVe/xUDpFLQM0QG50u9Zt0PBxS92edJvrCSiDAkyWvG0BJJK5bos2LB+1AHSiW6aOIwbwtAnwqIHrzg5oUR93H+/j6tEeYAcENvH8l4II6YV6W8mEiOyS+p7nc0sCvTwYYA12RqTk43oL02uFih3H6FGIjDxDxZDauFXA5MK5hwJzirGiDb8l8BOPSTYTPPRx8cgT7IrlURRTd20BBcDvHZxhwqXvAh01BFvSzD4eg6koK+Q1/OEEHTvGqANrQF4cC6wRGuuCxpYkpQnZ3cIOgtqJKA5k7b30i2pSTx4qWE/QQyllRSBuNyBOggHrAbqkkCtdMYyKisfQwFJcj0FMV9UgJi1iwQFiYxWuDIUKzsiAMEELT2rioQwVLemGDDIRAdNMSJXU8pipp2HKkurqjFuZW/gWPOuOKp2ghcj2Dnw92mJp+uMfiJX19z+tgqOqat6s3/HZbquy2rIW9WesIMrYuFENa381rv+FfkC5bMpIK7EGyFCc6EE/wsgl01nCY373ULn0NUhDBbNm6LImKxcgTV3zGJZS0cJ+WBcAC7orjjEW4kQJcfnWAcBvQPctTojBaqiw1radsjDpLhFJagCfO9xDgSomNCkdGIycIwu/qO7LC7Kw8rBw8C4t5P4C7XikLvcIuY6uERjDifo8ksTqk0ncEQZujcljQEin4ObSCm+NXDp1rFpCXB5mHoAVsvDlCVj4Eln41WXhjrq4lG5fkYV71i5H2gGAGXPvHozhmt0JHhNnHQB8Zi8FpWqsIi1p82vUMQunQHfFMVaAnyQLM7fuDGDSWdL3N8ZqT2uu/py/2mL2qsYWafG15hNadDfZyBNiMGEg+AYev/OVMJ0lMRj/ni3pQXLg+xeHOuhuOQ8nBHojga2OiXjh8Q08674LOYhWdEjX9z2uyJqllZJPH/qhnz5QpbUSvjK7r31eaXGZgufl5DIhuzM6z57apaVNNEuwmMgDNjC69/HPuZi0eBiDJWNGxxihWXcGwrAkLKoWMAU/Ovi+CQm048qDeDUxBoy3rPJWqKAdYB/QlUTXPS3E2lWhcfSDco9bgVus7GVhJkOFt2jNgJtjbg7QWJsasGvluJrx/+rhnm7E69VuXy7dgShsBb5THiz2ADmgJZ7PKq3968OWQk0uiPOV1vvuCrXwLohbLv45XgEQWPP0X/IAwEee8b2PGDL8+Nd4gKsb0Kf9opbD8kG9ivdLgAEAFdPAkzXVHhoAAAAASUVORK5CYII=';
+
+/** `NODE_ICONS` in lib/quitJourney.js, as the glyphs of the app's Ionicons font. */
+const ION = {
+  'heart-outline':
+    'M146 65Q162 63 178 66Q192 68 206 75Q226 84 244 102L256 114L268 102Q286 84 305 75Q327 65 353 65Q379 65 401 76Q418 84 431 97Q454 121 462 156Q464 164 464 180Q464 213 454 243Q429 318 346 389Q293 433 269 445Q264 448 256 448Q248 448 243 445Q238 442 226 434Q141 374 99.5 320Q58 266 49 204Q48 196 48 180Q48 164 50 156Q59 115 90 89Q115 68 146 65ZM173 97Q173 97 173 97Q169 97 159.5 96.5Q150 96 147 97Q118 102 100 124Q86 140 82 162Q80 170 80.5 184.5Q81 199 82 207Q90 253 120 294.5Q150 336 208 381Q228 397 249 411Q249 411 256 416L263 411Q341 358 382 308Q416 265 427 221Q435 186 430 162Q426 141 413 125Q398 106 374 99Q358 94 340 97Q298 104 270 152Q265 160 256 160Q247 160 242 152Q214 105 173 97Z',
+  'trending-down-outline':
+    'M41 130Q41 130 41 130Q49 126 57 131Q59 133 121.5 195Q184 257 186 258Q192 260 198 258Q200 257 229.5 227.5Q259 198 265 195Q293 181 317 199Q320 202 384 265Q384 265 448 329L448 290L448 250L451 247Q456 240 464 240Q473 240 478 248Q478 248 480 252L480 309Q480 366 480 371Q478 379 471 382Q467 384 408 384Q349 384 345 382Q338 379 336.5 371Q335 363 340 358Q343 354 349 353Q355 352 387 352Q387 352 425 352L361 288Q297 224 295 223Q293 222 288.5 222Q284 222 281.5 223Q279 224 251 252Q223 280 218 283Q192 300 166 283Q161 280 99 218.5Q37 157 35 153Q31 147 33 140Q35 133 41 130Z',
+  'trophy-outline':
+    'M135 34Q139 33 257 32.5Q375 32 379 34Q392 39 397 52Q400 58 400 69L400 80L435 80L470 81L473 83Q478 87 480 95Q483 113 477 144Q469 179 450.5 203.5Q432 228 407 236L399 239L397 247Q385 294 330 328Q304 344 278 349L273 350L272 399L272 448L306 448Q339 448 343 450Q349 453 351 460Q353 466 350 472Q347 478 341 479Q338 480 256 480Q174 480 171 479Q165 478 162 472Q159 466 161 460Q163 453 169 450Q173 448 206 448L240 448L240 399L240 351L237 350Q193 340 158.5 311Q124 282 115 246L113 239L105 236Q68 224 47 180Q34 152 32 117Q31 99 32.5 93Q34 87 39 83L42 81L77 80L112 80L112 69Q112 58 114 53Q120 38 135 34ZM368 147L368 64L256 64L144 64L144 150Q145 222 145.5 232Q146 242 151 253Q165 281 199 301Q231 320 256 320Q284 320 318 298Q353 275 364 246Q367 238 367.5 225.5Q368 213 368 147ZM112 158L112 112L88 112L64 112L64 119Q67 160 90 188Q98 198 108 203L112 205ZM448 119Q448 119 448 119L448 112L424 112L400 112L400 158L400 205L404 203Q414 198 422 188Q445 160 448 119Z',
+  'flag-outline':
+    'M134 33Q141 32 158 32.5Q175 33 181 34Q212 38 286 63Q339 82 365 80Q388 78 413 69Q428 64 430 64Q441 64 446 75Q448 78 448 191Q448 285 447.5 297.5Q447 310 443 315Q438 320 422 325Q390 336 354 336Q328 336 266 321Q203 307 171 305Q129 302 103 311L97 313L96 390Q96 468 95 471Q91 478 85 479Q82 480 81 480Q76 482 69 476Q67 474 65.5 470.5Q64 467 64 266Q64 250 64 222Q64 99 64.5 78Q65 57 69 54Q69 53 70 53Q83 38 134 33ZM172 65Q172 65 172 65Q134 61 102 71Q102 71 96 73L96 176Q96 194 96 204Q96 204 98 279Q107 276 125 274Q134 273 157 273Q180 273 189 274Q217 277 271 290Q332 304 353 304Q383 304 409 296Q409 296 416 293L416 198Q416 182 416 172Q416 172 414 103Q381 113 350 112Q325 111 266 90Q201 68 172 65Z',
+} as const;
+
+type Tone = 'good' | 'active' | 'earned' | 'muted';
+type Icon = keyof typeof ION;
+
+/** JourneyNode's TONES: green behind you, rose still in it, blue earned, grey ahead. */
+const TONE: Record<Tone, string> = {
+  good: '#4ade80',
+  active: '#fb7185',
+  earned: '#1FD9FF',
+  muted: '#6b7280',
+};
+
+interface Entry {
+  icon: Icon;
+  title: string;
+  sub?: string;
+  tone: Tone;
+}
+
+interface Row {
+  day: number;
+  /** spineTone: whether the day is about the body (green) or about what was earned (blue). */
+  health: boolean;
+  left: Entry[];
+  right: Entry[];
+}
+
+/** The app's `achievementText`: a headline and the caption that says what it is. */
+const money = (target: number) => `${CURRENCY}${target}`;
+const unit = (key: string, count: number) => tr(`achievements.units.${key}`, { count });
+const caption = (key: string) => tr(`achievements.${key}`);
+
+const TODAY = 24;
+
+/*
+ * Days 20 to 80 of the path. 20 and 24 are behind (reached), 24 is today, the
+ * rest is ahead. Health ahead and achievements ahead are grey, a symptom ahead
+ * is rose because the user is still in it, the way the health screen paints it.
+ */
+const ROWS: Row[] = [
+  {
+    day: 20,
+    health: false,
+    left: [],
+    right: [
+      { icon: 'trophy-outline', title: money(50), sub: caption('saved'), tone: 'earned' },
+      { icon: 'trophy-outline', title: unit('snus', 200), sub: caption('avoided'), tone: 'earned' },
+      { icon: 'trophy-outline', title: '100 h', sub: caption('timeSaved'), tone: 'earned' },
+    ],
+  },
+  {
+    day: 24,
+    health: false,
+    left: [],
+    right: [{ icon: 'trophy-outline', title: unit('packs', 10), sub: caption('avoided'), tone: 'earned' }],
+  },
+  {
+    day: 25,
+    health: true,
+    left: [
+      {
+        icon: 'trending-down-outline',
+        title: tr('journey.symptomEases', { name: tr('health.sym1') }),
+        tone: 'active',
+      },
+    ],
+    right: [],
+  },
+  {
+    day: 30,
+    health: true,
+    left: [{ icon: 'heart-outline', title: tr('health.imp4Label'), sub: tr('health.imp4Title'), tone: 'muted' }],
+    right: [{ icon: 'trophy-outline', title: unit('months', 1), sub: caption('snusFree'), tone: 'muted' }],
+  },
+  {
+    day: 40,
+    health: false,
+    left: [],
+    right: [
+      { icon: 'trophy-outline', title: money(100), sub: caption('saved'), tone: 'muted' },
+      { icon: 'flag-outline', title: goalTitle, sub: tr('journey.yourGoal'), tone: 'muted' },
+    ],
+  },
+  {
+    day: 50,
+    health: false,
+    left: [],
+    right: [{ icon: 'trophy-outline', title: unit('snus', 500), sub: caption('avoided'), tone: 'muted' }],
+  },
+  {
+    day: 80,
+    health: true,
+    left: [
+      {
+        icon: 'trending-down-outline',
+        title: tr('journey.symptomEases', { name: tr('health.sym5') }),
+        tone: 'active',
+      },
+    ],
+    right: [],
+  },
+];
+
+/** The spine's colours, JourneyNode's `dotColor` and `lineColor`. */
+function spine(row: Row) {
+  const done = row.day <= TODAY;
+  const isToday = row.day === TODAY;
+  const dot = isToday ? 'today' : !done ? '#374151' : row.health ? 'rgb(34 197 94 / 0.6)' : 'rgb(31 217 255 / 0.5)';
+  const line = done ? (row.health ? 'rgb(34 197 94 / 0.25)' : 'rgb(31 217 255 / 0.3)') : 'rgb(55 65 81 / 0.4)';
+  return { dot, line, isToday };
+}
+---
+
+<AppScreen bare scale={scale}>
+  <StatusBar os={os} />
+
+  {/* Safe area, then TopBar: back arrow, `journey.title`, the press icon. */}
+  <div class="mt-[13px] flex shrink-0 items-center justify-between p-[8px]" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#CDCDE0" stroke-width="2.2"
+      ><path d="M20 12H4M4 12l6-6M4 12l6 6" stroke-linecap="round" stroke-linejoin="round"></path></svg
+    >
+    <span class="truncate px-[6px] text-[16px] font-semibold leading-[21px] text-white">{tr('journey.title')}</span>
+    <img src={PRESS_ICON} width="16" height="16" alt="" class="h-[16px] w-[16px] shrink-0" />
+  </div>
+
+  <div class="jr-list" aria-hidden="true">
+    <div class="jr-scrolled">
+    {
+      ROWS.map((row) => {
+        const s = spine(row);
+        return (
+          <div class="jr-row">
+            <div class="jr-side jr-left">
+              {row.left.map((e) => (
+                <div class="jr-entry jr-entry-left">
+                  <div class="jr-text jr-text-left">
+                    <span class="jr-title" style={`color:${TONE[e.tone]}`}>
+                      {e.title}
+                    </span>
+                    {e.sub && <span class="jr-sub">{e.sub}</span>}
+                  </div>
+                  <svg class="jr-icon jr-icon-left" viewBox="0 0 512 512" fill={TONE[e.tone]}>
+                    <path d={ION[e.icon]} />
+                  </svg>
+                </div>
+              ))}
+            </div>
+
+            <div class="jr-spine">
+              <span class="jr-seg jr-seg-grow" style={`background:${s.line}`} />
+              <span class="jr-seg jr-seg-hang" style={`background:${s.line}`} />
+              {s.isToday ? (
+                <span class="jr-dot jr-dot-today" />
+              ) : (
+                <span class="jr-dot" style={`background:${s.dot}`} />
+              )}
+              <span class:list={['jr-day', s.isToday && 'jr-day-today']}>{row.day}</span>
+              <span class="jr-seg jr-seg-grow" style={`background:${s.line}`} />
+            </div>
+
+            <div class="jr-side jr-right">
+              {row.right.map((e) => (
+                <div class="jr-entry">
+                  <svg class="jr-icon jr-icon-right" viewBox="0 0 512 512" fill={TONE[e.tone]}>
+                    <path d={ION[e.icon]} />
+                  </svg>
+                  <div class="jr-text">
+                    <span class="jr-title" style={`color:${TONE[e.tone]}`}>
+                      {e.title}
+                    </span>
+                    {e.sub && <span class="jr-sub">{e.sub}</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })
+    }
+    </div>
+  </div>
+</AppScreen>
+
+<style>
+  /* The FlatList: contentContainerStyle paddingHorizontal 4, clipped at the
+     screen's bottom edge like any list that goes on. */
+  .jr-list {
+    position: relative;
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: hidden;
+    padding: 0 2.7px;
+  }
+
+  /* The scroll position. Day 20's first entry ("€50 saved", 26.6px) and half
+     the gap after it are above the fold, so the list starts in empty space
+     and the goal on day 40 stays whole in the Play image, which crops the
+     screen at about 484px. Close to where the app lands (viewPosition 0.2
+     puts today 81px down; here it is 65px). */
+  .jr-scrolled {
+    margin-top: -30.6px;
+  }
+
+  /* A row: ROW_MIN_HEIGHT 128, the two sides around a 58pt spine. */
+  .jr-row {
+    display: flex;
+    align-items: stretch;
+    min-height: 85px;
+  }
+
+  .jr-side {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .jr-left {
+    align-items: flex-end;
+    padding-right: 8px;
+  }
+
+  .jr-right {
+    align-items: flex-start;
+    padding-left: 8px;
+  }
+
+  .jr-entry {
+    display: flex;
+    align-items: flex-start;
+    max-width: 100%;
+  }
+
+  .jr-entry-left {
+    justify-content: flex-end;
+  }
+
+  .jr-icon {
+    flex-shrink: 0;
+    width: 9.3px;
+    height: 9.3px;
+    margin-top: 2px;
+  }
+
+  .jr-icon-left {
+    margin-left: 4px;
+  }
+
+  .jr-icon-right {
+    margin-right: 4px;
+  }
+
+  .jr-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+    text-align: left;
+  }
+
+  .jr-text-left {
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  /* font-psemibold text-sm: 14/20pt. A word wider than the column breaks, as it
+     does in the app; hyphenated, so "Stimmungsschwankungen" does not split
+     after an arbitrary letter. */
+  .jr-title {
+    font-size: 9.3px;
+    line-height: 13.3px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+    hyphens: auto;
+  }
+
+  /* text-gray-500 text-xs, lineHeight 16, mt-1. */
+  .jr-sub {
+    margin-top: 2.7px;
+    font-size: 8px;
+    line-height: 10.6px;
+    color: #6b7280;
+    overflow-wrap: anywhere;
+    hyphens: auto;
+  }
+
+  .jr-spine {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 38.5px;
+    flex-shrink: 0;
+  }
+
+  /* w-0.5, minHeight SEGMENT_MIN_HEIGHT 30. */
+  .jr-seg {
+    width: 1.33px;
+  }
+
+  .jr-seg-grow {
+    flex: 1 1 auto;
+    min-height: 20px;
+  }
+
+  /* As tall as the day number under the dot, so the dot sits on the row's middle. */
+  .jr-seg-hang {
+    height: 13.3px;
+  }
+
+  .jr-dot {
+    width: 6.6px;
+    height: 6.6px;
+    border-radius: 999px;
+    flex-shrink: 0;
+  }
+
+  /* Today: 16pt, bg-secondary with a border-2 in the same colour. */
+  .jr-dot-today {
+    width: 10.6px;
+    height: 10.6px;
+    box-sizing: border-box;
+    border: 1.33px solid #1fd9ff;
+    background: #1fd9ff;
+  }
+
+  /* font-pbold text-[11px], lineHeight 14, 6pt under the dot. */
+  .jr-day {
+    margin-top: 4px;
+    font-size: 7.3px;
+    line-height: 9.3px;
+    font-weight: 700;
+    color: #6b7280;
+  }
+
+  .jr-day-today {
+    color: #1fd9ff;
+  }
+</style>

@@ -1,0 +1,477 @@
+---
+/**
+ * The store's ranking image: the Friends page of the Social screen, on the board
+ * it opens with. Rebuilt from react_Breezer:
+ * - `app/(tabs)/explore.jsx`: TopBar "Social" and the pills Friends / Squad /
+ *   Global, Friends selected;
+ * - `components/social/friends/FriendsTab.jsx`: the switcher All time / Day /
+ *   Week / Month (`FriendsRankingTypeControl`) on "All time", which is the
+ *   default and the free board, so no date pill; the podium
+ *   (`TopThreeRanking`: crown, silver and bronze, rings, "<n> snus" pills), the
+ *   rows up to six places (`selectVisibleRanking`, VISIBLE_RANKS_TOTAL), and
+ *   "show all 15" because there is more board than that;
+ * - `components/social/ranking/RankingCard.jsx` for rows 4 to 6.
+ *
+ * The board is `generateScoreRanking`: lifetime score, and the reader is on it
+ * too, which is why 14 friends make 15 places. Alex is #1 of them with the 3632
+ * the press image shows as his total. No "your position" row: that only appears
+ * when the reader is not already in view. No "Time ranges are Pro" line either:
+ * Alex is Pro, which is a state the app really has and keeps the image to one
+ * message.
+ *
+ * Avatars are Appwrite's generated initials in its palette, never photos.
+ * Flags are `getFlagEmoji`, rendered as emoji text. Geometry: AppScreen's
+ * 261 x 566 contract, app points x 0.6641, styled with scoped CSS.
+ */
+import AppScreen from '../../home/AppScreen.astro';
+import StatusBar from '../StatusBar.astro';
+import PushBanner from '../PushBanner.astro';
+import { appLocale } from '../../../lib/appLocale';
+import { appText } from '../../../i18n/appScreens';
+
+interface Props {
+  lang: string;
+  page: 'default' | 'track' | 'quit';
+  os: 'ios' | 'android';
+  scale: number;
+}
+const { lang, os, scale } = Astro.props;
+const tr = appLocale(lang);
+const t = appText(lang);
+
+/** `getFlagEmoji` from utility/helperFunctions.js. */
+const flag = (cc: string) => String.fromCodePoint(...[...cc.toUpperCase()].map((c) => 127397 + c.charCodeAt(0)));
+
+/**
+ * The top six of the board. Oskar, Lea and Kasper are also in Alex's squad on
+ * the community image, with the same scores.
+ */
+const BOARD = [
+  { name: 'Alex', country: 'AT', count: 3632, color: '#FE9567' },
+  { name: 'Oskar', country: 'SE', count: 2871, color: '#85DBD8' },
+  { name: 'Lea', country: 'CH', count: 2390, color: '#7C67FE' },
+  { name: 'Kasper', country: 'DK', count: 2215, color: '#FDC584' },
+  { name: 'Tomasz', country: 'PL', count: 1987, color: '#68A3FE' },
+  { name: 'Giulia', country: 'IT', count: 1820, color: '#FD366E' },
+];
+/** 14 friends plus the reader. */
+const TOTAL = 15;
+
+const [first, second, third] = BOARD;
+const rest = BOARD.slice(3);
+const snus = tr('common.snus');
+
+/* TopThreeRanking's medals, at 0.6641: avatar 100/72pt, emoji badgeSize - 8. */
+const MEDAL = {
+  1: { emoji: '👑', ring: '#facc15', from: '#facc15', to: '#eab308', size: 66.4, border: 2, emojiSize: 18.6, first: true },
+  2: { emoji: '🥈', ring: '#cbd5e1', from: '#94a3b8', to: '#64748b', size: 47.8, border: 1.3, emojiSize: 13.3, first: false },
+  3: { emoji: '🥉', ring: '#f97316', from: '#f97316', to: '#ea580c', size: 47.8, border: 1.3, emojiSize: 13.3, first: false },
+} as const;
+const podium = [
+  { user: second, medal: MEDAL[2], lift: false },
+  { user: first, medal: MEDAL[1], lift: true },
+  { user: third, medal: MEDAL[3], lift: false },
+];
+
+const segments = [tr('periods.all'), tr('periods.day'), tr('periods.week'), tr('periods.month')];
+
+const tabs = [
+  { label: tr('friends.title'), on: true },
+  { label: tr('squad.title'), on: false },
+  { label: tr('friends.global'), on: false },
+];
+
+/* The app's own PNGs (assets/icons/left-arrow.png, explore.png), inline: 341 and 1141 bytes. */
+const LEFT_ARROW =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAWCAYAAADTlvzyAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAADqSURBVHgBvdXBDYIwFAbg/70JGIE9FHfwYAwnQSdwg7KBEwievDiFcRBH6AJQW2JMSG2s1vY/QXjJl5D2fwSPHC+3DQZ1gIIESGzX8xN+DH8aGLFedRrL9GsOaDgg7IVNIxEDdGBQAzcICH2J1bty1iEg7I+hCcVMyB8rBP4QSom9wFTYCLqwCLmb0mCNCaRJbkqD9U/NkC6SqVd7pAhBmtIYD017vlaKqbVmGKJeFUHNYrvPpEInFz8FanVpbPRtebtQPV6FLF8nGBN17sO6XHQ0qNr+EnHjO9A4G3+CQi1hulBfXv0cVBQPRbaRlSkE6g8AAAAASUVORK5CYII=';
+const EXPLORE =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAABBdJREFUeNrUm+1xozAQhjGT/+cSSAXGkwKCK0hSwZEKHFfguAI7FUAqsFOBSQEZkwpMKjhKOG1mdbdRREBiZWTNMPaMjeDhlfZLYhR42t7eqkh83IpjIo6I/PQqjt3VVVTa9DvyFHQpjrTlr4U4VgK8OFtgAQuKZuIYG5wG0I9nB4ywW8vTNwJ6cTbAAhYUPRoqq7Y7Ab1r+1PoicDrnrDQMnxwfgOjkUoZuhqjVf+xXQwAGIuPBG8QXE7M2P2NOPLBgdEg3aACY4eXSgZTGIfqHIfr+EQDaHxyYDQcEDg8aH6uMWCAaAkipQpdUXyqKXXhYOjqAgeYVy86tyHOqc4OGFVda6ztCmAFaPXD6e9drGvHVjgHRti9ohJc+L4FVLYdTgGO9uLUDzfALgTorCNsgFlPwQTsLvDQwIJBmgqAjUV3Kybgpbiv1JXCmQI7s81RMcXrA10pIeYtK7Do8IEYml6wBBpSvI2loZoqEVaGcUD/bAk7OppmKYauba1UOYIGn/5Ec2Fx7oGMugJsCYfCmZKHssGi0lC+uQQrjxa81igKue+lJvG/I/9PdPN5ZPj0EzRUct6Akao9q5qkRJQKH561wkultOIVLI6QnLi5SFU5NFQ3IfMjD/xtqwaRjBT+Tb4/ewwr3VxJVE6MgJWqROW5urI96cS6aKlMgIu4VkLHMfrh3Mc5rMTomVoYGDWomXWpHgSGNeEBLPaecIAbq0KNST90hJWx66FLtXCg9kq+x1/msGXVX3a09xS61ALjzWY9Oo4Zc1rORpOKCVWYoxD+0BSwD+ieSjVXDlHdlOkac999VchYTwoMjN2gwBPG/uJzAGa9SY9d1D/girlPb4AxWvxisQH4g9kyVh4JSr3GhwQuGS9QeTaCr5VKySdwwRyw+9QSNeoKMePhSveePJq/ETHIpczsZHq4CPqv3W5ONX/RGM1RwUiZUjBiX5Th/PwtPVQKdDZB+sx1fkxiftNg6VKKESplEVrm9A02RkFMYQs68voUAL4Vwh0r22db00zu2At1fhQr9rB8scE5UVPTTgKMU1nlbU/7spURoM1SyyPJfZ0PZ6Ww3qd97tYzXmrBIVySZGHtWF2ulDMFlW2XS+/JMIeOModzlyu5gb4SK2CsJCyUp+cCmjvdjK0XxLEYf38CaPb0MGCGPvhW22IDboCGYXgEa85QDOAOVesRo4GJ0V9GanCCLqG27PcPY1FhyrpBvGXbYY5BfdEVHh9ixmS8PhfHneyI7xCeyn2W75rffiFgzFwugo1yudNXAMgbKq63DbcmOAJ2ahVa9oCnS69JFwMT/N95W5AHZ2yoArKtarCXPFD9qMHyFw3nwDRJbWEHBe6ZTCyD9n1ckOl923hzdsANU4QaQzCEuyZP8FeAAQBcR7NLbRzFmwAAAABJRU5ErkJggg==';
+
+/* Ionicons glyphs, traced out of the app's Ionicons.ttf (512 units). */
+const ICON = {
+  chevronDown:
+    'M102 162Q102 162 102 162Q113 157 123 163Q127 165 191 229Q191 229 256 294L321 229Q385 165 389 163Q398 157 409 162Q426 169 424 186Q423 193 414 203Q405 213 345 273Q284 335 274 343.5Q264 352 256 352Q248 352 238 343.5Q228 335 167 273Q107 213 98 203Q89 193 88 186Q86 170 102 162Z',
+  pulse:
+    'M172 49Q176 47 181 49Q188 51 190 58Q192 61 217.5 216Q243 371 244 372.5Q245 374 265.5 301Q286 228 288 222Q291 213 298 210Q302 207 308 209Q314 211 317 215Q319 218 333 261L347 304L367 304L386 304L389 299Q397 282 415 275Q429 270 443 273Q463 278 473.5 296.5Q484 315 478 335Q474 346 464 355Q448 370 427 367.5Q406 365 393 348Q389 342 388 339L387 336L361 336Q335 336 332 335Q325 333 322 327Q320 324 313 301Q311 295 309 290Q307 285 306 282Q305 279 305 279Q305 279 280 366Q255 453 254 456Q249 466 237 464Q230 462 226 456Q224 452 198.5 298.5Q173 145 173 144Q173 144 170 156Q167 168 161.5 188.5Q156 209 150 234Q127 325 126 328Q123 333 116 335Q113 336 78 336Q43 336 40 334Q32 329 32 320Q32 311 39 307L43 304L71 304L100 304L130 180Q161 57 163 54Q166 51 172 49ZM439 306Q439 306 439 306Q426 299 419 312Q414 319 417.5 327Q421 335 430 336Q439 337 444.5 329.5Q450 322 447 314Q444 308 439 306Z',
+};
+---
+
+<AppScreen bare scale={scale}>
+  <StatusBar os={os} />
+
+  {/* Oskar, #2 on the podium, has just logged a pouch: the push his friends get
+      (Klaus: a notification on top, like the homepage's). */}
+  <PushBanner os={os} name="Oskar" body={t.app_notif_body} time={t.app_widget_now} />
+
+  <div class="rk" aria-hidden="true">
+    <div class="safe"></div>
+
+    <div class="topbar">
+      <span class="topbar-back"><img src={LEFT_ARROW} alt="" /></span>
+      <span class="topbar-title">{tr('friends.social')}</span>
+      <img class="topbar-icon" src={EXPLORE} alt="" />
+    </div>
+
+    <div class="tabs">
+      {tabs.map((tab) => <span class:list={['tab', tab.on && 'tab--on']}>{tab.label}</span>)}
+    </div>
+
+    {/* FlatList paddingTop 8, then the switcher in mx-3 mt-1 mb-2. */}
+    <div class="seg">
+      {segments.map((label, i) => <span class:list={['seg-item', i === 0 && 'seg-item--on']}>{label}</span>)}
+    </div>
+    {/* Lifetime: no date pill, only its mb-3. */}
+    <div class="gap"></div>
+
+    {/* TopThreeRanking. */}
+    <div class="podium">
+      {
+        podium.map(({ user, medal, lift }) => (
+          <div class:list={['pod-col', lift && 'pod-col--lift']}>
+            <span class="pod-emoji" style={`font-size:${medal.emojiSize}px`}>
+              {medal.emoji}
+            </span>
+            <span
+              class="pod-ring"
+              style={`width:${medal.size}px;height:${medal.size}px;border:${medal.border}px solid ${medal.ring}`}
+            >
+              <span style={`background:${user.color};font-size:${(medal.size * 0.38).toFixed(1)}px`}>{user.name.charAt(0)}</span>
+            </span>
+            <span class="pod-name-row">
+              <span class:list={['pod-name', medal.first && 'pod-name--first']}>{user.name}</span>
+              <span class="pod-flag">{flag(user.country)}</span>
+            </span>
+            <span class="pod-pill" style={`background:linear-gradient(90deg, ${medal.from}, ${medal.to})`}>
+              {user.count} {snus}
+            </span>
+          </div>
+        ))
+      }
+    </div>
+
+    {/* Places 4 to 6, pt-2. */}
+    <div class="rows">
+      {
+        rest.map((m, i) => (
+          <div class="rc">
+            <div class="rc-card">
+              <span class="rc-rank">{i + 4}</span>
+              <span class="rc-av">
+                <span style={`background:${m.color}`}>{m.name.charAt(0)}</span>
+              </span>
+              <div class="rc-info">
+                <div class="rc-name-row">
+                  <span class="rc-name">{m.name}</span>
+                  <span class="rc-flag">{flag(m.country)}</span>
+                </div>
+                <span class="rc-label">{tr('ranking.snusTracked')}</span>
+              </div>
+              <span class="rc-count">{m.count}</span>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="more">
+      <span>{tr('friends.showAllRanking', { count: TOTAL })}</span>
+      <svg width="10.6" height="10.6" viewBox="0 0 512 512" fill="#1FD9FF"><path d={ICON.chevronDown}></path></svg>
+    </div>
+
+    <div class="ah">
+      <svg width="9.3" height="9.3" viewBox="0 0 512 512" fill="#6b7280"><path d={ICON.pulse}></path></svg>
+      <span>{tr('friends.activityHeading')}</span>
+    </div>
+  </div>
+</AppScreen>
+
+<style>
+  .rk {
+    flex-shrink: 0;
+  }
+  .safe {
+    height: 13px;
+  }
+
+  .topbar {
+    display: flex;
+    height: 37px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+  }
+  .topbar-back {
+    display: flex;
+    width: 16px;
+    height: 16px;
+    align-items: center;
+    justify-content: center;
+  }
+  .topbar-back img {
+    display: block;
+    width: 16px;
+    height: auto;
+  }
+  .topbar-title {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 21px;
+    color: #fff;
+  }
+  .topbar-icon {
+    display: block;
+    width: 16px;
+    height: 16px;
+  }
+
+  .tabs {
+    display: flex;
+    justify-content: space-around;
+    margin: 0 10.6px 10.6px;
+    padding: 8px 0;
+  }
+  .tab {
+    flex-shrink: 0;
+    white-space: nowrap;
+    border-radius: 9999px;
+    padding: 2.7px 10.6px;
+    font-size: 13.3px;
+    font-weight: 600;
+    line-height: 18.6px;
+    color: #9ca3af;
+  }
+  .tab--on {
+    background: #1f2937;
+    color: #fff;
+  }
+
+  /* SegmentControl: 40pt high, 8pt corners, cyan on the selected segment, white
+     text. Track colour as the iOS control composites it (see StatsPhone). */
+  .seg {
+    display: flex;
+    height: 26.6px;
+    margin: 8px 8px 5.3px;
+    padding: 2px;
+    border-radius: 5.3px;
+    background: #1d2330;
+  }
+  .seg-item {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    white-space: nowrap;
+    font-size: 9px;
+    font-weight: 500;
+    line-height: 1;
+    color: #fff;
+  }
+  .seg-item--on {
+    background: #1fd9ff;
+    font-weight: 600;
+  }
+  .gap {
+    height: 8px;
+  }
+
+  /* TopThreeRanking: a vertical band #161622 > #1E1E2D > #161622, pb-5 pt-3 px-2,
+     three equal columns on one baseline, the winner lifted by 18pt. */
+  .podium {
+    display: flex;
+    align-items: flex-end;
+    padding: 8px 5.3px 13.3px;
+    background: linear-gradient(180deg, #161622, #1e1e2d, #161622);
+  }
+  .pod-col {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+  }
+  .pod-col--lift {
+    margin-bottom: 12px;
+  }
+  .pod-emoji {
+    margin-bottom: 2.7px;
+    line-height: 1.2;
+  }
+  .pod-ring {
+    display: block;
+    border-radius: 9999px;
+  }
+  .pod-ring span {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    font-weight: 400;
+    line-height: 1;
+    color: #2b303f;
+  }
+  .pod-name-row {
+    display: flex;
+    max-width: 100%;
+    align-items: center;
+    margin-top: 5.3px;
+  }
+  .pod-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 9.3px;
+    font-weight: 600;
+    line-height: 13.3px;
+    color: #fff;
+  }
+  .pod-name--first {
+    font-size: 10.6px;
+    line-height: 16px;
+  }
+  .pod-flag {
+    flex-shrink: 0;
+    margin-left: 2.7px;
+    font-size: 9.3px;
+    line-height: 13.3px;
+  }
+  .pod-pill {
+    margin-top: 2.7px;
+    padding: 1.3px 8px;
+    border-radius: 9999px;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 8px;
+    font-weight: 700;
+    line-height: 10.6px;
+    color: #fff;
+  }
+
+  .rows {
+    padding-top: 5.3px;
+  }
+  .rc {
+    margin-bottom: 5.3px;
+    padding: 0 8px;
+  }
+  .rc-card {
+    display: flex;
+    align-items: center;
+    border: 0.7px solid rgb(55 65 81 / 0.4);
+    border-radius: 10.6px;
+    background: #232533;
+    padding: 8px;
+  }
+  .rc-rank {
+    display: flex;
+    width: 26.6px;
+    height: 26.6px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+    border-radius: 8px;
+    background: #1e1e2d;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    color: #9ca3af;
+  }
+  .rc-av {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border: 1.3px solid rgb(31 217 255 / 0.4);
+    border-radius: 9999px;
+  }
+  .rc-av span {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    font-size: 12.5px;
+    font-weight: 400;
+    line-height: 1;
+    color: #2b303f;
+  }
+  .rc-info {
+    min-width: 0;
+    flex: 1;
+    margin-left: 8px;
+  }
+  .rc-name-row {
+    display: flex;
+    align-items: center;
+  }
+  .rc-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 10.6px;
+    font-weight: 600;
+    line-height: 16px;
+    color: #fff;
+  }
+  .rc-flag {
+    flex-shrink: 0;
+    margin-left: 4px;
+    font-size: 10.6px;
+    line-height: 16px;
+  }
+  .rc-label {
+    display: block;
+    margin-top: 1.3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 8px;
+    line-height: 10.6px;
+    color: #9ca3af;
+  }
+  .rc-count {
+    flex-shrink: 0;
+    margin-left: 4px;
+    border-radius: 8px;
+    background: rgb(31 217 255 / 0.15);
+    padding: 4px 8px;
+    font-size: 10.6px;
+    font-weight: 700;
+    line-height: 16px;
+    color: #1fd9ff;
+  }
+
+  /* "show all 15", mt-1 mb-1, and the activity heading under it (mt-6). */
+  .more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2.7px 0;
+  }
+  .more span {
+    margin-right: 2.7px;
+    font-size: 9.3px;
+    font-weight: 500;
+    line-height: 13.3px;
+    color: #1fd9ff;
+  }
+  .ah {
+    display: flex;
+    align-items: center;
+    margin: 16px 0 2.7px;
+    padding: 0 10.6px;
+  }
+  .ah span {
+    margin-left: 4px;
+    font-size: 8px;
+    font-weight: 600;
+    line-height: 10.6px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #9ca3af;
+  }
+</style>

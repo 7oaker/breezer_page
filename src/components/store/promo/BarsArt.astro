@@ -1,0 +1,49 @@
+---
+/**
+ * A week of pouches as glowing bars, without a phone: the tracking page's
+ * motif next to the PRESS button. The same week as the stats screenshot
+ * (8, 6, 5, 7, 4, 6, 3 against a limit of 7), all in Breezer's blue (no red here:
+ * the promo assets keep to one colour). Pure shapes, no words, no translation.
+ */
+interface Props {
+  width: number;
+  height: number;
+}
+const { width: W, height: H } = Astro.props;
+const WEEK = [8, 6, 5, 7, 4, 6, 3];
+const LIMIT = 7;
+const MAX = 9;
+const gap = W * 0.045;
+const barW = (W - gap * (WEEK.length - 1)) / WEEK.length;
+const y = (v: number) => H - (v / MAX) * H;
+---
+
+<svg class="bars-art" width={W} height={H} viewBox={`0 0 ${W} ${H}`} aria-hidden="true">
+  <defs>
+    <linearGradient id="ba-bar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1FD9FF" />
+      <stop offset="1" stop-color="#0D6BCD" stop-opacity="0.55" />
+    </linearGradient>
+  </defs>
+  {
+    WEEK.map((v, i) => (
+      <rect
+        x={i * (barW + gap)}
+        y={y(v)}
+        width={barW}
+        height={H - y(v)}
+        rx={barW * 0.28}
+        fill="url(#ba-bar)"
+      />
+    ))
+  }
+  <line x1="0" x2={W} y1={y(LIMIT)} y2={y(LIMIT)} stroke="#1FD9FF" stroke-width={W * 0.006} stroke-dasharray={`${W * 0.012} ${W * 0.018}`} opacity="0.7" />
+</svg>
+
+<style>
+  .bars-art {
+    display: block;
+    overflow: visible;
+    filter: drop-shadow(0 0 30px rgb(31 217 255 / 0.25));
+  }
+</style>

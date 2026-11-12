@@ -1,0 +1,23 @@
+---
+/**
+ * The store's `community` image: the squad's own chat room, so the image shows
+ * the app's social side as it lives in the app (members talking, an @mention,
+ * reactions) and, in the selected 🛡️ BNGZ segment and the room's title, that
+ * squads exist. Klaus, 12.11.2026: "lieber einen coolen Chat mit Reaktionen wie
+ * in der App und eine Andeutung auf Squads".
+ *
+ * ChatScreen draws it; this file only exists because the store route finds a
+ * frame's screen by file name. The squad board that used to be this image is
+ * SquadScreen.
+ */
+import ChatScreen from './ChatScreen.astro';
+
+interface Props {
+  lang: string;
+  page: 'default' | 'track' | 'quit';
+  os: 'ios' | 'android';
+  scale: number;
+}
+---
+
+<ChatScreen {...Astro.props} room="squad" />

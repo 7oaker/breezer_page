@@ -1,0 +1,51 @@
+---
+/**
+ * The mark beside a path label on the default page: what tells "Tracken" from
+ * "Aufhören" now that both paths share Breezer's blue (Klaus, 11.11.2026: no
+ * second colour, no pill, no dot).
+ *
+ * - track: a tap with two rings, the one-tap logging the whole tracking path
+ *   is built on;
+ * - quit: a flag at the end of a winding path, the journey.
+ *
+ * Stroked in the brand gradient (#1FD9FF to #0D6BCD), sized in em so it follows
+ * the label's type.
+ */
+interface Props {
+  path: 'track' | 'quit';
+}
+const { path } = Astro.props;
+const id = `pi-${path}`;
+---
+
+<svg class="path-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id={id} x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1FD9FF" />
+      <stop offset="1" stop-color="#0D6BCD" />
+    </linearGradient>
+  </defs>
+  {
+    path === 'track' ? (
+      <g stroke={`url(#${id})`} stroke-linecap="round">
+        <circle cx="12" cy="12" r="3.2" fill={`url(#${id})`} stroke="none" />
+        <circle cx="12" cy="12" r="6.8" stroke-width="1.9" />
+        <path d="M12 1.8a10.2 10.2 0 0 1 10.2 10.2M1.8 12A10.2 10.2 0 0 1 12 1.8" stroke-width="1.9" opacity="0.55" />
+      </g>
+    ) : (
+      <g stroke={`url(#${id})`} stroke-linecap="round" stroke-linejoin="round">
+        <path d="M1.8 21.5c3.6-4.6 7.4-4.8 10.2-2.4 2.4 2 5.3 2.2 10.2-.4" stroke-width="2" opacity="0.6" />
+        <path d="M8.5 18.6V2.6" stroke-width="2.1" />
+        <path d="M8.5 3c3-1.6 5.4 1.4 8.4.1 1.1-.5 2-.6 3-.4v7.7c-1-.2-1.9-.1-3 .4-3 1.3-5.4-1.7-8.4-.1z" fill={`url(#${id})`} stroke-width="1.4" />
+      </g>
+    )
+  }
+</svg>
+
+<style>
+  .path-icon {
+    width: 1.35em;
+    height: 1.35em;
+    flex: none;
+  }
+</style>

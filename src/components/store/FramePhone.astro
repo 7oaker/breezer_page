@@ -1,0 +1,47 @@
+---
+/**
+ * The phone content of one store frame, inside its device: the one place that
+ * knows which screen belongs to which frame. The screenshot route and the
+ * header / search / feature graphic route both draw phones through it.
+ *
+ * - press, stats, quit: the homepage's rebuilt screens in store mode (`bare`);
+ * - widgets: the lock screen (WidgetsScreen);
+ * - everything else: screens/<Frame>Screen.astro, found by file name.
+ */
+import Device from './Device.astro';
+import PressPhone from '../home/PressPhone.astro';
+import StatsPhone from '../home/StatsPhone.astro';
+import QuitPhone from '../home/QuitPhone.astro';
+import WidgetsScreen from './WidgetsScreen.astro';
+import { appText } from '../../i18n/appScreens';
+
+interface Props {
+  frame: string;
+  page: 'default' | 'track' | 'quit';
+  lang: string;
+  os: 'ios' | 'android';
+  /** Width of the screen window in px. */
+  screenWidth: number;
+}
+const { frame, page, lang, os, screenWidth } = Astro.props;
+const scale = screenWidth / 261;
+const t = appText(lang);
+
+type Comp = (props: Record<string, unknown>) => unknown;
+const files = import.meta.glob<{ default: Comp }>('./screens/*Screen.astro', { eager: true });
+const screens = Object.fromEntries(
+  Object.entries(files).map(([file, mod]) => {
+    const name = file.split('/').pop()!.replace('Screen.astro', '');
+    return [name.charAt(0).toLowerCase() + name.slice(1), mod.default];
+  }),
+);
+const Screen = screens[frame];
+---
+
+<Device os={os} screenWidth={screenWidth}>
+  {frame === 'press' && <PressPhone t={t} lang={lang as never} bare scale={scale} os={os} />}
+  {frame === 'stats' && <StatsPhone t={t} lang={lang as never} bare scale={scale} os={os} />}
+  {frame === 'quit' && <QuitPhone t={t} bare scale={scale} os={os} />}
+  {frame === 'widgets' && <WidgetsScreen t={t} lang={lang} show={page === 'default' ? 'both' : page} scale={scale} />}
+  {Screen && <Screen lang={lang} page={page} os={os} scale={scale} />}
+</Device>

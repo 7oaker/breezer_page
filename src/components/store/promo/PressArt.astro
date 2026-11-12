@@ -1,0 +1,101 @@
+---
+/**
+ * The PRESS button with the hand pressing it, for the header, search results
+ * asset and feature graphic. The button is redrawn as a vector from
+ * `press-button-big.png` (600px, too small for a 3840px asset): blue ring, white
+ * disc, the pouch with PRESS. White tap rings spread behind it on the brand
+ * blue. The hand is the site's own `press-hand.png`, fingertip on the button.
+ */
+import { Image } from 'astro:assets';
+import pressHand from '../../../assets/images/app/press-hand.png';
+
+interface Props {
+  /** Button diameter in px. */
+  size: number;
+  /** Ring count behind the button; 0 for none. */
+  rings?: number;
+}
+const { size, rings = 3 } = Astro.props;
+const handW = size * 0.66;
+---
+
+<div class="press-art" style={`--s:${size}px;--h:${handW}px`}>
+  {
+    Array.from({ length: rings }, (_, i) => (
+      <span class="ripple" style={`--i:${i + 1}`} aria-hidden="true" />
+    ))
+  }
+  <svg class="button" viewBox="0 0 600 600" aria-hidden="true">
+    <defs>
+      <linearGradient id="pa-ring" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#22C9FB" />
+        <stop offset="1" stop-color="#0B6FD6" />
+      </linearGradient>
+      <linearGradient id="pa-pouch" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#2CC8FA" />
+        <stop offset="1" stop-color="#0E78DA" />
+      </linearGradient>
+    </defs>
+    <circle cx="300" cy="300" r="292" fill="url(#pa-ring)" />
+    <circle cx="300" cy="300" r="246" fill="#fff" />
+    <path
+      d="M110 186Q300 202 490 186Q506 185 505 200Q490 298 505 396Q506 411 490 410Q300 394 110 410Q94 411 95 396Q110 298 95 200Q94 185 110 186Z"
+      fill="url(#pa-pouch)"
+    />
+    <text
+      x="300"
+      y="302"
+      text-anchor="middle"
+      dominant-baseline="central"
+      font-family="Poppins, sans-serif"
+      font-weight="800"
+      font-size="104"
+      textLength="300"
+      lengthAdjust="spacingAndGlyphs"
+      fill="#fff">PRESS</text
+    >
+  </svg>
+  <div class="hand" aria-hidden="true">
+    <Image src={pressHand} width={640} height={1130} alt="" loading="eager" />
+  </div>
+</div>
+
+<style>
+  .press-art {
+    position: relative;
+    width: var(--s);
+    height: var(--s);
+  }
+
+  /* Tap rings: each a little larger and fainter, white on the brand blue. */
+  .ripple {
+    position: absolute;
+    inset: calc(var(--s) * -0.15 * var(--i));
+    border-radius: 50%;
+    border: calc(var(--s) * 0.01) solid rgb(255 255 255 / calc(0.5 - var(--i) * 0.13));
+  }
+
+  .button {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 calc(var(--s) * 0.05) calc(var(--s) * 0.1) rgb(4 36 96 / 0.4));
+  }
+
+  /* Fingertip (16.33% across the hand, its top row) a little below the
+     button's centre, as if the press has just landed. */
+  .hand {
+    position: absolute;
+    width: var(--h);
+    left: calc(var(--s) * 0.5 - var(--h) * 0.1633);
+    top: calc(var(--s) * 0.53);
+    filter: drop-shadow(0 calc(var(--s) * 0.05) calc(var(--s) * 0.08) rgb(4 30 80 / 0.45));
+  }
+
+  .hand :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+</style>

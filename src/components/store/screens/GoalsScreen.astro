@@ -1,0 +1,357 @@
+---
+/**
+ * The achievements screen for the store's `goals` image:
+ * `react_Breezer/app/(tabs)/achievements.jsx`, where the user's own goals live,
+ * with one goal of the demo account's in the grid.
+ *
+ * Why this screen: a goal is written on `custom-achievement.jsx`, but that is a
+ * form, and what the image promises is the goal filling up. The grid is where it
+ * does, in the tile the app draws for every goal (`AchievementItem` with the
+ * type's icon and `subLabel`'s "61 / 100 €"), first after the plus, among the
+ * 24 built-in achievements, 17 of which day 24 has unlocked.
+ *
+ * The numbers are the demo account's: 24 days at 10 pouches a day and 6 EUR for
+ * 24, so 60.75 EUR saved, which the tile rounds to 61 the way `subLabel` does.
+ * The goal is a money goal of 100 EUR (the target the app's form starts at),
+ * so it lands on day 40, which is where JourneyScreen puts it on the path. The
+ * title is the user's own words, so it is a small per-language map rather than
+ * a translation key; keep it in step with JourneyScreen's.
+ *
+ * Pro, so all 24 tiles show their names and the subscribe banner under the grid
+ * is gone. Sizes are the app's points times 261/393 (AppScreen's contract).
+ * Icons are the Ionicons glyphs from the app's own font, flipped into a 512 box.
+ */
+import AppScreen from '../../home/AppScreen.astro';
+import StatusBar from '../StatusBar.astro';
+import { appLocale } from '../../../lib/appLocale';
+
+interface Props {
+  lang: string;
+  page: 'default' | 'track' | 'quit';
+  os: 'ios' | 'android';
+  scale: number;
+}
+const { lang, os, scale } = Astro.props;
+const tr = appLocale(lang);
+
+/**
+ * The goal's name in each language. Every word fits the tile's 62px line
+ * (measured): "Wochenendtrip" did not, and the tile broke it after "Wochen".
+ */
+const GOAL_TITLE: Record<string, string> = {
+  en: 'Weekend trip',
+  de: 'Städtetrip',
+  it: 'Weekend al mare',
+  // A no-break space after the one-letter preposition, so it never ends a line.
+  pl: 'Weekend w górach',
+  sv: 'Helgresa',
+  no: 'Helgetur',
+  cs: 'Víkend na horách',
+  sk: 'Víkend v Tatrách',
+  sl: 'Vikend na morju',
+  hr: 'Vikend na moru',
+  da: 'Weekendtur',
+  fi: 'Tallinnan-reissu',
+  hu: 'Hétvégi kirándulás',
+};
+const CURRENCY = '€';
+const GOAL_TARGET = 100;
+
+/** `computeQuittingSavings` at 24 days, 7 h, 12 min with the demo habit. */
+const STATS = { days: 24, snus: 243, packs: 10, money: 60.75, timeHours: 121 };
+
+/** The trophy-like icon on the right of TopBar (`icons.batch`, assets/icons/batch.png). */
+const BATCH_ICON =
+  'data:image/png;base64,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';
+
+/** The glyphs AchievementItem and AddAchievementTile draw, from the app's Ionicons font. */
+const ION = {
+  trophy:
+    'M135 34Q139 33 257 32.5Q375 32 379 34Q393 39 398 53Q400 58 400 68Q400 78 401.5 79Q403 80 435.5 80Q468 80 471 82Q482 88 480 123Q476 163 456.5 194Q437 225 409 236Q401 238 400 239.5Q399 241 397 248Q385 292 335 325Q309 342 280 349Q274 350 273 355.5Q272 361 272 400Q272 446 273 447Q274 448 307 448Q334 448 339.5 449Q345 450 348 454Q354 461 351 469.5Q348 478 339 480Q334 480 253 480Q186 480 177 479.5Q168 479 165 475Q160 470 160 464Q160 456 167 451L171 448L204 448Q238 448 239 447Q240 446 240 400Q240 361 239 355.5Q238 350 232 349Q203 342 177 325Q127 292 115 248Q113 241 112 239.5Q111 238 103 236Q75 225 55.5 194Q36 163 32 123Q30 88 41 82Q44 80 76.5 80Q109 80 110.5 79Q112 78 112 68Q112 58 114 53Q120 38 135 34ZM112 157Q112 114 110 113Q108 112 88 112Q68 112 66 113Q64 114 65 125Q70 173 100 197Q105 201 107 202Q111 203 111 198Q112 193 112 157ZM447 113Q447 113 447 113Q445 112 424 112Q403 112 401.5 113Q400 114 400.5 157.5Q401 201 402 202Q405 203 414 196Q442 171 447 125Q448 115 447 113Z',
+  'trophy-outline':
+    'M135 34Q139 33 257 32.5Q375 32 379 34Q392 39 397 52Q400 58 400 69L400 80L435 80L470 81L473 83Q478 87 480 95Q483 113 477 144Q469 179 450.5 203.5Q432 228 407 236L399 239L397 247Q385 294 330 328Q304 344 278 349L273 350L272 399L272 448L306 448Q339 448 343 450Q349 453 351 460Q353 466 350 472Q347 478 341 479Q338 480 256 480Q174 480 171 479Q165 478 162 472Q159 466 161 460Q163 453 169 450Q173 448 206 448L240 448L240 399L240 351L237 350Q193 340 158.5 311Q124 282 115 246L113 239L105 236Q68 224 47 180Q34 152 32 117Q31 99 32.5 93Q34 87 39 83L42 81L77 80L112 80L112 69Q112 58 114 53Q120 38 135 34ZM368 147L368 64L256 64L144 64L144 150Q145 222 145.5 232Q146 242 151 253Q165 281 199 301Q231 320 256 320Q284 320 318 298Q353 275 364 246Q367 238 367.5 225.5Q368 213 368 147ZM112 158L112 112L88 112L64 112L64 119Q67 160 90 188Q98 198 108 203L112 205ZM448 119Q448 119 448 119L448 112L424 112L400 112L400 158L400 205L404 203Q414 198 422 188Q445 160 448 119Z',
+  cash: 'M41 65Q44 64 70 64L97 64L96 77Q95 95 89 108Q77 134 49 142Q42 144 29 144L16 144L16 116L17 87L19 82Q26 68 41 65ZM128 79L128 64L256 64L384 64L384 74Q384 93 388 106Q401 152 445 169Q462 176 483 176L496 176L496 208L496 240L487 240Q468 240 454 244Q436 249 422 259Q401 276 391 301Q385 316 384 337L384 352L256 352L128 352L128 337Q127 316 121 302Q107 266 73 250Q53 240 25 240L16 240L16 208L16 176L29 176Q50 176 67 169Q113 151 125 103Q127 94 128 79ZM416 77L415 64L443 64L471 64L477 67Q488 72 493 82L495 87L496 116L496 144L483 144Q470 144 463 142Q435 134 423 108Q417 95 416 77ZM276 114Q260 111 246 113Q216 116 193.5 135.5Q171 155 163 185Q161 192 161 208Q161 224 163 232Q172 264 197.5 284Q223 304 256 304Q289 304 314.5 284Q340 264 349 232Q351 224 351 208Q351 187 344 171Q336 150 317.5 134.5Q299 119 276 114ZM243 145Q258 142 274 147Q308 157 318 192Q323 209 318 225Q313 241 301 253Q293 261 285 265Q271 272 256 272Q241 272 227 265Q219 261 211 253Q199 241 194 225Q189 209 194 192Q204 154 243 145ZM16 300L16 272L27 272Q46 272 61 279Q69 283 77 291Q88 303 92.5 316.5Q97 330 96 346L96 352L72 352Q40 353 32 348Q23 343 19 333L17 328ZM451.5 279Q451.5 279 455.75 277Q460 275 466 273.5Q472 272 484 272L496 272L496 300L495 328L493 333Q489 343 480 348Q472 353 440 352L416 352L416 346Q415 330 419.5 316.5Q424 303 435 291Q443 283 451.5 279ZM60 369Q63 368 258 368L453 368L456 371Q466 377 463 388Q461 397 453 399Q449 400 256 400Q63 400 59 399Q54 398 50.5 392.5Q47 387 48 382Q50 371 60 369ZM89 418Q89 418 89 418Q92 416 256 416Q420 416 423 417.5Q426 419 428.5 422.5Q431 426 431 432Q431 442 423 446Q423 446 419 448L256 448L93 448L89 446Q78 441 81 428Q82 421 89 418Z',
+  add: 'M248 99Q248 99 248 99Q253 95 259.5 96.5Q266 98 270 104Q270 104 272 107L272 173L272 240L338 240L404 240L408 242Q416 247 416 256Q416 265 408 270Q408 270 405 272L339 272L272 272L272 339L272 405L270 408Q265 416 256 416Q247 416 242 408Q242 408 240 405L240 339L240 272L173 272L107 272L104 270Q96 265 96 256Q96 247 103 243Q103 243 107 240L173 240L240 240L240 173L240 107L242 104Q244 101 248 99Z',
+} as const;
+
+type Ion = keyof typeof ION;
+
+interface Tile {
+  main: string;
+  sub: string;
+  unlocked: boolean;
+  icon: Ion;
+  add?: boolean;
+  goal?: boolean;
+}
+
+/** `BUILTIN_ACHIEVEMENTS` in its order, with what each one measures. */
+type Measure = keyof typeof STATS;
+const BUILTIN: { type: Measure; target: number; display: 'unit' | 'currency' | 'hours'; unitKey?: string; unitCount?: number; subKey: string }[] = [
+  { type: 'days', target: 1, display: 'unit', unitKey: 'days', unitCount: 1, subKey: 'snusFree' },
+  { type: 'days', target: 7, display: 'unit', unitKey: 'weeks', unitCount: 1, subKey: 'snusFree' },
+  { type: 'days', target: 30, display: 'unit', unitKey: 'months', unitCount: 1, subKey: 'snusFree' },
+  { type: 'money', target: 10, display: 'currency', subKey: 'saved' },
+  { type: 'money', target: 25, display: 'currency', subKey: 'saved' },
+  { type: 'money', target: 50, display: 'currency', subKey: 'saved' },
+  { type: 'packs', target: 1, display: 'unit', unitKey: 'packs', unitCount: 1, subKey: 'avoided' },
+  { type: 'packs', target: 5, display: 'unit', unitKey: 'packs', unitCount: 5, subKey: 'avoided' },
+  { type: 'packs', target: 10, display: 'unit', unitKey: 'packs', unitCount: 10, subKey: 'avoided' },
+  { type: 'days', target: 3, display: 'unit', unitKey: 'days', unitCount: 3, subKey: 'snusFree' },
+  { type: 'days', target: 14, display: 'unit', unitKey: 'weeks', unitCount: 2, subKey: 'snusFree' },
+  { type: 'days', target: 90, display: 'unit', unitKey: 'months', unitCount: 3, subKey: 'snusFree' },
+  { type: 'days', target: 180, display: 'unit', unitKey: 'months', unitCount: 6, subKey: 'snusFree' },
+  { type: 'days', target: 365, display: 'unit', unitKey: 'years', unitCount: 1, subKey: 'snusFree' },
+  { type: 'money', target: 100, display: 'currency', subKey: 'saved' },
+  { type: 'money', target: 250, display: 'currency', subKey: 'saved' },
+  { type: 'snus', target: 50, display: 'unit', unitKey: 'snus', unitCount: 50, subKey: 'avoided' },
+  { type: 'snus', target: 100, display: 'unit', unitKey: 'snus', unitCount: 100, subKey: 'avoided' },
+  { type: 'snus', target: 200, display: 'unit', unitKey: 'snus', unitCount: 200, subKey: 'avoided' },
+  { type: 'snus', target: 500, display: 'unit', unitKey: 'snus', unitCount: 500, subKey: 'avoided' },
+  { type: 'timeHours', target: 24, display: 'hours', subKey: 'timeSaved' },
+  { type: 'timeHours', target: 48, display: 'hours', subKey: 'timeSaved' },
+  { type: 'timeHours', target: 72, display: 'hours', subKey: 'timeSaved' },
+  { type: 'timeHours', target: 100, display: 'hours', subKey: 'timeSaved' },
+];
+
+const ringUnlocked = BUILTIN.filter((a) => STATS[a.type] >= a.target).length;
+
+/** `subLabel`: "current / target unit" until it is reached. */
+const goalSub = `${Math.round(STATS.money)} / ${GOAL_TARGET} ${CURRENCY}`;
+
+/** The plus, then the user's goals, then the built-in 24 (achievements.jsx's one grid). */
+const TILES: Tile[] = [
+  { add: true, main: tr('achievements.custom.add'), sub: tr('achievements.custom.addSub'), unlocked: false, icon: 'add' },
+  { goal: true, main: GOAL_TITLE[lang] ?? GOAL_TITLE.en, sub: goalSub, unlocked: STATS.money >= GOAL_TARGET, icon: 'cash' },
+  ...BUILTIN.map((a) => {
+    const unlocked = STATS[a.type] >= a.target;
+    const main =
+      a.display === 'currency'
+        ? `${CURRENCY}${a.target}`
+        : a.display === 'hours'
+          ? `${a.target} h`
+          : tr(`achievements.units.${a.unitKey}`, { count: a.unitCount! });
+    return { main, sub: tr(`achievements.${a.subKey}`), unlocked, icon: (unlocked ? 'trophy' : 'trophy-outline') as Ion };
+  }),
+].slice(0, 18);
+---
+
+<AppScreen bare scale={scale}>
+  <StatusBar os={os} />
+
+  {/* Safe area, then TopBar: back arrow, `achievements.title`, `icons.batch`. */}
+  <div class="mt-[13px] flex shrink-0 items-center justify-between p-[8px]" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#CDCDE0" stroke-width="2.2"
+      ><path d="M20 12H4M4 12l6-6M4 12l6 6" stroke-linecap="round" stroke-linejoin="round"></path></svg
+    >
+    <span class="truncate px-[6px] text-[16px] font-semibold leading-[21px] text-white">{tr('achievements.title')}</span>
+    <img src={BATCH_ICON} width="16" height="16" alt="" class="h-[16px] w-[16px] shrink-0" />
+  </div>
+
+  <div class="ac-scroll" aria-hidden="true">
+    {/* The progress ring: the built-in 24 only, never the user's own goals. */}
+    <div class="ac-ring-wrap">
+      <div class="ac-ring-outer">
+        <div class="ac-ring-inner">
+          <span class="ac-ring-count">{ringUnlocked}</span>
+          <span class="ac-ring-of">{tr('achievements.ofTotal', { total: BUILTIN.length })}</span>
+        </div>
+      </div>
+      <p class="ac-auto">{tr('achievements.autoUnlock')}</p>
+    </div>
+
+    <div class="ac-grid">
+      {
+        TILES.map((tile) => (
+          <div class:list={['ac-tile', tile.unlocked && 'ac-tile-on']} data-goal-tile={tile.goal ? '' : undefined}>
+            <span
+              class:list={[
+                'ac-icon',
+                tile.add ? 'ac-icon-add' : tile.unlocked ? 'ac-icon-on' : 'ac-icon-off',
+              ]}
+            >
+              <svg
+                viewBox="0 0 512 512"
+                class:list={[tile.add && 'ac-glyph-add']}
+                fill={tile.add ? '#1FD9FF' : tile.unlocked ? '#fff' : '#4b5563'}
+              >
+                <path d={ION[tile.icon]} />
+              </svg>
+            </span>
+            <span class:list={['ac-main', tile.add ? 'ac-main-add' : tile.unlocked ? 'ac-main-on' : 'ac-main-off']}>
+              {tile.main}
+            </span>
+            <span class:list={['ac-sub', tile.unlocked && 'ac-sub-on']}>{tile.sub}</span>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</AppScreen>
+
+<style>
+  /* ScrollView px-3. */
+  .ac-scroll {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: hidden;
+    padding: 0 8px;
+  }
+
+  /* mt-5, mb-6; w-36 around w-[124px], both with a 3pt border. */
+  .ac-ring-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 13.3px 0 16px;
+  }
+
+  .ac-ring-outer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 95.6px;
+    height: 95.6px;
+    box-sizing: border-box;
+    border-radius: 999px;
+    border: 2px solid rgb(31 217 255 / 0.3);
+  }
+
+  .ac-ring-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 82.3px;
+    height: 82.3px;
+    box-sizing: border-box;
+    border-radius: 999px;
+    border: 2px solid #1fd9ff;
+  }
+
+  /* text-3xl font-pbold. */
+  .ac-ring-count {
+    font-size: 19.9px;
+    line-height: 23.9px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .ac-ring-of {
+    font-size: 8px;
+    line-height: 10.6px;
+    color: #9ca3af;
+  }
+
+  .ac-auto {
+    margin: 8px 0 0;
+    font-size: 8px;
+    line-height: 10.6px;
+    color: #6b7280;
+    text-align: center;
+  }
+
+  .ac-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  /* AchievementItem: w-[32%] mb-3, rounded-2xl p-3 over the dark card gradient,
+     or the app's blue one once unlocked. */
+  .ac-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 32%;
+    margin-bottom: 8px;
+    padding: 8px;
+    box-sizing: border-box;
+    border-radius: 10.6px;
+    background: linear-gradient(to bottom right, #1e1e2d, #232533);
+  }
+
+  .ac-tile-on {
+    background: linear-gradient(to bottom right, #0d6bcd, #1fd9ff);
+  }
+
+  /* w-10 h-10 rounded-xl mb-1.5. */
+  .ac-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26.6px;
+    height: 26.6px;
+    margin-bottom: 4px;
+    box-sizing: border-box;
+    border-radius: 8px;
+  }
+
+  .ac-icon svg {
+    width: 14.6px;
+    height: 14.6px;
+  }
+
+  .ac-icon-on {
+    background: rgb(255 255 255 / 0.2);
+  }
+
+  .ac-icon-off {
+    background: rgb(30 30 45 / 0.6);
+  }
+
+  /* AddAchievementTile: bg-secondary/15 with a border-secondary/40, the plus at 28pt. */
+  .ac-icon-add {
+    background: rgb(31 217 255 / 0.15);
+    border: 0.66px solid rgb(31 217 255 / 0.4);
+  }
+
+  .ac-icon .ac-glyph-add {
+    width: 18.6px;
+    height: 18.6px;
+  }
+
+  /* font-pbold text-sm, two lines at most. */
+  .ac-main {
+    max-width: 100%;
+    font-size: 9.3px;
+    line-height: 13.3px;
+    font-weight: 700;
+    text-align: center;
+    overflow-wrap: anywhere;
+    hyphens: auto;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+
+  .ac-main-on {
+    color: #fff;
+  }
+
+  .ac-main-off {
+    color: #d1d5db;
+  }
+
+  .ac-main-add {
+    color: #1fd9ff;
+  }
+
+  /* text-[10px] font-pregular mt-0.5, one line. */
+  .ac-sub {
+    max-width: 100%;
+    margin-top: 1.3px;
+    font-size: 6.64px;
+    line-height: 10px;
+    color: #6b7280;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ac-sub-on {
+    color: rgb(255 255 255 / 0.7);
+  }
+</style>

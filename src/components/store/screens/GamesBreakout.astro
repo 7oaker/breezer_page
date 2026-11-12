@@ -1,0 +1,108 @@
+---
+/**
+ * The one enlarged detail of the games image: what a run adds up to. This is
+ * the award block of the result panel (`games/runtime/GameOverlays.jsx`,
+ * ResultPanel), as `app/games/[gameId].jsx` fills it: the Breeze the run earned,
+ * a bar across the current step of the theme ladder, and the theme at its end.
+ * It carries "collect" and "unlock", the phone carries "play".
+ *
+ * The numbers follow `lib/gameEconomy.js`: Pouch Catch pays 12 Breeze a can, so
+ * the three cans on the phone are +36, which brings the demo player to 412.
+ * The first rung is Aurora at 750 (`games/themes.js`), so the bar stands at
+ * 412 / 750. Aurora is also free over Christmas, but unlocking it with Breeze
+ * works all year, so the image does not depend on the date.
+ *
+ * Placed over the lower part of the phone, which the edge of the image cuts
+ * anyway; the sprites in GamesScreen.astro keep clear of it. Like the result
+ * panel it is in the system face: the game screens set no font family.
+ */
+import { appLocale } from '../../../lib/appLocale';
+
+interface Props {
+  lang: string;
+  page: 'default' | 'track' | 'quit';
+  os: 'ios' | 'android';
+  screenW: number;
+  screenH: number;
+  stageTop: number;
+  canvasW: number;
+}
+const { lang, os, screenW, screenH, stageTop } = Astro.props;
+const tr = appLocale(lang);
+
+const BREEZE_PER_CAN = 12;
+const CANS = 3;
+const TOTAL = 412;
+const AURORA = 750;
+const progress = Math.round((TOTAL / AURORA) * 100);
+
+/* The card in the app's 261px space, enlarged by a third on top of the screen's own scale. */
+const zoom = (screenW / 261) * 1.35;
+const top = stageTop + screenH * (os === 'ios' ? 0.72 : 0.655);
+const font =
+  os === 'ios'
+    ? "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif"
+    : "Roboto, 'Helvetica Neue', Arial, sans-serif";
+---
+
+<div class="gb" style={`top:${top.toFixed(1)}px`} aria-hidden="true">
+  <div class="gb-card" style={`zoom:${zoom.toFixed(4)};font-family:${font}`}>
+    <p class="gb-award">{tr('games.result.breeze', { n: CANS * BREEZE_PER_CAN })}</p>
+    <div class="gb-track"><div class="gb-fill" style={`width:${progress}%`}></div></div>
+    <p class="gb-goal">{tr('store.nextUp', { name: tr('store.theme.aurora.name') })}</p>
+  </div>
+</div>
+
+<style>
+  .gb {
+    position: absolute;
+    left: 50%;
+    translate: -50% 0;
+    z-index: 55;
+    filter: drop-shadow(0 30px 40px rgb(0 0 0 / 0.55));
+  }
+
+  /* ResultPanel's awardBlock on the app's card surface, since out here it has no overlay under it. */
+  .gb-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 11px 18px 10px;
+    border-radius: 11px;
+    background: linear-gradient(135deg, #1e1e2d, #232533);
+    box-shadow: inset 0 0 0 0.75px rgb(255 255 255 / 0.07);
+  }
+
+  .gb-award {
+    margin: 0;
+    color: #1fd9ff;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1.25;
+    white-space: nowrap;
+  }
+
+  /* trackBase: 190 x 4pt, 2pt radius. */
+  .gb-track {
+    width: 126px;
+    height: 2.7px;
+    margin-top: 5.3px;
+    border-radius: 1.3px;
+    background: rgb(255 255 255 / 0.1);
+    overflow: hidden;
+  }
+
+  .gb-fill {
+    height: 100%;
+    border-radius: 1.3px;
+    background: #1fd9ff;
+  }
+
+  .gb-goal {
+    margin: 3.3px 0 0;
+    color: #8b8b9e;
+    font-size: 7.3px;
+    line-height: 1.3;
+    white-space: nowrap;
+  }
+</style>

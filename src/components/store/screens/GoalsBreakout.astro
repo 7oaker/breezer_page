@@ -1,0 +1,66 @@
+---
+/**
+ * The one enlarged detail of the `goals` image: the user's own goal tile, so
+ * the eye lands on "61 / 100 €" before it reads the trophies around it.
+ *
+ * It is the very tile GoalsScreen drew, cloned at load rather than written a
+ * second time, so the two can never differ in a word, a number or a pixel. The
+ * clone keeps the screen's scoped classes and therefore its styles; only its
+ * width has to be set, because in the grid it is a share of the row.
+ *
+ * Floating over the lower rows of built-in trophies rather than on top of the
+ * tile itself: lifted in place it covered "New goal / Your own" beside it,
+ * which is what says this one was written by the user. The trophies below are
+ * the part of the screen that repeats, so they can take the overlap.
+ *
+ * The screen starts ring + bezel below the device's top (Device.astro's 0.013
+ * and 0.024 of the screen width on iOS, 0.011 and 0.02 on Android); CENTER is
+ * in the screen's own 566px, low enough to clear the first row, high enough to
+ * stay inside the Play image, which cuts the screen at about 484.
+ */
+interface Props {
+  lang: string;
+  page: 'default' | 'track' | 'quit';
+  os: 'ios' | 'android';
+  screenW: number;
+  screenH: number;
+  stageTop: number;
+  canvasW: number;
+}
+const { os, screenW, stageTop } = Astro.props;
+
+const scale = screenW / 261;
+const screenTop = stageTop + screenW * (os === 'ios' ? 0.037 : 0.031);
+const CENTER = 398;
+/** How much bigger than the tile in the screen. */
+const LIFT = 2;
+const top = screenTop + CENTER * scale;
+---
+
+<div class="goals-breakout" style={`top:${top.toFixed(1)}px`} aria-hidden="true">
+  <div class="goals-breakout__zoom" style={`zoom:${(scale * LIFT).toFixed(3)}`} data-goals-breakout></div>
+</div>
+
+<script is:inline>
+  (() => {
+    const tile = document.querySelector('[data-goal-tile]');
+    const slot = document.querySelector('[data-goals-breakout]');
+    if (!tile || !slot) return;
+    const clone = tile.cloneNode(true);
+    clone.removeAttribute('data-goal-tile');
+    // offsetWidth ignores the screen's scale transform: the tile's own width.
+    clone.style.width = `${tile.offsetWidth}px`;
+    clone.style.marginBottom = '0';
+    slot.appendChild(clone);
+  })();
+</script>
+
+<style>
+  .goals-breakout {
+    position: absolute;
+    left: 50%;
+    translate: -50% -50%;
+    z-index: 55;
+    filter: drop-shadow(0 30px 40px rgb(0 0 0 / 0.55));
+  }
+</style>

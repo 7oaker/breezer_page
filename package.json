@@ -8,7 +8,11 @@
     "dev": "astro dev",
     "preview": "astro preview",
     "check": "astro check",
-    "audit": "node scripts/seo-audit.mjs"
+    "audit": "node scripts/seo-audit.mjs",
+    "store": "node scripts/capture-store.mjs",
+    "motion": "node scripts/capture-motion.mjs",
+    "sync:app-screens": "node scripts/sync-app-screens.mjs",
+    "sync:store-copy": "node scripts/sync-store-copy.mjs"
   },
   "homepage": "https://breezer.now",
   "keywords": [],
@@ -17,8 +21,10 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "autoprefixer": "^10.4.2",
+    "playwright-core": "1.63.0",
     "postcss": "^8.4.5",
     "postcss-preset-env": "^7.2.3",
+    "sharp": "0.34.5",
     "tailwindcss": "^3.1.8",
     "typescript": "^6.0.3"
   },

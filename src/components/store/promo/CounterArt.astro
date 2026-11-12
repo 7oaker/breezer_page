@@ -1,0 +1,88 @@
+---
+/**
+ * The quit counter as one round mark: a white ring, most of the way to the next
+ * milestone, around "24 Tage". The quitting page's motif and the same 24 days as
+ * the screenshots; the unit is the app's own word (`home.quitting.days`). No
+ * line above the number: the headline beside it already says what is counted,
+ * and in Polish or Finnish that line ran into the ring.
+ */
+import { appLocale } from '../../../lib/appLocale';
+
+interface Props {
+  lang: string;
+  /** Ring diameter in px; everything else follows it. */
+  size: number;
+}
+const { lang, size } = Astro.props;
+const tr = appLocale(lang);
+
+/* 24 of the 30 days to the one-month milestone on the journey. */
+const R = 46;
+const C = 2 * Math.PI * R;
+const done = C * (24 / 30);
+---
+
+<div class="counter-art" style={`--s:${size}px`}>
+  <svg class="dial" viewBox="0 0 100 100" aria-hidden="true">
+    <circle class="track" cx="50" cy="50" r={R} />
+    <circle class="arc" cx="50" cy="50" r={R} transform="rotate(-90 50 50)" stroke-dasharray={`${done.toFixed(2)} ${C.toFixed(2)}`} />
+  </svg>
+  <div class="words">
+    <span class="number">24</span>
+    <span class="unit">{tr('home.quitting.days')}</span>
+  </div>
+</div>
+
+<style>
+  .counter-art {
+    position: relative;
+    width: var(--s);
+    height: var(--s);
+    font-family: 'Poppins', sans-serif;
+    line-height: 1;
+    color: #fff;
+  }
+
+  .dial {
+    position: absolute;
+    inset: 0;
+    overflow: visible;
+  }
+
+  .track,
+  .arc {
+    fill: none;
+    stroke-width: 5;
+  }
+
+  .track {
+    stroke: rgb(255 255 255 / 0.22);
+  }
+
+  .arc {
+    stroke: #fff;
+    stroke-linecap: round;
+  }
+
+  .words {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .number {
+    margin-top: calc(var(--s) * 0.04);
+    font-size: calc(var(--s) * 0.46);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+  }
+
+  .unit {
+    margin-top: calc(var(--s) * -0.01);
+    font-size: calc(var(--s) * 0.11);
+    font-weight: 700;
+  }
+</style>

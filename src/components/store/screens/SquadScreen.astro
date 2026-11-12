@@ -1,0 +1,507 @@
+---
+/**
+ * The Squad page of the Social screen, with the viewer inside a squad: the
+ * store's `squad` frame, which no page shows at the moment. It was the
+ * community image until 12.11.2026, when Klaus preferred the squad's chat room
+ * there (CommunityScreen); kept, because the board is the squad feature's own
+ * screen and the natural image if squads ever get one. Rebuilt from react_Breezer:
+ * - `app/(tabs)/explore.jsx`: TopBar "Social", the pill row Friends / Squad /
+ *   Global (Squad exists only while tracking, which the viewer is);
+ * - `components/social/squad/SquadHeader.jsx`: the gradient card with avatar,
+ *   name, [tag], member count, the four stat boxes (members, pouch total in the
+ *   accent, Breeze, average streak), then Invite and Open chat;
+ * - `components/social/squad/SquadTab.jsx`: the "Members" heading and one
+ *   `RankingCard` per member, ranked on `score`, labelled "Snus tracked" (or
+ *   "Quitting" for a member who stopped), with Breeze as the small second figure.
+ *
+ * The one chat message in front of the device is SquadBreakout.astro. Its
+ * author is the squad's #2 here, a member from the reader's own country, so a
+ * Finnish image is not a German talking Finnish. MEMBER_LOCAL (src/data/storeChat.ts) and the avatar
+ * colour in step with the breakout.
+ *
+ * On the default page (both paths) that member has quit and still sits on the
+ * board: `squad.memberQuitting` is the app's one trace of quitting on a squad
+ * board, and a quitter keeps the squad's room. On the track page the same member
+ * is simply tracking.
+ *
+ * Geometry: AppScreen's 261 x 566 contract, app points x 0.6641. Styled with
+ * scoped CSS rather than Tailwind arbitrary values, so the image does not depend
+ * on the dev server's Tailwind build having seen this file.
+ */
+import { MEMBER_LOCAL } from '../../../data/storeChat';
+import AppScreen from '../../home/AppScreen.astro';
+import StatusBar from '../StatusBar.astro';
+import { appLocale } from '../../../lib/appLocale';
+
+interface Props {
+  lang: string;
+  page: 'default' | 'track' | 'quit';
+  os: 'ios' | 'android';
+  scale: number;
+}
+const { lang, page, os, scale } = Astro.props;
+const tr = appLocale(lang);
+const num = new Intl.NumberFormat(lang);
+
+/** `getFlagEmoji` from utility/helperFunctions.js. */
+const flag = (cc: string) => String.fromCodePoint(...[...cc.toUpperCase()].map((c) => 127397 + c.charCodeAt(0)));
+
+/** The squad's #2 and author of the breakout's message, one per language (MEMBER_LOCAL, shared with SquadBreakout). */
+const [localName, localCountry] = MEMBER_LOCAL[lang] ?? MEMBER_LOCAL.en;
+const localQuit = page !== 'track';
+
+/**
+ * The squad, ranked on score as `getSquadMembers` does. Avatars are Appwrite's
+ * generated initials (one word, one letter) in its palette, never photos.
+ * Alex, Oskar, Lea and Kasper carry the same scores as on the friends ranking
+ * image; the local member and Mila are squadmates but not friends, so neither
+ * appears there.
+ *
+ * The local member is #2 on purpose: the breakout covers rows two to four, so
+ * Alex's own row stays in view above it and the message's author is the row it
+ * hides, named in the message itself.
+ */
+const MEMBERS = [
+  { name: 'Alex', country: 'AT', score: 3632, breeze: 12480, streak: 64, color: '#FE9567' },
+  { name: localName, country: localCountry, score: 3305, breeze: 8420, streak: 41, color: '#68A3FE', quitting: localQuit },
+  { name: 'Oskar', country: 'SE', score: 2871, breeze: 9870, streak: 23, color: '#85DBD8' },
+  { name: 'Mila', country: 'HR', score: 2640, breeze: 5310, streak: 112, color: '#FD366E' },
+  { name: 'Lea', country: 'CH', score: 2390, breeze: 3960, streak: 58, color: '#7C67FE' },
+  { name: 'Kasper', country: 'DK', score: 2215, breeze: 7150, streak: 30, color: '#FDC584' },
+  { name: 'Zsófi', country: 'HU', score: 1402, breeze: 2740, streak: 9, color: '#FD366E' },
+];
+
+const SQUAD = { name: 'Bangerz', tag: 'BNGZ', color: '#7C67FE' };
+const memberCount = MEMBERS.length;
+const totalScore = MEMBERS.reduce((s, m) => s + m.score, 0);
+const totalBreeze = MEMBERS.reduce((s, m) => s + m.breeze, 0);
+// An average, never a sum: SquadHeader explains why.
+const avgStreak = Math.round(MEMBERS.reduce((s, m) => s + m.streak, 0) / memberCount);
+
+const stats = [
+  { value: String(memberCount), label: tr('squad.statMembers') },
+  { value: num.format(totalScore), label: tr('squad.statTotal'), accent: true },
+  { value: num.format(totalBreeze), label: tr('squad.statBreeze') },
+  { value: String(avgStreak), label: tr('squad.statStreak') },
+];
+
+const tabs = [
+  { label: tr('friends.title'), on: false },
+  { label: tr('squad.title'), on: true },
+  { label: tr('friends.global'), on: false },
+];
+
+/* The app's own PNGs (assets/icons/left-arrow.png, explore.png), inline: 341 and 1141 bytes. */
+const LEFT_ARROW =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAWCAYAAADTlvzyAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAADqSURBVHgBvdXBDYIwFAbg/70JGIE9FHfwYAwnQSdwg7KBEwievDiFcRBH6AJQW2JMSG2s1vY/QXjJl5D2fwSPHC+3DQZ1gIIESGzX8xN+DH8aGLFedRrL9GsOaDgg7IVNIxEDdGBQAzcICH2J1bty1iEg7I+hCcVMyB8rBP4QSom9wFTYCLqwCLmb0mCNCaRJbkqD9U/NkC6SqVd7pAhBmtIYD017vlaKqbVmGKJeFUHNYrvPpEInFz8FanVpbPRtebtQPV6FLF8nGBN17sO6XHQ0qNr+EnHjO9A4G3+CQi1hulBfXv0cVBQPRbaRlSkE6g8AAAAASUVORK5CYII=';
+const EXPLORE =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAABBdJREFUeNrUm+1xozAQhjGT/+cSSAXGkwKCK0hSwZEKHFfguAI7FUAqsFOBSQEZkwpMKjhKOG1mdbdRREBiZWTNMPaMjeDhlfZLYhR42t7eqkh83IpjIo6I/PQqjt3VVVTa9DvyFHQpjrTlr4U4VgK8OFtgAQuKZuIYG5wG0I9nB4ywW8vTNwJ6cTbAAhYUPRoqq7Y7Ab1r+1PoicDrnrDQMnxwfgOjkUoZuhqjVf+xXQwAGIuPBG8QXE7M2P2NOPLBgdEg3aACY4eXSgZTGIfqHIfr+EQDaHxyYDQcEDg8aH6uMWCAaAkipQpdUXyqKXXhYOjqAgeYVy86tyHOqc4OGFVda6ztCmAFaPXD6e9drGvHVjgHRti9ohJc+L4FVLYdTgGO9uLUDzfALgTorCNsgFlPwQTsLvDQwIJBmgqAjUV3Kybgpbiv1JXCmQI7s81RMcXrA10pIeYtK7Do8IEYml6wBBpSvI2loZoqEVaGcUD/bAk7OppmKYauba1UOYIGn/5Ec2Fx7oGMugJsCYfCmZKHssGi0lC+uQQrjxa81igKue+lJvG/I/9PdPN5ZPj0EzRUct6Akao9q5qkRJQKH561wkultOIVLI6QnLi5SFU5NFQ3IfMjD/xtqwaRjBT+Tb4/ewwr3VxJVE6MgJWqROW5urI96cS6aKlMgIu4VkLHMfrh3Mc5rMTomVoYGDWomXWpHgSGNeEBLPaecIAbq0KNST90hJWx66FLtXCg9kq+x1/msGXVX3a09xS61ALjzWY9Oo4Zc1rORpOKCVWYoxD+0BSwD+ieSjVXDlHdlOkac999VchYTwoMjN2gwBPG/uJzAGa9SY9d1D/girlPb4AxWvxisQH4g9kyVh4JSr3GhwQuGS9QeTaCr5VKySdwwRyw+9QSNeoKMePhSveePJq/ETHIpczsZHq4CPqv3W5ONX/RGM1RwUiZUjBiX5Th/PwtPVQKdDZB+sx1fkxiftNg6VKKESplEVrm9A02RkFMYQs68voUAL4Vwh0r22db00zu2At1fhQr9rB8scE5UVPTTgKMU1nlbU/7spURoM1SyyPJfZ0PZ6Ww3qd97tYzXmrBIVySZGHtWF2ulDMFlW2XS+/JMIeOModzlyu5gb4SK2CsJCyUp+cCmjvdjK0XxLEYf38CaPb0MGCGPvhW22IDboCGYXgEa85QDOAOVesRo4GJ0V9GanCCLqG27PcPY1FhyrpBvGXbYY5BfdEVHh9ixmS8PhfHneyI7xCeyn2W75rffiFgzFwugo1yudNXAMgbKq63DbcmOAJ2ahVa9oCnS69JFwMT/N95W5AHZ2yoArKtarCXPFD9qMHyFw3nwDRJbWEHBe6ZTCyD9n1ckOl923hzdsANU4QaQzCEuyZP8FeAAQBcR7NLbRzFmwAAAABJRU5ErkJggg==';
+
+/* Ionicons glyphs, traced out of the app's Ionicons.ttf (512 units). */
+const ICON = {
+  personAdd:
+    'M268 34Q275 33 287.5 33Q300 33 307 34Q341 40 364 64Q382 83 389 108Q397 139 387 172.5Q377 206 352 229Q305 273 249 247Q215 230 197 193Q170 136 195 87Q218 43 268 34ZM80 162Q85 159 91.5 160.5Q98 162 101 167L104 171L104 193L104 216L127 216L149 216L153 219Q160 224 159.5 232.5Q159 241 152 246Q148 248 126 248L104 248L104 269Q104 294 99 299Q92 307 82 303Q75 300 73 292Q72 289 72 269L72 248L51 248Q31 248 28 247Q20 245 17 238Q12 226 24 219L28 216L50 216L72 216L72 194Q72 172 74 168.5Q76 165 80 162ZM262 289Q262 289 262 289Q270 289 287.5 289Q305 289 312 289Q335 292 356 297Q405 311 439.5 341Q474 371 488 412Q503 455 485 472Q480 476 476 478Q476 478 471 480L288 480L105 480L101 478Q90 474 85 465Q76 449 87 416Q96 390 112 368Q136 336 176 315Q216 294 262 289Z',
+  chatbubbles:
+    'M265 34Q274 33 293.5 33Q313 33 322 35Q350 39 376 52Q413 70 439 101.5Q465 133 475 172Q493 246 453 310L447 318L455 348Q462 373 463 379.5Q464 386 461 392Q456 402 447 404Q439 407 403 394L370 382L355 387Q297 406 249 396Q205 387 170 359Q154 347 141 331Q115 299 106 259Q95 214 106 172Q119 121 158 85Q202 43 265 34ZM315 66Q287 62 260 67Q213 76 179 108Q145 140 136 184Q123 243 154 294Q176 328 210.5 348Q245 368 285 368Q310 368 345 356Q361 351 370 351L379 351L403 360Q427 368 427.5 368Q428 368 421.5 346.5Q415 325 415 320Q414 311 424 295Q444 264 447 228Q453 170 414.5 122.5Q376 75 315 66ZM61 217Q61 217 61 217Q69 214 75.5 219Q82 224 82 232Q82 236 78 245Q57 288 68 335Q73 354 85 374Q90 382 91 387Q91 387 92 392L88 417Q83 442 83 442.5Q83 443 105 434.5Q127 426 132 425Q139 424 155 429Q181 437 205 437Q239 437 271 421Q283 415 290 418Q297 421 300 428Q302 437 295 444Q289 449 271.5 456Q254 463 240 466Q194 475 146 459Q146 459 137 456L108 468Q80 479 76 479Q63 482 54 471Q48 464 48 456Q48 454 54 424Q54 424 60 394L56 388Q38 359 33 324Q30 302 34 280Q38 251 50 228Q55 219 61 217Z',
+  podium:
+    'M182 34Q185 33 257 33L329 33L334 35Q349 43 352 60Q352 65 352 129L352 192L412 192L471 192L477 195Q488 200 493 211L495 215L496 337Q496 460 495 463Q493 471 485 476Q480 479 455.5 479.5Q431 480 256 480Q41 480 35 479Q21 476 17 463Q16 460 16 305L17 151L19 147Q24 136 35 131L41 128L100 128L160 128L160 97Q160 65 160 60Q163 41 182 34ZM320 256L320 64L256 64L192 64L192 256L192 448L256 448L320 448ZM160 304L160 160L104 160L48 160L48 304L48 448L104 448L160 448ZM464 336L464 336L464 224L408 224L352 224L352 336L352 448L408 448L464 448Z',
+};
+---
+
+<AppScreen bare scale={scale}>
+  <StatusBar os={os} />
+
+  <div class="cs" aria-hidden="true">
+    {/* Safe area: the TopBar starts where iOS ends the status bar inset (59pt). */}
+    <div class="safe"></div>
+
+    {/* TopBar: back arrow, title, the explore icon. p-3, text-2xl. */}
+    <div class="topbar">
+      <span class="topbar-back"><img src={LEFT_ARROW} alt="" /></span>
+      <span class="topbar-title">{tr('friends.social')}</span>
+      <img class="topbar-icon" src={EXPLORE} alt="" />
+    </div>
+
+    {/* The scope pills: px-4, py-3, then mb-4. */}
+    <div class="tabs">
+      {tabs.map((tab) => <span class:list={['tab', tab.on && 'tab--on']}>{tab.label}</span>)}
+    </div>
+
+    {/* SquadHeader. Alex is a member, not the owner, so no gear in the card. */}
+    <div class="sh">
+      <div class="sh-card">
+        <div class="sh-row">
+          <span class="sh-avatar" style={`background:${SQUAD.color}`}>{SQUAD.name.charAt(0)}</span>
+          <div class="sh-info">
+            <div class="sh-name-row">
+              <span class="sh-name">{SQUAD.name}</span>
+              <span class="sh-tag">[{SQUAD.tag}]</span>
+            </div>
+            <span class="sh-count">{tr('squad.memberCount', { count: memberCount })}</span>
+          </div>
+        </div>
+
+        <div class="sh-stats">
+          {
+            stats.map((s) => (
+              <div class="stat">
+                <span class:list={['stat-v', s.accent && 'stat-v--accent']}>{s.value}</span>
+                <span class="stat-l">{s.label}</span>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="btns">
+        <span class="btn btn--invite">
+          <svg width="10.6" height="10.6" viewBox="0 0 512 512" fill="#161622"><path d={ICON.personAdd}></path></svg>
+          <span>{tr('squad.invite')}</span>
+        </span>
+        <span class="btn btn--chat">
+          <svg width="10.6" height="10.6" viewBox="0 0 512 512" fill="#1FD9FF"><path d={ICON.chatbubbles}></path></svg>
+          <span>{tr('squad.openChat')}</span>
+        </span>
+      </div>
+    </div>
+
+    {/* "Members": px-4 mt-5 mb-2, podium-outline. */}
+    <div class="mh">
+      <svg width="9.3" height="9.3" viewBox="0 0 512 512" fill="#6b7280"><path d={ICON.podium}></path></svg>
+      <span>{tr('squad.members')}</span>
+    </div>
+
+    {/* RankingCard per member: rank, avatar, name and flag, label, score, Breeze. */}
+    {
+      MEMBERS.map((m, i) => (
+        <div class="rc">
+          <div class="rc-card">
+            <span class="rc-rank">{i + 1}</span>
+            <span class="rc-av">
+              <span style={`background:${m.color}`}>{m.name.charAt(0)}</span>
+            </span>
+            <div class="rc-info">
+              <div class="rc-name-row">
+                <span class="rc-name">{m.name}</span>
+                <span class="rc-flag">{flag(m.country)}</span>
+              </div>
+              <span class="rc-label">{m.quitting ? tr('squad.memberQuitting') : tr('ranking.snusTracked')}</span>
+            </div>
+            <div class="rc-right">
+              <span class="rc-count">{m.score}</span>
+              <span class="rc-sub">{num.format(m.breeze)}</span>
+            </div>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</AppScreen>
+
+<style>
+  .cs {
+    flex-shrink: 0;
+  }
+  .safe {
+    height: 13px;
+  }
+
+  .topbar {
+    display: flex;
+    height: 37px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+  }
+  .topbar-back {
+    display: flex;
+    width: 16px;
+    height: 16px;
+    align-items: center;
+    justify-content: center;
+  }
+  .topbar-back img {
+    display: block;
+    width: 16px;
+    height: auto;
+  }
+  .topbar-title {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 21px;
+    color: #fff;
+  }
+  .topbar-icon {
+    display: block;
+    width: 16px;
+    height: 16px;
+  }
+
+  .tabs {
+    display: flex;
+    justify-content: space-around;
+    margin: 0 10.6px 10.6px;
+    padding: 8px 0;
+  }
+  .tab {
+    flex-shrink: 0;
+    white-space: nowrap;
+    border-radius: 9999px;
+    padding: 2.7px 10.6px;
+    font-size: 13.3px;
+    font-weight: 600;
+    line-height: 18.6px;
+    color: #9ca3af;
+  }
+  .tab--on {
+    background: #1f2937;
+    color: #fff;
+  }
+
+  .sh {
+    padding: 5.3px 8px 0;
+  }
+  .sh-card {
+    border-radius: 10.6px;
+    background: linear-gradient(to bottom right, #1e1e2d, #232533);
+    padding: 10.6px;
+  }
+  .sh-row {
+    display: flex;
+    align-items: center;
+  }
+  .sh-avatar {
+    display: flex;
+    width: 42.5px;
+    height: 42.5px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border: 1.3px solid rgb(31 217 255 / 0.4);
+    border-radius: 10.6px;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1;
+    color: #2b303f;
+  }
+  .sh-info {
+    min-width: 0;
+    flex: 1;
+    margin-left: 8px;
+  }
+  .sh-name-row {
+    display: flex;
+    align-items: center;
+  }
+  .sh-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 18.6px;
+    color: #fff;
+  }
+  .sh-tag {
+    flex-shrink: 0;
+    margin-left: 5.3px;
+    font-size: 9.3px;
+    font-weight: 600;
+    line-height: 13.3px;
+    color: #1fd9ff;
+  }
+  .sh-count {
+    display: block;
+    margin-top: 1.3px;
+    font-size: 8px;
+    line-height: 10.6px;
+    color: #9ca3af;
+  }
+  .sh-stats {
+    display: flex;
+    margin-top: 10.6px;
+    padding-top: 8px;
+    border-top: 0.7px solid rgb(55 65 81 / 0.4);
+  }
+  .stat {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+  }
+  .stat-v {
+    white-space: nowrap;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 18.6px;
+    color: #fff;
+  }
+  .stat-v--accent {
+    color: #1fd9ff;
+  }
+  .stat-l {
+    margin-top: 1.3px;
+    padding: 0 1px;
+    text-align: center;
+    font-size: 6.6px;
+    line-height: 9px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #6b7280;
+  }
+
+  .btns {
+    display: flex;
+    margin-top: 8px;
+  }
+  .btn {
+    display: flex;
+    height: 29px;
+    min-width: 0;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+  }
+  .btn span {
+    margin-left: 5.3px;
+    white-space: nowrap;
+    font-size: 9.3px;
+    font-weight: 600;
+    line-height: 13.3px;
+  }
+  .btn svg {
+    flex-shrink: 0;
+  }
+  .btn--invite {
+    margin-right: 4px;
+    background: #1fd9ff;
+    color: #161622;
+  }
+  .btn--chat {
+    margin-left: 4px;
+    border: 0.7px solid rgb(55 65 81 / 0.4);
+    background: #232533;
+    color: #fff;
+  }
+
+  .mh {
+    display: flex;
+    align-items: center;
+    margin: 13.3px 0 5.3px;
+    padding: 0 10.6px;
+  }
+  .mh span {
+    margin-left: 4px;
+    font-size: 8px;
+    font-weight: 600;
+    line-height: 10.6px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #9ca3af;
+  }
+
+  .rc {
+    margin-bottom: 5.3px;
+    padding: 0 8px;
+  }
+  .rc-card {
+    display: flex;
+    align-items: center;
+    border: 0.7px solid rgb(55 65 81 / 0.4);
+    border-radius: 10.6px;
+    background: #232533;
+    padding: 8px;
+  }
+  .rc-rank {
+    display: flex;
+    width: 26.6px;
+    height: 26.6px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+    border-radius: 8px;
+    background: #1e1e2d;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    color: #9ca3af;
+  }
+  .rc-av {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border: 1.3px solid rgb(31 217 255 / 0.4);
+    border-radius: 9999px;
+  }
+  .rc-av span {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    font-size: 12.5px;
+    font-weight: 400;
+    line-height: 1;
+    color: #2b303f;
+  }
+  .rc-info {
+    min-width: 0;
+    flex: 1;
+    margin-left: 8px;
+  }
+  .rc-name-row {
+    display: flex;
+    align-items: center;
+  }
+  .rc-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 10.6px;
+    font-weight: 600;
+    line-height: 16px;
+    color: #fff;
+  }
+  .rc-flag {
+    flex-shrink: 0;
+    margin-left: 4px;
+    font-size: 10.6px;
+    line-height: 16px;
+  }
+  .rc-label {
+    display: block;
+    margin-top: 1.3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 8px;
+    line-height: 10.6px;
+    color: #9ca3af;
+  }
+  .rc-right {
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-left: 4px;
+  }
+  .rc-count {
+    border-radius: 8px;
+    background: rgb(31 217 255 / 0.15);
+    padding: 4px 8px;
+    font-size: 10.6px;
+    font-weight: 700;
+    line-height: 16px;
+    color: #1fd9ff;
+  }
+  .rc-sub {
+    margin-top: 2.7px;
+    font-size: 6.6px;
+    line-height: 9px;
+    color: #6b7280;
+  }
+</style>

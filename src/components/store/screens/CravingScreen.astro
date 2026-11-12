@@ -1,0 +1,119 @@
+---
+/**
+ * The craving help for the store's `craving` image: `react_Breezer/app/(tabs)/urge.jsx`
+ * on its second step, the moment after the craving has been rated, when the
+ * app offers what to do for the next few minutes.
+ *
+ * Why this step and not the breathing circle: the image says "help when the
+ * craving comes", and this is the one screen where all of the help is visible
+ * at once, in the app's own order and words, under its own line ("Let us get
+ * through the next minutes"). The circle alone reads as any meditation app.
+ *
+ * Everything is the app's: the four TOOLS with their Ionicons and colours, the
+ * five StepDots with the second one active, the strings from `urge.*`. Sizes are
+ * the app's points times 261/393 (AppScreen's contract): `p-4` 16 -> 10.6px,
+ * `w-11` 44 -> 29px, `text-2xl` 24 -> 16px, `text-base` 16 -> 10.6px,
+ * `text-sm` 14 -> 9px, `text-xs` 12 -> 8px.
+ *
+ * Nothing sits under the four cards because nothing does in the app: that step
+ * is a ScrollView with the list and no button.
+ *
+ * Icons are Ionicons outlines, the glyphs out of the app's own
+ * `@expo/vector-icons` font (Ionicons.ttf), flipped into a 512 box.
+ */
+import AppScreen from '../../home/AppScreen.astro';
+import StatusBar from '../StatusBar.astro';
+import { appLocale } from '../../../lib/appLocale';
+
+interface Props {
+  lang: string;
+  page: 'default' | 'track' | 'quit';
+  os: 'ios' | 'android';
+  scale: number;
+}
+const { lang, os, scale } = Astro.props;
+const tr = appLocale(lang);
+
+/** Ionicons glyphs, from the font the app ships (`@expo/vector-icons`). */
+const ION = {
+  'game-controller-outline':
+    'M146 81Q161 79 175 82Q183 83 201 87Q226 94 244 96Q274 98 312 87Q346 78 369 81Q399 86 423 110Q464 151 486 261Q497 312 496 348Q495 373 489 390Q478 420 451 429Q444 431 433 431Q422 431 416 429Q391 420 364 389Q349 372 335 364.5Q321 357 297 354Q286 353 254 353Q222 353 212 354Q172 360 151 384Q117 423 94 430Q77 434 60.5 428.5Q44 423 34 410Q23 395 18 369Q17 359 17 335Q17 311 18 299Q27 236 45 185Q62 135 86.5 110Q111 85 146 81ZM175 114Q155 110 137 115Q86 131 59 253Q46 312 49 349Q52 400 79 400Q84 400 91 397Q103 390 127 363Q152 334 190 326Q220 319 266 320Q314 321 340 331Q366 341 387 367Q410 393 424 398Q435 402 443 398Q480 380 452 252Q430 153 392 125Q379 115 361 113Q347 111 324 117Q283 128 256 128Q228 128 193 119Q180 115 175 114ZM153 162Q160 159 167 162Q173 164 175 170Q176 172 176 190L176 208L195 208L214 209L217 211Q222 215 223 221Q226 234 214 239Q212 240 194 240L176 240L176 258Q176 276 175 278Q171 288 160 288Q149 288 145 278Q144 276 144 258L144 240L126 240Q106 240 101 236Q96 231 96 224Q96 217 103 211L106 209L125 208L144 208L144 190Q144 172 145 170Q147 164 153 162ZM327 162Q335 158 344 162Q356 167 356 180Q356 188 350 194Q344 200 336 200Q323 200 318 189Q313 178 320 168Q323 164 327 162ZM286 205Q293 202 301 206Q311 211 312 221.5Q313 232 305 239Q295 247 284 242Q272 236 272.5 223Q273 210 286 205ZM374 205Q385 201 394 210Q402 218 399 229Q397 239 386 243Q374 247 365 237Q356 227 362 215Q366 208 374 205ZM327 251Q327 251 327 251Q341 244 351 255Q363 268 350 281Q342 290 331 287.5Q320 285 317 273Q312 258 327 251Z',
+  'leaf-outline':
+    'M48 49Q55 47 62 50Q64 51 73 60Q111 96 166 110Q179 113 219 120Q266 128 294 139Q359 165 397 223Q442 290 422 362Q420 371 419 373Q419 374 420.5 374.5Q422 375 429 377Q438 379 454 382Q474 385 477 390Q483 397 480 405Q477 413 468 416Q465 416 449 413Q414 407 405 404Q404 404 400 410Q373 448 319 460Q261 472 202 447Q117 412 72 297Q32 196 32 97Q32 73 35.5 62.5Q39 52 48 49ZM84 109Q84 109 84 109Q77 105 70 100Q70 100 64 95L64 108Q68 180 90 253Q109 315 138 355Q173 404 227 422Q266 436 304 430Q342 424 365 401Q371 395 371 394.5Q371 394 366 392Q323 379 275 351Q231 325 188 288Q161 265 159 260Q156 254 158 248Q160 242 166 239Q174 235 180 239Q183 240 196 252Q277 325 363 357Q386 366 387 365Q388 364 390 359Q412 287 357 223Q331 193 295 175Q266 161 218 152Q169 143 155 140Q115 130 84 109Z',
+  'time-outline':
+    'M241 49Q256 48 269 49Q351 54 407 113Q452 161 462 228Q464 238 464 256Q464 274 462 284Q454 339 421 382Q405 405 382 421Q339 454 284 462Q274 464 256 464Q238 464 228 462Q173 454 130 421Q107 405 91 382Q58 339 50 284Q48 274 48 256Q48 238 50 228Q58 174 91 130Q107 108 130 91Q181 53 241 49ZM284 82Q278 81 261.5 80.5Q245 80 240 81Q212 84 193 92Q149 109 119.5 145Q90 181 82 229Q81 238 81 256Q81 274 82 283Q89 326 114 360Q139 394 178 414Q214 432 256 432Q298 432 334 414Q372 394 397 360.5Q422 327 430 284Q431 275 431 256.5Q431 238 430 229Q420 169 378 129Q338 92 284 82ZM252 113Q252 113 252 113Q258 111 263.5 114Q269 117 271 124Q272 127 272 191Q272 191 272 256L314 256Q355 256 359 258Q372 264 367 278Q364 286 355 288Q350 288 301 288Q301 288 252 288L248 286Q244 283 242 280Q242 280 240 277L240 202Q240 127 241 124Q243 115 252 113Z',
+  'water-outline':
+    'M247 42Q261 37 272 45Q277 49 296 73Q315 97 330 118Q421 248 416 333Q411 398 371 437Q336 472 279 479Q272 480 256 480Q240 480 233 479Q176 472 141 437Q105 402 97 343Q94 319 98 297Q109 222 181 119Q195 99 214.5 74Q234 49 239 46Q242 43 247 42ZM266 86Q257 75 256 75Q254 75 226 112Q151 210 134 281Q129 301 129 321Q129 345 134 365Q148 413 192 435Q220 448 256 448Q306 448 339 423Q372 398 381 354Q391 304 366 245Q336 172 266 86ZM337 314Q337 314 337 314Q343 311 349.5 313.5Q356 316 358 321Q360 325 360 333Q358 357 345 377Q337 389 324 399Q305 413 280 415Q262 417 257 406Q253 394 263 387Q266 385 275 384Q291 382 302 375Q314 367 321 355Q328 343 328 332Q328 327 329 324Q331 316 337 314Z',
+  'chevron-forward':
+    'M179 89Q179 89 179 89Q187 87 195 91Q198 92 273 167Q335 228 343.5 238Q352 248 352 256Q352 264 343.5 274Q335 284 273 345Q213 405 203 414Q193 423 186 424Q177 425 169.5 419Q162 413 161 404Q159 396 163 389Q164 386 229 321Q229 321 294 256L229 191Q164 126 163 123Q159 116 161 108Q163 92 179 89Z',
+} as const;
+
+/** urge.jsx's TOOLS, in its order: the game first, because it asks the least. */
+const TOOLS = [
+  { key: 'game', icon: 'game-controller-outline', color: '#fbbf24' },
+  { key: 'breathing', icon: 'leaf-outline', color: '#34d399' },
+  { key: 'delay', icon: 'time-outline', color: '#1FD9FF' },
+  { key: 'surfing', icon: 'water-outline', color: '#a78bfa' },
+] as const;
+
+/** urge.jsx's STEPS: intensity, tool, exercise, trigger, outcome. This is `tool`. */
+const STEP_COUNT = 5;
+const STEP_INDEX = 1;
+---
+
+<AppScreen bare scale={scale}>
+  <StatusBar os={os} />
+
+  {/* The safe area below the status bar, then TopBar: back arrow, title, and
+      an empty 24pt slot on the right (urge.jsx passes no icon), so the title
+      sits centred. */}
+  <div class="mt-[13px] flex shrink-0 items-center justify-between p-[8px]" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#CDCDE0" stroke-width="2.2"
+      ><path d="M20 12H4M4 12l6-6M4 12l6 6" stroke-linecap="round" stroke-linejoin="round"></path></svg
+    >
+    <span class="truncate px-[6px] text-[16px] font-semibold leading-[21px] text-white">{tr('urge.title')}</span>
+    <span class="h-[16px] w-[16px] shrink-0"></span>
+  </div>
+
+  {/* StepDots: h-1.5, mx-1, the active one w-5 in the accent. */}
+  <div class="mb-[11px] mt-[3px] flex shrink-0 justify-center" aria-hidden="true">
+    {
+      Array.from({ length: STEP_COUNT }, (_, i) => (
+        <span
+          class:list={[
+            'mx-[2.7px] h-[4px] rounded-full',
+            i === STEP_INDEX ? 'w-[13px] bg-[#1FD9FF]' : 'w-[4px] bg-[#374151]',
+          ]}
+        />
+      ))
+    }
+  </div>
+
+  <div class="flex min-h-0 flex-1 flex-col px-[10.6px]">
+    <h2 class="mb-[5px] mt-[10.6px] text-[16px] font-bold leading-[21px] text-white">{tr('urge.toolTitle')}</h2>
+    <p class="mb-[16px] text-[9px] leading-[13px] text-[#9ca3af]">{tr('urge.toolBody')}</p>
+
+    {
+      TOOLS.map((tool) => (
+        <div class="mb-[8px] flex items-center rounded-[10.6px] bg-gradient-to-br from-[#1E1E2D] to-[#232533] p-[10.6px]">
+          <span
+            class="mr-[8px] flex h-[29px] w-[29px] shrink-0 items-center justify-center rounded-[8px]"
+            style={`background:${tool.color}26`}
+            aria-hidden="true"
+          >
+            <svg width="14.6" height="14.6" viewBox="0 0 512 512" fill={tool.color}>
+              <path d={ION[tool.icon]} />
+            </svg>
+          </span>
+          <span class="flex min-w-0 flex-1 flex-col">
+            <span class="text-[10.6px] font-bold leading-[15px] text-white">{tr(`urge.tools.${tool.key}Title`)}</span>
+            <span class="mt-[1.3px] text-[8px] leading-[10.6px] text-[#9ca3af]">{tr(`urge.tools.${tool.key}Body`)}</span>
+          </span>
+          <svg class="ml-[4px] shrink-0" width="10.6" height="10.6" viewBox="0 0 512 512" fill="#6b7280" aria-hidden="true">
+            <path d={ION['chevron-forward']} />
+          </svg>
+        </div>
+      ))
+    }
+  </div>
+</AppScreen>
