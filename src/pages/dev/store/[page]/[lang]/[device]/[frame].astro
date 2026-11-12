@@ -102,11 +102,12 @@ const ios = os === 'ios';
  * Everything relative to the image width, so both formats come out of one rule.
  * The screen is the app's 261px layout scaled up; the device grows around it.
  */
-const screenW = W * (ios ? 0.78 : 0.66);
+const layout = device.layout;
+const screenW = W * (layout?.screen ?? (ios ? 0.78 : 0.66));
 const scale = screenW / 261;
 const screenH = 566 * scale;
-const stageTop = H * (ios ? 0.27 : 0.3);
-const titleSize = W * (ios ? 0.098 : 0.088);
+const stageTop = H * (layout?.stage ?? (ios ? 0.27 : 0.3));
+const titleSize = W * (layout?.title ?? (ios ? 0.098 : 0.088));
 const handW = screenW * 0.5;
 
 /*
@@ -135,7 +136,7 @@ const widgetsTop = stageTop + screenH * 0.47;
           <Title headline={headline} label={label} accent={colors.text} solid={colors.solid} size={titleSize} height={stageTop} />
 
           <div class="stage" style={`top:${stageTop.toFixed(1)}px`}>
-            <FramePhone frame={frame} page={page} lang={lang} os={os} screenWidth={screenW} />
+            <FramePhone frame={frame} page={page} lang={lang} os={os} screenWidth={screenW} deviceId={deviceId} />
           </div>
 
           {frame === 'widgets' && (

@@ -69,8 +69,10 @@ interface Props {
   os: 'ios' | 'android';
   scale: number;
   room?: 'quitters' | 'squad';
+  /** The store format; without it, the first format of this OS (the phone). */
+  deviceId?: string;
 }
-const { lang, page, os, scale, room = 'quitters' } = Astro.props;
+const { lang, page, os, scale, room = 'quitters', deviceId } = Astro.props;
 const squadRoom = room === 'squad';
 const tr = appLocale(lang);
 const ios = os === 'ios';
@@ -80,9 +82,9 @@ const ios = os === 'ios';
  * (pages/dev/store/[page]/[lang]/[device]/[frame].astro: stageTop) and
  * Device.astro (ring + bezel above the screen).
  */
-const device = DEVICES.find((d) => d.os === os)!;
+const device = DEVICES.find((d) => d.id === deviceId) ?? DEVICES.find((d) => d.os === os)!;
 const screenW = 261 * scale;
-const stageTop = device.height * (ios ? 0.27 : 0.3);
+const stageTop = device.height * (device.layout?.stage ?? (ios ? 0.27 : 0.3));
 const aboveScreen = screenW * (ios ? 0.013 + 0.024 : 0.011 + 0.02);
 const visible = (device.height - stageTop - aboveScreen) / scale;
 const cut = Math.max(0, 566 - visible);

@@ -22,8 +22,10 @@ interface Props {
   os: 'ios' | 'android';
   /** Width of the screen window in px. */
   screenWidth: number;
+  /** The store format, for screens that work out how much of the phone the image shows. */
+  deviceId?: string;
 }
-const { frame, page, lang, os, screenWidth } = Astro.props;
+const { frame, page, lang, os, screenWidth, deviceId } = Astro.props;
 const scale = screenWidth / 261;
 const t = appText(lang);
 
@@ -43,5 +45,5 @@ const Screen = screens[frame];
   {frame === 'stats' && <StatsPhone t={t} lang={lang as never} bare scale={scale} os={os} />}
   {frame === 'quit' && <QuitPhone t={t} bare scale={scale} os={os} />}
   {frame === 'widgets' && <WidgetsScreen t={t} lang={lang} show={page === 'default' ? 'both' : page} scale={scale} />}
-  {Screen && <Screen lang={lang} page={page} os={os} scale={scale} />}
+  {Screen && <Screen lang={lang} page={page} os={os} scale={scale} deviceId={deviceId} />}
 </Device>

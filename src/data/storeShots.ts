@@ -116,7 +116,7 @@ export function labelOf(page: PageId, frame: FrameId): Exclude<Path, 'both'> | n
   return path === 'both' ? null : path;
 }
 
-export type DeviceId = 'iphone' | 'android';
+export type DeviceId = 'iphone' | 'android' | 'tablet';
 
 export interface Device {
   id: DeviceId;
@@ -128,6 +128,11 @@ export interface Device {
   width: number;
   height: number;
   scale: number;
+  /**
+   * Shares of the image width (screen, title) and height (stage) for a format that is not
+   * a tall phone. Left out, the phone rules of the frame route apply.
+   */
+  layout?: { screen: number; stage: number; title: number };
 }
 
 export const DEVICES: Device[] = [
@@ -135,6 +140,13 @@ export const DEVICES: Device[] = [
   { id: 'iphone', store: 'apple', folder: 'iphone-6.9', os: 'ios', width: 440, height: 956, scale: 3 },
   // Play: 9:16 at 1080 x 1920.
   { id: 'android', store: 'google', folder: 'phone', os: 'android', width: 360, height: 640, scale: 3 },
+  // Play tablets, 7" and 10" alike: 3:4 at 2064 x 2752, the size the old tablet set used.
+  // The app has no tablet layout, so the image shows the phone, smaller on the wider
+  // canvas; at the phone's own share of the width it would be cut off below the middle.
+  {
+    id: 'tablet', store: 'google', folder: 'tablet', os: 'android', width: 1032, height: 1376, scale: 2,
+    layout: { screen: 0.56, stage: 0.24, title: 0.07 },
+  },
 ];
 
 interface Copy {
